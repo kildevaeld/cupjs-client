@@ -9,7 +9,7 @@ import {isClassType, ClassType, DINamespace, setActivator, setDependencyResolver
 import {DIContainer} from 'di'
 import {ServiceActivator} from './service.activator'
 import * as templ from 'templ'
-import {has, isObject} from 'utilities/lib/objects'
+import {has, isObject} from 'utilities/lib/index'
 
 export class Application extends BaseObject {
 

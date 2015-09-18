@@ -2,7 +2,7 @@ import { ModuleConstructor, ControllerConstructor, ModuleOptions } from './typin
 import { Module } from './module';
 import { BaseObject } from './object';
 import { Application } from './application';
-import { IPromise } from 'utilities/lib/promises';
+import { IPromise } from 'utilities/lib/index';
 export declare class ModuleFactory extends BaseObject {
     private _name;
     private _app;

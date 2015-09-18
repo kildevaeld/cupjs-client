@@ -64,19 +64,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _application = __webpack_require__(1);
 
-	var _templ = __webpack_require__(39);
+	var _templ = __webpack_require__(38);
 
 	var templ = _interopRequireWildcard(_templ);
 
-	var _templateIndex = __webpack_require__(46);
+	var _templateIndex = __webpack_require__(43);
 
-	var _attributesIndex = __webpack_require__(49);
+	var _attributesIndex = __webpack_require__(46);
 
-	var _servicesTemplateResolver = __webpack_require__(51);
+	var _servicesTemplateResolver = __webpack_require__(48);
 
-	var _internal = __webpack_require__(10);
+	var _internal = __webpack_require__(13);
 
-	var _bootstrap = __webpack_require__(52);
+	var _bootstrap = __webpack_require__(49);
 
 	var moby = new _application.Application();
 	exports.moby = moby;
@@ -108,27 +108,25 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _module2 = __webpack_require__(2);
 
-	var _controller = __webpack_require__(41);
+	var _controller = __webpack_require__(40);
 
-	var _moduleFactory = __webpack_require__(42);
+	var _moduleFactory = __webpack_require__(41);
 
 	var _object = __webpack_require__(3);
 
-	var _utilitiesLibIndex = __webpack_require__(34);
+	var _utilitiesLibIndex = __webpack_require__(5);
 
 	var utils = _interopRequireWildcard(_utilitiesLibIndex);
 
-	var _internal = __webpack_require__(10);
+	var _internal = __webpack_require__(13);
 
-	var _di = __webpack_require__(12);
+	var _di = __webpack_require__(15);
 
-	var _serviceActivator = __webpack_require__(45);
+	var _serviceActivator = __webpack_require__(42);
 
-	var _templ = __webpack_require__(39);
+	var _templ = __webpack_require__(38);
 
 	var templ = _interopRequireWildcard(_templ);
-
-	var _utilitiesLibObjects = __webpack_require__(43);
 
 	var Application = (function (_BaseObject) {
 	    _inherits(Application, _BaseObject);
@@ -154,7 +152,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var mod = undefined;
 	            if (typeof definition === 'function' && (0, _internal.isClassType)(definition, _internal.ClassType.Module)) {
 	                mod = definition;
-	            } else if ((0, _utilitiesLibObjects.isObject)(definition)) {
+	            } else if ((0, _utilitiesLibIndex.isObject)(definition)) {
 	                mod = _module2.Module.extend(definition);
 	            } else {
 	                throw new Error('wrong module type');
@@ -231,19 +229,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _object = __webpack_require__(3);
 
-	var _internal = __webpack_require__(10);
+	var _internal = __webpack_require__(13);
 
-	var _di = __webpack_require__(12);
+	var _di = __webpack_require__(15);
 
-	var _proxyIndex = __webpack_require__(22);
+	var _proxyIndex = __webpack_require__(25);
 
-	var _collection = __webpack_require__(24);
+	var _collection = __webpack_require__(27);
 
-	var _templ = __webpack_require__(39);
+	var _templ = __webpack_require__(38);
 
 	var templ = _interopRequireWildcard(_templ);
 
-	var _templateView = __webpack_require__(40);
+	var _templateView = __webpack_require__(39);
 
 	var __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
 	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
@@ -349,7 +347,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _eventsjs = __webpack_require__(4);
 
-	var _utilitiesLibUtils = __webpack_require__(5);
+	var _utilitiesLibIndex = __webpack_require__(5);
 
 	var BaseObject = (function (_EventEmitter) {
 	    _inherits(BaseObject, _EventEmitter);
@@ -366,7 +364,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.BaseObject = BaseObject;
 
 	BaseObject.extend = function (obj, p) {
-	    return (0, _utilitiesLibUtils.inherits)(this, obj, p);
+	    return (0, _utilitiesLibIndex.inherits)(this, obj, p);
 	};
 
 /***/ },
@@ -522,220 +520,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var objects_1 = __webpack_require__(6);
-	var arrays_1 = __webpack_require__(8);
-	var strings_1 = __webpack_require__(9);
-	var idCounter = 0;
-	var nativeBind = Function.prototype.bind;
-	function ajax() {
-	    var e;
-	    if (window.hasOwnProperty('XMLHttpRequest')) {
-	        return new XMLHttpRequest();
-	    }
-	    try {
-	        return new ActiveXObject('msxml2.xmlhttp.6.0');
-	    } catch (_error) {
-	        e = _error;
-	    }
-	    try {
-	        return new ActiveXObject('msxml2.xmlhttp.3.0');
-	    } catch (_error) {
-	        e = _error;
-	    }
-	    try {
-	        return new ActiveXObject('msxml2.xmlhttp');
-	    } catch (_error) {
-	        e = _error;
-	    }
-	    return e;
+	function __export(m) {
+	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
-	exports.ajax = ajax;
-	;
-	function uniqueId(prefix) {
-	    if (prefix === void 0) {
-	        prefix = '';
-	    }
-	    return prefix + ++idCounter;
-	}
-	exports.uniqueId = uniqueId;
-	function proxy(from, to, fns) {
-	    if (!Array.isArray(fns)) fns = [fns];
-	    fns.forEach(function (fn) {
-	        if (typeof to[fn] === 'function') {
-	            from[fn] = bind(to[fn], to);
-	        }
-	    });
-	}
-	exports.proxy = proxy;
-	function bind(method, context) {
-	    var args = [];
-	    for (var _i = 2; _i < arguments.length; _i++) {
-	        args[_i - 2] = arguments[_i];
-	    }
-	    if (typeof method !== 'function') throw new Error('method not at function');
-	    if (nativeBind != null) return nativeBind.call.apply(nativeBind, [method, context].concat(args));
-	    args = args || [];
-	    var fnoop = function fnoop() {};
-	    var fBound = function fBound() {
-	        var ctx = this instanceof fnoop ? this : context;
-	        return callFunc(method, ctx, args.concat(arrays_1.slice(arguments)));
-	    };
-	    fnoop.prototype = this.prototype;
-	    fBound.prototype = new fnoop();
-	    return fBound;
-	}
-	exports.bind = bind;
-	function callFunc(fn, ctx, args) {
-	    if (args === void 0) {
-	        args = [];
-	    }
-	    switch (args.length) {
-	        case 0:
-	            return fn.call(ctx);
-	        case 1:
-	            return fn.call(ctx, args[0]);
-	        case 2:
-	            return fn.call(ctx, args[0], args[1]);
-	        case 3:
-	            return fn.call(ctx, args[0], args[1], args[2]);
-	        case 4:
-	            return fn.call(ctx, args[0], args[1], args[2], args[3]);
-	        case 5:
-	            return fn.call(ctx, args[0], args[1], args[2], args[3], args[4]);
-	        default:
-	            return fn.apply(ctx, args);
-	    }
-	}
-	exports.callFunc = callFunc;
-	function equal(a, b) {
-	    return eq(a, b, [], []);
-	}
-	exports.equal = equal;
-	function triggerMethodOn(obj, eventName, args) {
-	    var ev = strings_1.camelcase("on-" + eventName.replace(':', '-'));
-	    if (obj[ev] && typeof obj[ev] === 'function') {
-	        callFunc(obj[ev], obj, args);
-	    }
-	    if (typeof obj.trigger === 'function') {
-	        args = [eventName].concat(args);
-	        callFunc(obj.trigger, obj, args);
-	    }
-	}
-	exports.triggerMethodOn = triggerMethodOn;
-	function getOption(option, objs) {
-	    for (var _i = 0; _i < objs.length; _i++) {
-	        var o = objs[_i];
-	        if (objects_1.isObject(o) && o[option]) return o[option];
-	    }
-	    return null;
-	}
-	exports.getOption = getOption;
-	function inherits(parent, protoProps, staticProps) {
-	    var child;
-	    if (protoProps && objects_1.has(protoProps, 'constructor')) {
-	        child = protoProps.constructor;
-	    } else {
-	        child = function () {
-	            return parent.apply(this, arguments);
-	        };
-	    }
-	    objects_1.extend(child, parent, staticProps);
-	    var Surrogate = function Surrogate() {
-	        this.constructor = child;
-	    };
-	    Surrogate.prototype = parent.prototype;
-	    child.prototype = new Surrogate();
-	    if (protoProps) objects_1.extend(child.prototype, protoProps);
-	    child.__super__ = parent.prototype;
-	    return child;
-	}
-	exports.inherits = inherits;
-	exports.nextTick = (function () {
-	    var canSetImmediate = typeof window !== 'undefined' && window.setImmediate;
-	    var canPost = typeof window !== 'undefined' && window.postMessage && window.addEventListener;
-	    if (canSetImmediate) {
-	        return function (f) {
-	            return window.setImmediate(f);
-	        };
-	    }
-	    if (canPost) {
-	        var queue = [];
-	        window.addEventListener('message', function (ev) {
-	            var source = ev.source;
-	            if ((source === window || source === null) && ev.data === 'process-tick') {
-	                ev.stopPropagation();
-	                if (queue.length > 0) {
-	                    var fn = queue.shift();
-	                    fn();
-	                }
-	            }
-	        }, true);
-	        return function nextTick(fn) {
-	            queue.push(fn);
-	            window.postMessage('process-tick', '*');
-	        };
-	    }
-	    return function nextTick(fn) {
-	        setTimeout(fn, 0);
-	    };
-	})();
-	function eq(a, b, aStack, bStack) {
-	    if (a === b) return a !== 0 || 1 / a == 1 / b;
-	    if (a == null || b == null) return a === b;
-	    var className = toString.call(a);
-	    if (className != toString.call(b)) return false;
-	    switch (className) {
-	        case '[object String]':
-	            return a == String(b);
-	        case '[object Number]':
-	            return a !== +a ? b !== +b : a === 0 ? 1 / a === 1 / b : a === +b;
-	        case '[object Date]':
-	        case '[object Boolean]':
-	            return +a == +b;
-	        case '[object RegExp]':
-	            return a.source == b.source && a.global == b.global && a.multiline == b.multiline && a.ignoreCase == b.ignoreCase;
-	    }
-	    if (typeof a != 'object' || typeof b != 'object') return false;
-	    var length = aStack.length;
-	    while (length--) {
-	        if (aStack[length] == a) return bStack[length] == b;
-	    }
-	    var aCtor = a.constructor,
-	        bCtor = b.constructor;
-	    if (aCtor !== bCtor && !(typeof aCtor === 'function' && aCtor instanceof aCtor && typeof bCtor === 'function' && bCtor instanceof bCtor)) {
-	        return false;
-	    }
-	    aStack.push(a);
-	    bStack.push(b);
-	    var size = 0,
-	        result = true;
-	    if (className === '[object Array]') {
-	        size = a.length;
-	        result = size === b.length;
-	        if (result) {
-	            while (size--) {
-	                if (!(result = eq(a[size], b[size], aStack, bStack))) break;
-	            }
-	        }
-	    } else {
-	        for (var key in a) {
-	            if (objects_1.has(a, key)) {
-	                size++;
-	                if (!(result = objects_1.has(b, key) && eq(a[key], b[key], aStack, bStack))) break;
-	            }
-	        }
-	        if (result) {
-	            for (key in b) {
-	                if (objects_1.has(b, key) && ! size--) break;
-	            }
-	            result = !size;
-	        }
-	    }
-	    aStack.pop();
-	    bStack.pop();
-	    return result;
-	}
-	;
+	__export(__webpack_require__(6));
+	__export(__webpack_require__(8));
+	__export(__webpack_require__(10));
+	__export(__webpack_require__(7));
+	__export(__webpack_require__(9));
+	__export(__webpack_require__(11));
+	__export(__webpack_require__(12));
 
 /***/ },
 /* 6 */
@@ -744,121 +538,71 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var utils_1 = __webpack_require__(7);
-	var arrays_1 = __webpack_require__(8);
-	function isObject(obj) {
-	    return obj === Object(obj);
-	}
-	exports.isObject = isObject;
-	function isEmpty(obj) {
-	    return Object.keys(obj).length === 0;
-	}
-	exports.isEmpty = isEmpty;
-	function extend(obj) {
-	    var args = [];
-	    for (var _i = 1; _i < arguments.length; _i++) {
-	        args[_i - 1] = arguments[_i];
-	    }
-	    if (!isObject(obj)) return obj;
-	    var o, k;
-	    for (var _a = 0; _a < args.length; _a++) {
-	        o = args[_a];
-	        if (!isObject(o)) continue;
-	        for (k in o) {
-	            if (has(o, k)) obj[k] = o[k];
-	        }
-	    }
-	    return obj;
-	}
-	exports.extend = extend;
-	function assign(target) {
-	    var args = [];
-	    for (var _i = 1; _i < arguments.length; _i++) {
-	        args[_i - 1] = arguments[_i];
-	    }
-	    if (target === undefined || target === null) {
-	        throw new TypeError('Cannot convert first argument to object');
-	    }
-	    var to = Object(target);
-	    for (var i = 0, ii = args.length; i < ii; i++) {
-	        var nextSource = args[i];
-	        if (nextSource === undefined || nextSource === null) {
-	            continue;
-	        }
-	        nextSource = Object(nextSource);
-	        var keysArray = Object.keys(Object(nextSource));
-	        for (var nextIndex = 0, len = keysArray.length; nextIndex < len; nextIndex++) {
-	            var nextKey = keysArray[nextIndex];
-	            var desc = Object.getOwnPropertyDescriptor(nextSource, nextKey);
-	            if (desc !== undefined && desc.enumerable) {
-	                to[nextKey] = nextSource[nextKey];
+	function unique(array) {
+	    return array.filter(function (e, i) {
+	        for (i += 1; i < array.length; i += 1) {
+	            if (utils_1.equal(e, array[i])) {
+	                return false;
 	            }
 	        }
+	        return true;
+	    });
+	}
+	exports.unique = unique;
+	function any(array, predicate) {
+	    for (var i = 0, ii = array.length; i < ii; i++) {
+	        if (predicate(array[i])) return true;
 	    }
-	    return to;
+	    return false;
 	}
-	exports.assign = assign;
-	function has(obj, prop) {
-	    return Object.prototype.hasOwnProperty.call(obj, prop);
+	exports.any = any;
+	function indexOf(array, item) {
+	    for (var i = 0, len = array.length; i < len; i++) if (array[i] === item) return i;
+	    return -1;
 	}
-	exports.has = has;
-	function pick(obj, props) {
-	    var out = {},
-	        prop;
-	    for (var _i = 0; _i < props.length; _i++) {
-	        prop = props[_i];
-	        if (has(obj, prop)) out[prop] = obj[prop];
+	exports.indexOf = indexOf;
+	function find(array, callback, ctx) {
+	    var i, v;
+	    for (i = 0; i < array.length; i++) {
+	        v = array[i];
+	        if (callback.call(ctx, v)) return v;
 	    }
-	    return out;
+	    return null;
 	}
-	exports.pick = pick;
-	function result(obj, prop, ctx, args) {
-	    var ret = obj[prop];
-	    return typeof ret === 'function' ? utils_1.callFunc(ret, ctx, args || []) : ret;
+	exports.find = find;
+	function slice(array, begin, end) {
+	    return Array.prototype.slice.call(array, begin, end);
 	}
-	exports.result = result;
-	function values(obj) {
-	    var output = [];
-	    for (var k in obj) if (has(obj, k)) {
-	        output.push(obj[k]);
-	    }
-	    return output;
+	exports.slice = slice;
+	function flatten(arr) {
+	    return arr.reduce(function (flat, toFlatten) {
+	        return flat.concat(Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten);
+	    }, []);
 	}
-	exports.values = values;
-	function intersectionObjects(a, b, predicate) {
-	    var results = [],
-	        aElement,
-	        existsInB;
-	    for (var i = 0, ii = a.length; i < ii; i++) {
-	        aElement = a[i];
-	        existsInB = arrays_1.any(b, function (bElement) {
-	            return predicate(bElement, aElement);
-	        });
-	        if (existsInB) {
-	            results.push(aElement);
+	exports.flatten = flatten;
+	function sortBy(obj, value, context) {
+	    var iterator = typeof value === 'function' ? value : function (obj) {
+	        return obj[value];
+	    };
+	    return obj.map(function (value, index, list) {
+	        return {
+	            value: value,
+	            index: index,
+	            criteria: iterator.call(context, value, index, list)
+	        };
+	    }).sort(function (left, right) {
+	        var a = left.criteria;
+	        var b = right.criteria;
+	        if (a !== b) {
+	            if (a > b || a === void 0) return 1;
+	            if (a < b || b === void 0) return -1;
 	        }
-	    }
-	    return results;
+	        return left.index - right.index;
+	    }).map(function (item) {
+	        return item.value;
+	    });
 	}
-	function intersection(results) {
-	    var args = [];
-	    for (var _i = 1; _i < arguments.length; _i++) {
-	        args[_i - 1] = arguments[_i];
-	    }
-	    var lastArgument = args[args.length - 1];
-	    var arrayCount = args.length;
-	    var areEqualFunction = utils_1.equal;
-	    if (typeof lastArgument === "function") {
-	        areEqualFunction = lastArgument;
-	        arrayCount--;
-	    }
-	    for (var i = 0; i < arrayCount; i++) {
-	        var array = args[i];
-	        results = intersectionObjects(results, array, areEqualFunction);
-	        if (results.length === 0) break;
-	    }
-	    return results;
-	}
-	exports.intersection = intersection;
+	exports.sortBy = sortBy;
 
 /***/ },
 /* 7 */
@@ -866,8 +610,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var objects_1 = __webpack_require__(6);
-	var arrays_1 = __webpack_require__(8);
+	var objects_1 = __webpack_require__(8);
+	var arrays_1 = __webpack_require__(6);
 	var strings_1 = __webpack_require__(9);
 	var idCounter = 0;
 	var nativeBind = Function.prototype.bind;
@@ -1088,71 +832,121 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var utils_1 = __webpack_require__(7);
-	function unique(array) {
-	    return array.filter(function (e, i) {
-	        for (i += 1; i < array.length; i += 1) {
-	            if (utils_1.equal(e, array[i])) {
-	                return false;
+	var arrays_1 = __webpack_require__(6);
+	function isObject(obj) {
+	    return obj === Object(obj);
+	}
+	exports.isObject = isObject;
+	function isEmpty(obj) {
+	    return Object.keys(obj).length === 0;
+	}
+	exports.isEmpty = isEmpty;
+	function extend(obj) {
+	    var args = [];
+	    for (var _i = 1; _i < arguments.length; _i++) {
+	        args[_i - 1] = arguments[_i];
+	    }
+	    if (!isObject(obj)) return obj;
+	    var o, k;
+	    for (var _a = 0; _a < args.length; _a++) {
+	        o = args[_a];
+	        if (!isObject(o)) continue;
+	        for (k in o) {
+	            if (has(o, k)) obj[k] = o[k];
+	        }
+	    }
+	    return obj;
+	}
+	exports.extend = extend;
+	function assign(target) {
+	    var args = [];
+	    for (var _i = 1; _i < arguments.length; _i++) {
+	        args[_i - 1] = arguments[_i];
+	    }
+	    if (target === undefined || target === null) {
+	        throw new TypeError('Cannot convert first argument to object');
+	    }
+	    var to = Object(target);
+	    for (var i = 0, ii = args.length; i < ii; i++) {
+	        var nextSource = args[i];
+	        if (nextSource === undefined || nextSource === null) {
+	            continue;
+	        }
+	        nextSource = Object(nextSource);
+	        var keysArray = Object.keys(Object(nextSource));
+	        for (var nextIndex = 0, len = keysArray.length; nextIndex < len; nextIndex++) {
+	            var nextKey = keysArray[nextIndex];
+	            var desc = Object.getOwnPropertyDescriptor(nextSource, nextKey);
+	            if (desc !== undefined && desc.enumerable) {
+	                to[nextKey] = nextSource[nextKey];
 	            }
 	        }
-	        return true;
-	    });
-	}
-	exports.unique = unique;
-	function any(array, predicate) {
-	    for (var i = 0, ii = array.length; i < ii; i++) {
-	        if (predicate(array[i])) return true;
 	    }
-	    return false;
+	    return to;
 	}
-	exports.any = any;
-	function indexOf(array, item) {
-	    for (var i = 0, len = array.length; i < len; i++) if (array[i] === item) return i;
-	    return -1;
+	exports.assign = assign;
+	function has(obj, prop) {
+	    return Object.prototype.hasOwnProperty.call(obj, prop);
 	}
-	exports.indexOf = indexOf;
-	function find(array, callback, ctx) {
-	    var i, v;
-	    for (i = 0; i < array.length; i++) {
-	        v = array[i];
-	        if (callback.call(ctx, v)) return v;
+	exports.has = has;
+	function pick(obj, props) {
+	    var out = {},
+	        prop;
+	    for (var _i = 0; _i < props.length; _i++) {
+	        prop = props[_i];
+	        if (has(obj, prop)) out[prop] = obj[prop];
 	    }
-	    return null;
+	    return out;
 	}
-	exports.find = find;
-	function slice(array, begin, end) {
-	    return Array.prototype.slice.call(array, begin, end);
+	exports.pick = pick;
+	function result(obj, prop, ctx, args) {
+	    var ret = obj[prop];
+	    return typeof ret === 'function' ? utils_1.callFunc(ret, ctx, args || []) : ret;
 	}
-	exports.slice = slice;
-	function flatten(arr) {
-	    return arr.reduce(function (flat, toFlatten) {
-	        return flat.concat(Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten);
-	    }, []);
+	exports.result = result;
+	function values(obj) {
+	    var output = [];
+	    for (var k in obj) if (has(obj, k)) {
+	        output.push(obj[k]);
+	    }
+	    return output;
 	}
-	exports.flatten = flatten;
-	function sortBy(obj, value, context) {
-	    var iterator = typeof value === 'function' ? value : function (obj) {
-	        return obj[value];
-	    };
-	    return obj.map(function (value, index, list) {
-	        return {
-	            value: value,
-	            index: index,
-	            criteria: iterator.call(context, value, index, list)
-	        };
-	    }).sort(function (left, right) {
-	        var a = left.criteria;
-	        var b = right.criteria;
-	        if (a !== b) {
-	            if (a > b || a === void 0) return 1;
-	            if (a < b || b === void 0) return -1;
+	exports.values = values;
+	function intersectionObjects(a, b, predicate) {
+	    var results = [],
+	        aElement,
+	        existsInB;
+	    for (var i = 0, ii = a.length; i < ii; i++) {
+	        aElement = a[i];
+	        existsInB = arrays_1.any(b, function (bElement) {
+	            return predicate(bElement, aElement);
+	        });
+	        if (existsInB) {
+	            results.push(aElement);
 	        }
-	        return left.index - right.index;
-	    }).map(function (item) {
-	        return item.value;
-	    });
+	    }
+	    return results;
 	}
-	exports.sortBy = sortBy;
+	function intersection(results) {
+	    var args = [];
+	    for (var _i = 1; _i < arguments.length; _i++) {
+	        args[_i - 1] = arguments[_i];
+	    }
+	    var lastArgument = args[args.length - 1];
+	    var arrayCount = args.length;
+	    var areEqualFunction = utils_1.equal;
+	    if (typeof lastArgument === "function") {
+	        areEqualFunction = lastArgument;
+	        arrayCount--;
+	    }
+	    for (var i = 0; i < arrayCount; i++) {
+	        var array = args[i];
+	        results = intersectionObjects(results, array, areEqualFunction);
+	        if (results.length === 0) break;
+	    }
+	    return results;
+	}
+	exports.intersection = intersection;
 
 /***/ },
 /* 9 */
@@ -1196,6 +990,389 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
+	var objects_1 = __webpack_require__(8);
+	var arrays_1 = __webpack_require__(6);
+	var utils_1 = __webpack_require__(7);
+	exports.Promise = window.Promise;
+	function isPromise(obj) {
+	    return obj && typeof obj.then === 'function';
+	}
+	exports.isPromise = isPromise;
+	function toPromise(obj) {
+	    if (!obj) {
+	        return obj;
+	    }
+	    if (isPromise(obj)) {
+	        return obj;
+	    }
+	    if ("function" == typeof obj) {
+	        return thunkToPromise.call(this, obj);
+	    }
+	    if (Array.isArray(obj)) {
+	        return arrayToPromise.call(this, obj);
+	    }
+	    if (objects_1.isObject(obj)) {
+	        return objectToPromise.call(this, obj);
+	    }
+	    return exports.Promise.resolve(obj);
+	}
+	exports.toPromise = toPromise;
+	function thunkToPromise(fn) {
+	    var ctx = this;
+	    return new exports.Promise(function (resolve, reject) {
+	        fn.call(ctx, function (err, res) {
+	            if (err) return reject(err);
+	            if (arguments.length > 2) res = arrays_1.slice(arguments, 1);
+	            resolve(res);
+	        });
+	    });
+	}
+	exports.thunkToPromise = thunkToPromise;
+	function arrayToPromise(obj) {
+	    return exports.Promise.all(obj.map(toPromise, this));
+	}
+	exports.arrayToPromise = arrayToPromise;
+	function objectToPromise(obj) {
+	    var results = new obj.constructor();
+	    var keys = Object.keys(obj);
+	    var promises = [];
+	    for (var i = 0; i < keys.length; i++) {
+	        var key = keys[i];
+	        var promise = toPromise.call(this, obj[key]);
+	        if (promise && isPromise(promise)) defer(promise, key);else results[key] = obj[key];
+	    }
+	    return exports.Promise.all(promises).then(function () {
+	        return results;
+	    });
+	    function defer(promise, key) {
+	        results[key] = undefined;
+	        promises.push(promise.then(function (res) {
+	            results[key] = res;
+	        }));
+	    }
+	}
+	exports.objectToPromise = objectToPromise;
+	function deferred(fn, ctx) {
+	    var args = [];
+	    for (var _i = 2; _i < arguments.length; _i++) {
+	        args[_i - 2] = arguments[_i];
+	    }
+	    var ret = {};
+	    ret.promise = new exports.Promise(function (resolve, reject) {
+	        ret.resolve = resolve;
+	        ret.reject = reject;
+	        ret.done = function (err, result) {
+	            if (err) return reject(err);else resolve(result);
+	        };
+	    });
+	    if (typeof fn === 'function') {
+	        utils_1.callFunc(fn, ctx, args.concat([ret.done]));
+	        return ret.promise;
+	    }
+	    return ret;
+	}
+	exports.deferred = deferred;
+	;
+	function callback(promise, callback, ctx) {
+	    promise.then(function (result) {
+	        callback.call(ctx, null, result);
+	    })['catch'](function (err) {
+	        callback.call(ctx, err);
+	    });
+	}
+	exports.callback = callback;
+	function delay(timeout) {
+	    var defer = deferred();
+	    timeout == null ? utils_1.nextTick(defer.resolve) : setTimeout(defer.resolve, timeout);
+	    return defer.promise;
+	}
+	exports.delay = delay;
+	;
+	function eachAsync(array, iterator, context, accumulate) {
+	    if (accumulate === void 0) {
+	        accumulate = false;
+	    }
+	    return mapAsync(array, iterator, context, accumulate).then(function () {
+	        return void 0;
+	    });
+	}
+	exports.eachAsync = eachAsync;
+	function mapAsync(array, iterator, context, accumulate) {
+	    if (accumulate === void 0) {
+	        accumulate = false;
+	    }
+	    return new exports.Promise(function (resolve, reject) {
+	        var i = 0,
+	            len = array.length,
+	            errors = [],
+	            results = [];
+	        function next(err, result) {
+	            if (err && !accumulate) return reject(err);
+	            if (err) errors.push(err);
+	            if (i === len) return errors.length ? reject(arrays_1.flatten(errors)) : resolve(results);
+	            var ret = iterator.call(context, array[i++]);
+	            if (isPromise(ret)) {
+	                ret.then(function (r) {
+	                    results.push(r);next(null, r);
+	                }, next);
+	            } else if (ret instanceof Error) {
+	                next(ret);
+	            } else {
+	                next(null);
+	            }
+	        }
+	        next(null);
+	    });
+	}
+	exports.mapAsync = mapAsync;
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var arrays_1 = __webpack_require__(6);
+	var ElementProto = typeof Element !== 'undefined' && Element.prototype || {};
+	var matchesSelector = ElementProto.matches || ElementProto.webkitMatchesSelector || ElementProto.mozMatchesSelector || ElementProto.msMatchesSelector || ElementProto.oMatchesSelector || function (selector) {
+	    var nodeList = (this.parentNode || document).querySelectorAll(selector) || [];
+	    return !! ~arrays_1.indexOf(nodeList, this);
+	};
+	var elementAddEventListener = ElementProto.addEventListener || function (eventName, listener) {
+	    return this.attachEvent('on' + eventName, listener);
+	};
+	var elementRemoveEventListener = ElementProto.removeEventListener || function (eventName, listener) {
+	    return this.detachEvent('on' + eventName, listener);
+	};
+	var transitionEndEvent = function transitionEnd() {
+	    var el = document.createElement('bootstrap');
+	    var transEndEventNames = {
+	        'WebkitTransition': 'webkitTransitionEnd',
+	        'MozTransition': 'transitionend',
+	        'OTransition': 'oTransitionEnd otransitionend',
+	        'transition': 'transitionend'
+	    };
+	    for (var name in transEndEventNames) {
+	        if (el.style[name] !== undefined) {
+	            return transEndEventNames[name];
+	        }
+	    }
+	    return null;
+	};
+	var animationEndEvent = function animationEnd() {
+	    var el = document.createElement('bootstrap');
+	    var transEndEventNames = {
+	        'WebkitAnimation': 'webkitAnimationEnd',
+	        'MozAnimation': 'animationend',
+	        'OTransition': 'oAnimationEnd oanimationend',
+	        'animation': 'animationend'
+	    };
+	    for (var name in transEndEventNames) {
+	        if (el.style[name] !== undefined) {
+	            return transEndEventNames[name];
+	        }
+	    }
+	    return null;
+	};
+	function matches(elm, selector) {
+	    return matchesSelector.call(elm, selector);
+	}
+	exports.matches = matches;
+	function addEventListener(elm, eventName, listener, useCap) {
+	    if (useCap === void 0) {
+	        useCap = false;
+	    }
+	    elementAddEventListener.call(elm, eventName, listener, useCap);
+	}
+	exports.addEventListener = addEventListener;
+	function removeEventListener(elm, eventName, listener) {
+	    elementRemoveEventListener.call(elm, eventName, listener);
+	}
+	exports.removeEventListener = removeEventListener;
+	function addClass(elm, className) {
+	    if (elm.classList) elm.classList.add(className);else {
+	        elm.className = elm.className.split(' ').concat(className.split(' ')).join(' ');
+	    }
+	}
+	exports.addClass = addClass;
+	function removeClass(elm, className) {
+	    if (elm.classList) elm.classList.remove(className);else {
+	        var split = elm.className.split(' '),
+	            classNames = className.split(' '),
+	            tmp = split,
+	            index;
+	        for (var i = 0, ii = classNames.length; i < ii; i++) {
+	            index = split.indexOf(classNames[i]);
+	            if (!! ~index) split = split.splice(index, 1);
+	        }
+	    }
+	}
+	exports.removeClass = removeClass;
+	function hasClass(elm, className) {
+	    if (elm.classList) {
+	        return elm.classList.contains(className);
+	    }
+	    var reg = new RegExp('\b' + className);
+	    return reg.test(elm.className);
+	}
+	exports.hasClass = hasClass;
+	function selectionStart(elm) {
+	    if ('selectionStart' in elm) {
+	        return elm.selectionStart;
+	    } else if (document.selection) {
+	        elm.focus();
+	        var sel = document.selection.createRange();
+	        var selLen = document.selection.createRange().text.length;
+	        sel.moveStart('character', -elm.value.length);
+	        return sel.text.length - selLen;
+	    }
+	}
+	exports.selectionStart = selectionStart;
+	var _events = {
+	    animationEnd: null,
+	    transitionEnd: null
+	};
+	function transitionEnd(elm, fn, ctx, duration) {
+	    var event = _events.transitionEnd || (_events.transitionEnd = transitionEndEvent());
+	    var callback = function callback(e) {
+	        removeEventListener(elm, event, callback);
+	        fn.call(ctx, e);
+	    };
+	    addEventListener(elm, event, callback);
+	}
+	exports.transitionEnd = transitionEnd;
+	function animationEnd(elm, fn, ctx, duration) {
+	    var event = _events.animationEnd || (_events.animationEnd = animationEndEvent());
+	    var callback = function callback(e) {
+	        removeEventListener(elm, event, callback);
+	        fn.call(ctx, e);
+	    };
+	    addEventListener(elm, event, callback);
+	}
+	exports.animationEnd = animationEnd;
+	exports.domReady = (function () {
+	    var fns = [],
+	        listener,
+	        doc = document,
+	        hack = doc.documentElement.doScroll,
+	        domContentLoaded = 'DOMContentLoaded',
+	        loaded = (hack ? /^loaded|^c/ : /^loaded|^i|^c/).test(doc.readyState);
+	    if (!loaded) {
+	        doc.addEventListener(domContentLoaded, listener = function () {
+	            doc.removeEventListener(domContentLoaded, listener);
+	            loaded = true;
+	            while (listener = fns.shift()) listener();
+	        });
+	    }
+	    return function (fn) {
+	        loaded ? setTimeout(fn, 0) : fns.push(fn);
+	    };
+	})();
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var utils_1 = __webpack_require__(7);
+	var promises_1 = __webpack_require__(10);
+	var xmlRe = /^(?:application|text)\/xml/,
+	    jsonRe = /^application\/json/,
+	    fileProto = /^file:/;
+	function queryParam(obj) {
+	    return '?' + Object.keys(obj).reduce(function (a, k) {
+	        a.push(k + '=' + encodeURIComponent(obj[k]));return a;
+	    }, []).join('&');
+	}
+	exports.queryParam = queryParam;
+	var isValid = function isValid(xhr, url) {
+	    return xhr.status >= 200 && xhr.status < 300 || xhr.status === 304 || xhr.status === 0 && fileProto.test(url);
+	};
+	var Request = (function () {
+	    function Request(_method, _url) {
+	        this._method = _method;
+	        this._url = _url;
+	        this._xhr = utils_1.ajax();
+	    }
+	    Request.prototype.send = function (data) {
+	        this._data = data;
+	        return this;
+	    };
+	    Request.prototype.withCredentials = function (ret) {
+	        this._xhr.withCredentials = ret;
+	        return this;
+	    };
+	    Request.prototype.end = function (data) {
+	        var _this = this;
+	        this._data = data || this._data;
+	        var defer = promises_1.deferred();
+	        this._xhr.addEventListener('readystatechange', function () {
+	            if (_this._xhr.readyState !== XMLHttpRequest.DONE) return;
+	            if (!isValid(_this._xhr, _this._url)) {
+	                return defer.reject(new Error('server responded with: ' + _this._xhr.status));
+	            }
+	            defer.resolve(_this._xhr.responseText);
+	        });
+	        data = this._data;
+	        var url = this._url;
+	        if (data && data === Object(data)) {
+	            var d = queryParam(data);
+	            url += d;
+	        }
+	        this._xhr.open(this._method, url, true);
+	        this._xhr.send(data);
+	        return defer.promise;
+	    };
+	    Request.prototype.json = function (data) {
+	        var _this = this;
+	        return this.end(data).then(function (str) {
+	            var accepts = _this._xhr.getResponseHeader('content-type');
+	            if (jsonRe.test(accepts) && str !== '') {
+	                var json = JSON.parse(str);
+	                return json;
+	            } else {
+	                throw new Error('json');
+	            }
+	        });
+	    };
+	    Request.prototype.progress = function (fn) {
+	        this._xhr.addEventListener('progress', fn);
+	        return this;
+	    };
+	    Request.prototype.header = function (field, value) {
+	        this._xhr.setRequestHeader(field, value);
+	        return this;
+	    };
+	    return Request;
+	})();
+	exports.Request = Request;
+	var request;
+	(function (request) {
+	    function get(url) {
+	        return new Request('GET', url);
+	    }
+	    request.get = get;
+	    function post(url) {
+	        return new Request('POST', url);
+	    }
+	    request.post = post;
+	    function put(url) {
+	        return new Request('PUT', url);
+	    }
+	    request.put = put;
+	    function del(url) {
+	        return new Request('DELETE', url);
+	    }
+	    request.del = del;
+	})(request = exports.request || (exports.request = {}));
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
 	Object.defineProperty(exports, '__esModule', {
 	    value: true
 	});
@@ -1205,9 +1382,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.setActivator = setActivator;
 	exports.setDependencyResolver = setDependencyResolver;
 
-	var _typings = __webpack_require__(11);
+	var _typings = __webpack_require__(14);
 
-	var _di = __webpack_require__(12);
+	var _di = __webpack_require__(15);
 
 	var ClassType;
 	exports.ClassType = ClassType;
@@ -1248,7 +1425,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 11 */
+/* 14 */
 /***/ function(module, exports) {
 
 	/// <reference path="../node_modules/di/di" />
@@ -1268,15 +1445,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	})(Metakey || (exports.Metakey = Metakey = {}));
 
 /***/ },
-/* 12 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	module.exports = __webpack_require__(13);
+	module.exports = __webpack_require__(16);
 
 /***/ },
-/* 13 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1312,20 +1489,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	var Version = '0.0.2';
 	exports.Version = Version;
 
-	var _container = __webpack_require__(14);
+	var _container = __webpack_require__(17);
 
 	_defaults(exports, _interopExportWildcard(_container, _defaults));
 
-	var _metaIndex = __webpack_require__(18);
+	var _metaIndex = __webpack_require__(21);
 
 	_defaults(exports, _interopExportWildcard(_metaIndex, _defaults));
 
-	var _decorators = __webpack_require__(21);
+	var _decorators = __webpack_require__(24);
 
 	_defaults(exports, _interopExportWildcard(_decorators, _defaults));
 
 /***/ },
-/* 14 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1343,11 +1520,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.getFunctionParameters = getFunctionParameters;
 
-	var _metadata = __webpack_require__(15);
+	var _metadata = __webpack_require__(18);
 
-	var _metaMetadata = __webpack_require__(16);
+	var _metaMetadata = __webpack_require__(19);
 
-	var _errors = __webpack_require__(17);
+	var _errors = __webpack_require__(20);
 
 	var paramRegEx = /function[^(]*\(([^)]*)\)/i;
 
@@ -1680,7 +1857,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.DIContainer = DIContainer;
 
 /***/ },
-/* 15 */
+/* 18 */
 /***/ function(module, exports) {
 
 	/**
@@ -2086,7 +2263,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	FactoryActivator.instance = new FactoryActivator();
 
 /***/ },
-/* 16 */
+/* 19 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
@@ -2209,7 +2386,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 17 */
+/* 20 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2283,7 +2460,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 18 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2304,16 +2481,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }return obj;
 	}
 
-	var _metadata = __webpack_require__(16);
+	var _metadata = __webpack_require__(19);
 
 	_defaults(exports, _interopExportWildcard(_metadata, _defaults));
 
-	var _decorators = __webpack_require__(19);
+	var _decorators = __webpack_require__(22);
 
 	_defaults(exports, _interopExportWildcard(_decorators, _defaults));
 
 /***/ },
-/* 19 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2322,7 +2499,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 
-	var _decoratorApplicator = __webpack_require__(20);
+	var _decoratorApplicator = __webpack_require__(23);
 
 	var Decorators = {
 	    configure: {
@@ -2349,7 +2526,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.Decorators = Decorators;
 
 /***/ },
-/* 20 */
+/* 23 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2421,7 +2598,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.DecoratorApplicator = DecoratorApplicator;
 
 /***/ },
-/* 21 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2437,11 +2614,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.instanceActivator = instanceActivator;
 	exports.factory = factory;
 
-	var _metaIndex = __webpack_require__(18);
+	var _metaIndex = __webpack_require__(21);
 
-	var _metadata = __webpack_require__(15);
+	var _metadata = __webpack_require__(18);
 
-	var _container = __webpack_require__(14);
+	var _container = __webpack_require__(17);
 
 	function autoinject(target) {
 	    var deco = function deco(target) {
@@ -2495,7 +2672,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	_metaIndex.Decorators.configure.parameterizedDecorator('factory', factory);
 
 /***/ },
-/* 22 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2505,11 +2682,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.createProxy = createProxy;
 
-	var _objectObserve = __webpack_require__(23);
+	var _objectObserve = __webpack_require__(26);
 
-	var _dirtyObserve = __webpack_require__(38);
+	var _dirtyObserve = __webpack_require__(37);
 
-	var _utilitiesLibIndex = __webpack_require__(34);
+	var _utilitiesLibIndex = __webpack_require__(5);
 
 	function createProxy(model) {
 	    if (typeof Object.observe === 'function') {
@@ -2544,7 +2721,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.get_atributes = get_atributes;
 
 /***/ },
-/* 23 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2561,9 +2738,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var _collection = __webpack_require__(24);
+	var _collection = __webpack_require__(27);
 
-	var _proxy = __webpack_require__(33);
+	var _proxy = __webpack_require__(36);
 
 	var ObjectObserveProxy = (function (_AbstractProxy) {
 	    _inherits(ObjectObserveProxy, _AbstractProxy);
@@ -2597,7 +2774,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.ObjectObserveProxy = ObjectObserveProxy;
 
 /***/ },
-/* 24 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2605,13 +2782,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	function __export(m) {
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
-	__export(__webpack_require__(25));
-	__export(__webpack_require__(27));
-	__export(__webpack_require__(31));
-	__export(__webpack_require__(32));
+	__export(__webpack_require__(28));
+	__export(__webpack_require__(30));
+	__export(__webpack_require__(34));
+	__export(__webpack_require__(35));
 
 /***/ },
-/* 25 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2625,11 +2802,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    d.prototype = new __();
 	};
 	/// <reference path="interfaces" />
-	var eventsjs_1 = __webpack_require__(26);
-	var model_1 = __webpack_require__(27);
-	var objects_1 = __webpack_require__(29);
-	var arrays_1 = __webpack_require__(30);
-	var utils_1 = __webpack_require__(28);
+	var eventsjs_1 = __webpack_require__(29);
+	var model_1 = __webpack_require__(30);
+	var objects_1 = __webpack_require__(32);
+	var arrays_1 = __webpack_require__(33);
+	var utils_1 = __webpack_require__(31);
 	var setOptions = { add: true, remove: true, merge: true };
 	var addOptions = { add: true, remove: false };
 	var Collection = (function (_super) {
@@ -2893,7 +3070,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.Collection = Collection;
 
 /***/ },
-/* 26 */
+/* 29 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3040,7 +3217,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.EventEmitter = EventEmitter;
 
 /***/ },
-/* 27 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3054,9 +3231,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    d.prototype = new __();
 	};
 	/// <reference path="interfaces" />
-	var eventsjs_1 = __webpack_require__(26);
-	var utils_1 = __webpack_require__(28);
-	var objects_1 = __webpack_require__(29);
+	var eventsjs_1 = __webpack_require__(29);
+	var utils_1 = __webpack_require__(31);
+	var objects_1 = __webpack_require__(32);
 	var Model = (function (_super) {
 	    __extends(Model, _super);
 	    function Model(attributes, options) {
@@ -3190,13 +3367,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.Model = Model;
 
 /***/ },
-/* 28 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var objects_1 = __webpack_require__(6);
-	var arrays_1 = __webpack_require__(8);
+	var objects_1 = __webpack_require__(8);
+	var arrays_1 = __webpack_require__(6);
 	var strings_1 = __webpack_require__(9);
 	var idCounter = 0;
 	var nativeBind = Function.prototype.bind;
@@ -3411,13 +3588,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	;
 
 /***/ },
-/* 29 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var utils_1 = __webpack_require__(7);
-	var arrays_1 = __webpack_require__(8);
+	var arrays_1 = __webpack_require__(6);
 	function isObject(obj) {
 	    return obj === Object(obj);
 	}
@@ -3534,7 +3711,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.intersection = intersection;
 
 /***/ },
-/* 30 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3607,7 +3784,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.sortBy = sortBy;
 
 /***/ },
-/* 31 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3620,9 +3797,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    __.prototype = b.prototype;
 	    d.prototype = new __();
 	};
-	var utils_1 = __webpack_require__(28);
-	var objects_1 = __webpack_require__(29);
-	var model_1 = __webpack_require__(27);
+	var utils_1 = __webpack_require__(31);
+	var objects_1 = __webpack_require__(32);
+	var model_1 = __webpack_require__(30);
 	function objToPaths(obj, separator) {
 	    if (separator === void 0) {
 	        separator = ".";
@@ -3817,7 +3994,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.NestedModel = NestedModel;
 
 /***/ },
-/* 32 */
+/* 35 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3826,7 +4003,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/// <reference path="../node_modules/utilities/utils" />
 
 /***/ },
-/* 33 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3839,11 +4016,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var _utilitiesLibIndex = __webpack_require__(34);
+	var _utilitiesLibIndex = __webpack_require__(5);
 
-	var _collection = __webpack_require__(24);
+	var _collection = __webpack_require__(27);
 
-	var _index = __webpack_require__(22);
+	var _index = __webpack_require__(25);
 
 	var AbstractProxy = (function () {
 	    function AbstractProxy(model, parent) {
@@ -3950,407 +4127,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.AbstractProxy = AbstractProxy;
 
 /***/ },
-/* 34 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	function __export(m) {
-	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-	}
-	__export(__webpack_require__(8));
-	__export(__webpack_require__(6));
-	__export(__webpack_require__(35));
-	__export(__webpack_require__(7));
-	__export(__webpack_require__(9));
-	__export(__webpack_require__(36));
-	__export(__webpack_require__(37));
-
-/***/ },
-/* 35 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var objects_1 = __webpack_require__(6);
-	var arrays_1 = __webpack_require__(8);
-	var utils_1 = __webpack_require__(7);
-	exports.Promise = window.Promise;
-	function isPromise(obj) {
-	    return obj && typeof obj.then === 'function';
-	}
-	exports.isPromise = isPromise;
-	function toPromise(obj) {
-	    if (!obj) {
-	        return obj;
-	    }
-	    if (isPromise(obj)) {
-	        return obj;
-	    }
-	    if ("function" == typeof obj) {
-	        return thunkToPromise.call(this, obj);
-	    }
-	    if (Array.isArray(obj)) {
-	        return arrayToPromise.call(this, obj);
-	    }
-	    if (objects_1.isObject(obj)) {
-	        return objectToPromise.call(this, obj);
-	    }
-	    return exports.Promise.resolve(obj);
-	}
-	exports.toPromise = toPromise;
-	function thunkToPromise(fn) {
-	    var ctx = this;
-	    return new exports.Promise(function (resolve, reject) {
-	        fn.call(ctx, function (err, res) {
-	            if (err) return reject(err);
-	            if (arguments.length > 2) res = arrays_1.slice(arguments, 1);
-	            resolve(res);
-	        });
-	    });
-	}
-	exports.thunkToPromise = thunkToPromise;
-	function arrayToPromise(obj) {
-	    return exports.Promise.all(obj.map(toPromise, this));
-	}
-	exports.arrayToPromise = arrayToPromise;
-	function objectToPromise(obj) {
-	    var results = new obj.constructor();
-	    var keys = Object.keys(obj);
-	    var promises = [];
-	    for (var i = 0; i < keys.length; i++) {
-	        var key = keys[i];
-	        var promise = toPromise.call(this, obj[key]);
-	        if (promise && isPromise(promise)) defer(promise, key);else results[key] = obj[key];
-	    }
-	    return exports.Promise.all(promises).then(function () {
-	        return results;
-	    });
-	    function defer(promise, key) {
-	        results[key] = undefined;
-	        promises.push(promise.then(function (res) {
-	            results[key] = res;
-	        }));
-	    }
-	}
-	exports.objectToPromise = objectToPromise;
-	function deferred(fn, ctx) {
-	    var args = [];
-	    for (var _i = 2; _i < arguments.length; _i++) {
-	        args[_i - 2] = arguments[_i];
-	    }
-	    var ret = {};
-	    ret.promise = new exports.Promise(function (resolve, reject) {
-	        ret.resolve = resolve;
-	        ret.reject = reject;
-	        ret.done = function (err, result) {
-	            if (err) return reject(err);else resolve(result);
-	        };
-	    });
-	    if (typeof fn === 'function') {
-	        utils_1.callFunc(fn, ctx, args.concat([ret.done]));
-	        return ret.promise;
-	    }
-	    return ret;
-	}
-	exports.deferred = deferred;
-	;
-	function callback(promise, callback, ctx) {
-	    promise.then(function (result) {
-	        callback.call(ctx, null, result);
-	    })['catch'](function (err) {
-	        callback.call(ctx, err);
-	    });
-	}
-	exports.callback = callback;
-	function delay(timeout) {
-	    var defer = deferred();
-	    timeout == null ? utils_1.nextTick(defer.resolve) : setTimeout(defer.resolve, timeout);
-	    return defer.promise;
-	}
-	exports.delay = delay;
-	;
-	function eachAsync(array, iterator, context, accumulate) {
-	    if (accumulate === void 0) {
-	        accumulate = false;
-	    }
-	    return mapAsync(array, iterator, context, accumulate).then(function () {
-	        return void 0;
-	    });
-	}
-	exports.eachAsync = eachAsync;
-	function mapAsync(array, iterator, context, accumulate) {
-	    if (accumulate === void 0) {
-	        accumulate = false;
-	    }
-	    return new exports.Promise(function (resolve, reject) {
-	        var i = 0,
-	            len = array.length,
-	            errors = [],
-	            results = [];
-	        function next(err, result) {
-	            if (err && !accumulate) return reject(err);
-	            if (err) errors.push(err);
-	            if (i === len) return errors.length ? reject(arrays_1.flatten(errors)) : resolve(results);
-	            var ret = iterator.call(context, array[i++]);
-	            if (isPromise(ret)) {
-	                ret.then(function (r) {
-	                    results.push(r);next(null, r);
-	                }, next);
-	            } else if (ret instanceof Error) {
-	                next(ret);
-	            } else {
-	                next(null);
-	            }
-	        }
-	        next(null);
-	    });
-	}
-	exports.mapAsync = mapAsync;
-
-/***/ },
-/* 36 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var arrays_1 = __webpack_require__(8);
-	var ElementProto = typeof Element !== 'undefined' && Element.prototype || {};
-	var matchesSelector = ElementProto.matches || ElementProto.webkitMatchesSelector || ElementProto.mozMatchesSelector || ElementProto.msMatchesSelector || ElementProto.oMatchesSelector || function (selector) {
-	    var nodeList = (this.parentNode || document).querySelectorAll(selector) || [];
-	    return !! ~arrays_1.indexOf(nodeList, this);
-	};
-	var elementAddEventListener = ElementProto.addEventListener || function (eventName, listener) {
-	    return this.attachEvent('on' + eventName, listener);
-	};
-	var elementRemoveEventListener = ElementProto.removeEventListener || function (eventName, listener) {
-	    return this.detachEvent('on' + eventName, listener);
-	};
-	var transitionEndEvent = function transitionEnd() {
-	    var el = document.createElement('bootstrap');
-	    var transEndEventNames = {
-	        'WebkitTransition': 'webkitTransitionEnd',
-	        'MozTransition': 'transitionend',
-	        'OTransition': 'oTransitionEnd otransitionend',
-	        'transition': 'transitionend'
-	    };
-	    for (var name in transEndEventNames) {
-	        if (el.style[name] !== undefined) {
-	            return transEndEventNames[name];
-	        }
-	    }
-	    return null;
-	};
-	var animationEndEvent = function animationEnd() {
-	    var el = document.createElement('bootstrap');
-	    var transEndEventNames = {
-	        'WebkitAnimation': 'webkitAnimationEnd',
-	        'MozAnimation': 'animationend',
-	        'OTransition': 'oAnimationEnd oanimationend',
-	        'animation': 'animationend'
-	    };
-	    for (var name in transEndEventNames) {
-	        if (el.style[name] !== undefined) {
-	            return transEndEventNames[name];
-	        }
-	    }
-	    return null;
-	};
-	function matches(elm, selector) {
-	    return matchesSelector.call(elm, selector);
-	}
-	exports.matches = matches;
-	function addEventListener(elm, eventName, listener, useCap) {
-	    if (useCap === void 0) {
-	        useCap = false;
-	    }
-	    elementAddEventListener.call(elm, eventName, listener, useCap);
-	}
-	exports.addEventListener = addEventListener;
-	function removeEventListener(elm, eventName, listener) {
-	    elementRemoveEventListener.call(elm, eventName, listener);
-	}
-	exports.removeEventListener = removeEventListener;
-	function addClass(elm, className) {
-	    if (elm.classList) elm.classList.add(className);else {
-	        elm.className = elm.className.split(' ').concat(className.split(' ')).join(' ');
-	    }
-	}
-	exports.addClass = addClass;
-	function removeClass(elm, className) {
-	    if (elm.classList) elm.classList.remove(className);else {
-	        var split = elm.className.split(' '),
-	            classNames = className.split(' '),
-	            tmp = split,
-	            index;
-	        for (var i = 0, ii = classNames.length; i < ii; i++) {
-	            index = split.indexOf(classNames[i]);
-	            if (!! ~index) split = split.splice(index, 1);
-	        }
-	    }
-	}
-	exports.removeClass = removeClass;
-	function hasClass(elm, className) {
-	    if (elm.classList) {
-	        return elm.classList.contains(className);
-	    }
-	    var reg = new RegExp('\b' + className);
-	    return reg.test(elm.className);
-	}
-	exports.hasClass = hasClass;
-	function selectionStart(elm) {
-	    if ('selectionStart' in elm) {
-	        return elm.selectionStart;
-	    } else if (document.selection) {
-	        elm.focus();
-	        var sel = document.selection.createRange();
-	        var selLen = document.selection.createRange().text.length;
-	        sel.moveStart('character', -elm.value.length);
-	        return sel.text.length - selLen;
-	    }
-	}
-	exports.selectionStart = selectionStart;
-	var _events = {
-	    animationEnd: null,
-	    transitionEnd: null
-	};
-	function transitionEnd(elm, fn, ctx, duration) {
-	    var event = _events.transitionEnd || (_events.transitionEnd = transitionEndEvent());
-	    var callback = function callback(e) {
-	        removeEventListener(elm, event, callback);
-	        fn.call(ctx, e);
-	    };
-	    addEventListener(elm, event, callback);
-	}
-	exports.transitionEnd = transitionEnd;
-	function animationEnd(elm, fn, ctx, duration) {
-	    var event = _events.animationEnd || (_events.animationEnd = animationEndEvent());
-	    var callback = function callback(e) {
-	        removeEventListener(elm, event, callback);
-	        fn.call(ctx, e);
-	    };
-	    addEventListener(elm, event, callback);
-	}
-	exports.animationEnd = animationEnd;
-	exports.domReady = (function () {
-	    var fns = [],
-	        listener,
-	        doc = document,
-	        hack = doc.documentElement.doScroll,
-	        domContentLoaded = 'DOMContentLoaded',
-	        loaded = (hack ? /^loaded|^c/ : /^loaded|^i|^c/).test(doc.readyState);
-	    if (!loaded) {
-	        doc.addEventListener(domContentLoaded, listener = function () {
-	            doc.removeEventListener(domContentLoaded, listener);
-	            loaded = true;
-	            while (listener = fns.shift()) listener();
-	        });
-	    }
-	    return function (fn) {
-	        loaded ? setTimeout(fn, 0) : fns.push(fn);
-	    };
-	})();
-
-/***/ },
 /* 37 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var utils_1 = __webpack_require__(7);
-	var promises_1 = __webpack_require__(35);
-	var xmlRe = /^(?:application|text)\/xml/,
-	    jsonRe = /^application\/json/,
-	    fileProto = /^file:/;
-	function queryParam(obj) {
-	    return '?' + Object.keys(obj).reduce(function (a, k) {
-	        a.push(k + '=' + encodeURIComponent(obj[k]));return a;
-	    }, []).join('&');
-	}
-	exports.queryParam = queryParam;
-	var isValid = function isValid(xhr, url) {
-	    return xhr.status >= 200 && xhr.status < 300 || xhr.status === 304 || xhr.status === 0 && fileProto.test(url);
-	};
-	var Request = (function () {
-	    function Request(_method, _url) {
-	        this._method = _method;
-	        this._url = _url;
-	        this._xhr = utils_1.ajax();
-	    }
-	    Request.prototype.send = function (data) {
-	        this._data = data;
-	        return this;
-	    };
-	    Request.prototype.withCredentials = function (ret) {
-	        this._xhr.withCredentials = ret;
-	        return this;
-	    };
-	    Request.prototype.end = function (data) {
-	        var _this = this;
-	        this._data = data || this._data;
-	        var defer = promises_1.deferred();
-	        this._xhr.addEventListener('readystatechange', function () {
-	            if (_this._xhr.readyState !== XMLHttpRequest.DONE) return;
-	            if (!isValid(_this._xhr, _this._url)) {
-	                return defer.reject(new Error('server responded with: ' + _this._xhr.status));
-	            }
-	            defer.resolve(_this._xhr.responseText);
-	        });
-	        data = this._data;
-	        var url = this._url;
-	        if (data && data === Object(data)) {
-	            var d = queryParam(data);
-	            url += d;
-	        }
-	        this._xhr.open(this._method, url, true);
-	        this._xhr.send(data);
-	        return defer.promise;
-	    };
-	    Request.prototype.json = function (data) {
-	        var _this = this;
-	        return this.end(data).then(function (str) {
-	            var accepts = _this._xhr.getResponseHeader('content-type');
-	            if (jsonRe.test(accepts) && str !== '') {
-	                var json = JSON.parse(str);
-	                return json;
-	            } else {
-	                throw new Error('json');
-	            }
-	        });
-	    };
-	    Request.prototype.progress = function (fn) {
-	        this._xhr.addEventListener('progress', fn);
-	        return this;
-	    };
-	    Request.prototype.header = function (field, value) {
-	        this._xhr.setRequestHeader(field, value);
-	        return this;
-	    };
-	    return Request;
-	})();
-	exports.Request = Request;
-	var request;
-	(function (request) {
-	    function get(url) {
-	        return new Request('GET', url);
-	    }
-	    request.get = get;
-	    function post(url) {
-	        return new Request('POST', url);
-	    }
-	    request.post = post;
-	    function put(url) {
-	        return new Request('PUT', url);
-	    }
-	    request.put = put;
-	    function del(url) {
-	        return new Request('DELETE', url);
-	    }
-	    request.del = del;
-	})(request = exports.request || (exports.request = {}));
-
-/***/ },
-/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4367,11 +4144,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var _proxy = __webpack_require__(33);
+	var _proxy = __webpack_require__(36);
 
-	var _collection = __webpack_require__(24);
+	var _collection = __webpack_require__(27);
 
-	var _utilitiesLibIndex = __webpack_require__(34);
+	var _utilitiesLibIndex = __webpack_require__(5);
 
 	var reserved = ['model', 'parent', '__queue', '_onchange', '__timer'];
 
@@ -4475,7 +4252,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.DirtyObjectObserver = DirtyObjectObserver;
 
 /***/ },
-/* 39 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (root, factory) {
@@ -7220,7 +6997,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ },
-/* 40 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="typings" />
@@ -7240,11 +7017,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var _templ = __webpack_require__(39);
+	var _templ = __webpack_require__(38);
 
 	var templ = _interopRequireWildcard(_templ);
 
-	var _collection = __webpack_require__(24);
+	var _collection = __webpack_require__(27);
 
 	var TemplateView = (function (_templ$View) {
 	    _inherits(TemplateView, _templ$View);
@@ -7342,7 +7119,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.TemplateView = TemplateView;
 
 /***/ },
-/* 41 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -7361,7 +7138,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _object = __webpack_require__(3);
 
-	var _internal = __webpack_require__(10);
+	var _internal = __webpack_require__(13);
 
 	var __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
 	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
@@ -7415,7 +7192,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.Controller = Controller = __decorate([(0, _internal.classtype)(_internal.ClassType.Controller), __metadata('design:paramtypes', [])], Controller);
 
 /***/ },
-/* 42 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7435,19 +7212,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var _controller2 = __webpack_require__(41);
+	var _controller2 = __webpack_require__(40);
 
 	var _object = __webpack_require__(3);
 
-	var _di = __webpack_require__(12);
+	var _di = __webpack_require__(15);
 
-	var _utilitiesLibObjects = __webpack_require__(43);
+	var _utilitiesLibIndex = __webpack_require__(5);
 
-	var _utilitiesLibPromises = __webpack_require__(44);
+	var _internal = __webpack_require__(13);
 
-	var _internal = __webpack_require__(10);
-
-	var _serviceActivator = __webpack_require__(45);
+	var _serviceActivator = __webpack_require__(42);
 
 	var ControllerActivator = (function () {
 	    function ControllerActivator(container) {
@@ -7494,7 +7269,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (instance.$instance) {
 	                instance = instance.$instance;
 	            }
-	            if ((0, _utilitiesLibPromises.isPromise)(instance)) {
+	            if ((0, _utilitiesLibIndex.isPromise)(instance)) {
 	                return instance.then(function (i) {
 	                    i.ctx = args[1];
 	                    ctx.unobserve();
@@ -7535,7 +7310,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var Klass = undefined;
 	            if (typeof _controller === 'function') {
 	                Klass = _controller;
-	            } else if ((0, _utilitiesLibObjects.isObject)(_controller)) {
+	            } else if ((0, _utilitiesLibIndex.isObject)(_controller)) {
 	                Klass = _controller2.Controller.extend(_controller);
 	            } else {
 	                throw new Error('wrong controller definition type');
@@ -7570,8 +7345,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function create(options) {
 	            var _this = this;
 
-	            options = (0, _utilitiesLibObjects.extend)({}, options, { name: this.name });
-	            return new _utilitiesLibPromises.Promise(function (resolve, reject) {
+	            options = (0, _utilitiesLibIndex.extend)({}, options, { name: this.name });
+	            return new _utilitiesLibIndex.Promise(function (resolve, reject) {
 	                var mod = new _this._module(_this._container, options);
 	                if (typeof mod.initialize === 'function') {
 	                    var args = (0, _di.getFunctionParameters)(mod.initialize);
@@ -7582,12 +7357,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        } else {
 	                            k = _this._container.get(a);
 	                        }
-	                        if (!(0, _utilitiesLibPromises.isPromise)(k)) {
-	                            k = _utilitiesLibPromises.Promise.resolve(k);
+	                        if (!(0, _utilitiesLibIndex.isPromise)(k)) {
+	                            k = _utilitiesLibIndex.Promise.resolve(k);
 	                        }
 	                        return k;
 	                    });
-	                    (0, _utilitiesLibPromises.toPromise)(args).then(function (result) {
+	                    (0, _utilitiesLibIndex.toPromise)(args).then(function (result) {
 	                        try {
 	                            mod.ctx.$run(mod.initialize, mod, result);
 	                            resolve(mod);
@@ -7611,272 +7386,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.ModuleFactory = ModuleFactory;
 
 /***/ },
-/* 43 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var utils_1 = __webpack_require__(7);
-	var arrays_1 = __webpack_require__(8);
-	function isObject(obj) {
-	    return obj === Object(obj);
-	}
-	exports.isObject = isObject;
-	function isEmpty(obj) {
-	    return Object.keys(obj).length === 0;
-	}
-	exports.isEmpty = isEmpty;
-	function extend(obj) {
-	    var args = [];
-	    for (var _i = 1; _i < arguments.length; _i++) {
-	        args[_i - 1] = arguments[_i];
-	    }
-	    if (!isObject(obj)) return obj;
-	    var o, k;
-	    for (var _a = 0; _a < args.length; _a++) {
-	        o = args[_a];
-	        if (!isObject(o)) continue;
-	        for (k in o) {
-	            if (has(o, k)) obj[k] = o[k];
-	        }
-	    }
-	    return obj;
-	}
-	exports.extend = extend;
-	function assign(target) {
-	    var args = [];
-	    for (var _i = 1; _i < arguments.length; _i++) {
-	        args[_i - 1] = arguments[_i];
-	    }
-	    if (target === undefined || target === null) {
-	        throw new TypeError('Cannot convert first argument to object');
-	    }
-	    var to = Object(target);
-	    for (var i = 0, ii = args.length; i < ii; i++) {
-	        var nextSource = args[i];
-	        if (nextSource === undefined || nextSource === null) {
-	            continue;
-	        }
-	        nextSource = Object(nextSource);
-	        var keysArray = Object.keys(Object(nextSource));
-	        for (var nextIndex = 0, len = keysArray.length; nextIndex < len; nextIndex++) {
-	            var nextKey = keysArray[nextIndex];
-	            var desc = Object.getOwnPropertyDescriptor(nextSource, nextKey);
-	            if (desc !== undefined && desc.enumerable) {
-	                to[nextKey] = nextSource[nextKey];
-	            }
-	        }
-	    }
-	    return to;
-	}
-	exports.assign = assign;
-	function has(obj, prop) {
-	    return Object.prototype.hasOwnProperty.call(obj, prop);
-	}
-	exports.has = has;
-	function pick(obj, props) {
-	    var out = {},
-	        prop;
-	    for (var _i = 0; _i < props.length; _i++) {
-	        prop = props[_i];
-	        if (has(obj, prop)) out[prop] = obj[prop];
-	    }
-	    return out;
-	}
-	exports.pick = pick;
-	function result(obj, prop, ctx, args) {
-	    var ret = obj[prop];
-	    return typeof ret === 'function' ? utils_1.callFunc(ret, ctx, args || []) : ret;
-	}
-	exports.result = result;
-	function values(obj) {
-	    var output = [];
-	    for (var k in obj) if (has(obj, k)) {
-	        output.push(obj[k]);
-	    }
-	    return output;
-	}
-	exports.values = values;
-	function intersectionObjects(a, b, predicate) {
-	    var results = [],
-	        aElement,
-	        existsInB;
-	    for (var i = 0, ii = a.length; i < ii; i++) {
-	        aElement = a[i];
-	        existsInB = arrays_1.any(b, function (bElement) {
-	            return predicate(bElement, aElement);
-	        });
-	        if (existsInB) {
-	            results.push(aElement);
-	        }
-	    }
-	    return results;
-	}
-	function intersection(results) {
-	    var args = [];
-	    for (var _i = 1; _i < arguments.length; _i++) {
-	        args[_i - 1] = arguments[_i];
-	    }
-	    var lastArgument = args[args.length - 1];
-	    var arrayCount = args.length;
-	    var areEqualFunction = utils_1.equal;
-	    if (typeof lastArgument === "function") {
-	        areEqualFunction = lastArgument;
-	        arrayCount--;
-	    }
-	    for (var i = 0; i < arrayCount; i++) {
-	        var array = args[i];
-	        results = intersectionObjects(results, array, areEqualFunction);
-	        if (results.length === 0) break;
-	    }
-	    return results;
-	}
-	exports.intersection = intersection;
-
-/***/ },
-/* 44 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var objects_1 = __webpack_require__(6);
-	var arrays_1 = __webpack_require__(8);
-	var utils_1 = __webpack_require__(7);
-	exports.Promise = window.Promise;
-	function isPromise(obj) {
-	    return obj && typeof obj.then === 'function';
-	}
-	exports.isPromise = isPromise;
-	function toPromise(obj) {
-	    if (!obj) {
-	        return obj;
-	    }
-	    if (isPromise(obj)) {
-	        return obj;
-	    }
-	    if ("function" == typeof obj) {
-	        return thunkToPromise.call(this, obj);
-	    }
-	    if (Array.isArray(obj)) {
-	        return arrayToPromise.call(this, obj);
-	    }
-	    if (objects_1.isObject(obj)) {
-	        return objectToPromise.call(this, obj);
-	    }
-	    return exports.Promise.resolve(obj);
-	}
-	exports.toPromise = toPromise;
-	function thunkToPromise(fn) {
-	    var ctx = this;
-	    return new exports.Promise(function (resolve, reject) {
-	        fn.call(ctx, function (err, res) {
-	            if (err) return reject(err);
-	            if (arguments.length > 2) res = arrays_1.slice(arguments, 1);
-	            resolve(res);
-	        });
-	    });
-	}
-	exports.thunkToPromise = thunkToPromise;
-	function arrayToPromise(obj) {
-	    return exports.Promise.all(obj.map(toPromise, this));
-	}
-	exports.arrayToPromise = arrayToPromise;
-	function objectToPromise(obj) {
-	    var results = new obj.constructor();
-	    var keys = Object.keys(obj);
-	    var promises = [];
-	    for (var i = 0; i < keys.length; i++) {
-	        var key = keys[i];
-	        var promise = toPromise.call(this, obj[key]);
-	        if (promise && isPromise(promise)) defer(promise, key);else results[key] = obj[key];
-	    }
-	    return exports.Promise.all(promises).then(function () {
-	        return results;
-	    });
-	    function defer(promise, key) {
-	        results[key] = undefined;
-	        promises.push(promise.then(function (res) {
-	            results[key] = res;
-	        }));
-	    }
-	}
-	exports.objectToPromise = objectToPromise;
-	function deferred(fn, ctx) {
-	    var args = [];
-	    for (var _i = 2; _i < arguments.length; _i++) {
-	        args[_i - 2] = arguments[_i];
-	    }
-	    var ret = {};
-	    ret.promise = new exports.Promise(function (resolve, reject) {
-	        ret.resolve = resolve;
-	        ret.reject = reject;
-	        ret.done = function (err, result) {
-	            if (err) return reject(err);else resolve(result);
-	        };
-	    });
-	    if (typeof fn === 'function') {
-	        utils_1.callFunc(fn, ctx, args.concat([ret.done]));
-	        return ret.promise;
-	    }
-	    return ret;
-	}
-	exports.deferred = deferred;
-	;
-	function callback(promise, callback, ctx) {
-	    promise.then(function (result) {
-	        callback.call(ctx, null, result);
-	    })['catch'](function (err) {
-	        callback.call(ctx, err);
-	    });
-	}
-	exports.callback = callback;
-	function delay(timeout) {
-	    var defer = deferred();
-	    timeout == null ? utils_1.nextTick(defer.resolve) : setTimeout(defer.resolve, timeout);
-	    return defer.promise;
-	}
-	exports.delay = delay;
-	;
-	function eachAsync(array, iterator, context, accumulate) {
-	    if (accumulate === void 0) {
-	        accumulate = false;
-	    }
-	    return mapAsync(array, iterator, context, accumulate).then(function () {
-	        return void 0;
-	    });
-	}
-	exports.eachAsync = eachAsync;
-	function mapAsync(array, iterator, context, accumulate) {
-	    if (accumulate === void 0) {
-	        accumulate = false;
-	    }
-	    return new exports.Promise(function (resolve, reject) {
-	        var i = 0,
-	            len = array.length,
-	            errors = [],
-	            results = [];
-	        function next(err, result) {
-	            if (err && !accumulate) return reject(err);
-	            if (err) errors.push(err);
-	            if (i === len) return errors.length ? reject(arrays_1.flatten(errors)) : resolve(results);
-	            var ret = iterator.call(context, array[i++]);
-	            if (isPromise(ret)) {
-	                ret.then(function (r) {
-	                    results.push(r);next(null, r);
-	                }, next);
-	            } else if (ret instanceof Error) {
-	                next(ret);
-	            } else {
-	                next(null);
-	            }
-	        }
-	        next(null);
-	    });
-	}
-	exports.mapAsync = mapAsync;
-
-/***/ },
-/* 45 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7889,7 +7399,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var _di = __webpack_require__(12);
+	var _di = __webpack_require__(15);
 
 	var ServiceActivator = (function () {
 	    function ServiceActivator(container) {
@@ -7931,7 +7441,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.ServiceActivator = ServiceActivator;
 
 /***/ },
-/* 46 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7944,16 +7454,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _defaults(obj, defaults) { var keys = Object.getOwnPropertyNames(defaults); for (var i = 0; i < keys.length; i++) { var key = keys[i]; var value = Object.getOwnPropertyDescriptor(defaults, key); if (value && value.configurable && obj[key] === undefined) { Object.defineProperty(obj, key, value); } } return obj; }
 
-	var _controllerComponent = __webpack_require__(47);
+	var _controllerComponent = __webpack_require__(44);
 
 	_defaults(exports, _interopExportWildcard(_controllerComponent, _defaults));
 
-	var _repeatComponent = __webpack_require__(48);
+	var _repeatComponent = __webpack_require__(45);
 
 	_defaults(exports, _interopExportWildcard(_repeatComponent, _defaults));
 
 /***/ },
-/* 47 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7970,11 +7480,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var _templ = __webpack_require__(39);
+	var _templ = __webpack_require__(38);
 
-	var _utilitiesLibIndex = __webpack_require__(34);
+	var _utilitiesLibIndex = __webpack_require__(5);
 
-	var _templateView = __webpack_require__(40);
+	var _templateView = __webpack_require__(39);
 
 	var ControllerComponent = (function (_components$BaseComponent) {
 	    _inherits(ControllerComponent, _components$BaseComponent);
@@ -8066,7 +7576,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.ControllerComponent = ControllerComponent;
 
 /***/ },
-/* 48 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../typings" />
@@ -8086,11 +7596,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var _templ = __webpack_require__(39);
+	var _templ = __webpack_require__(38);
 
-	var _collection = __webpack_require__(24);
+	var _collection = __webpack_require__(27);
 
-	var _utilitiesLibIndex = __webpack_require__(34);
+	var _utilitiesLibIndex = __webpack_require__(5);
 
 	var RepeatComponent = (function (_components$BaseComponent) {
 	    _inherits(RepeatComponent, _components$BaseComponent);
@@ -8227,7 +7737,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.RepeatComponent = RepeatComponent;
 
 /***/ },
-/* 49 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8240,12 +7750,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _defaults(obj, defaults) { var keys = Object.getOwnPropertyNames(defaults); for (var i = 0; i < keys.length; i++) { var key = keys[i]; var value = Object.getOwnPropertyDescriptor(defaults, key); if (value && value.configurable && obj[key] === undefined) { Object.defineProperty(obj, key, value); } } return obj; }
 
-	var _clickAttribute = __webpack_require__(50);
+	var _clickAttribute = __webpack_require__(47);
 
 	_defaults(exports, _interopExportWildcard(_clickAttribute, _defaults));
 
 /***/ },
-/* 50 */
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../typings" />
@@ -8263,7 +7773,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var _templ = __webpack_require__(39);
+	var _templ = __webpack_require__(38);
 
 	var ClickAttribute = (function (_attributes$BaseAttribute) {
 	    _inherits(ClickAttribute, _attributes$BaseAttribute);
@@ -8298,7 +7808,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.ClickAttribute = ClickAttribute;
 
 /***/ },
-/* 51 */
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -8311,9 +7821,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var _utilitiesLibIndex = __webpack_require__(34);
+	var _utilitiesLibIndex = __webpack_require__(5);
 
-	var _internal = __webpack_require__(10);
+	var _internal = __webpack_require__(13);
 
 	var __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
 	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
@@ -8355,7 +7865,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.TemplateResolver = TemplateResolver = __decorate([(0, _internal.classtype)(_internal.ClassType.Service), __metadata('design:paramtypes', [])], TemplateResolver);
 
 /***/ },
-/* 52 */
+/* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="typings" />
@@ -8366,9 +7876,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.bootstrap = bootstrap;
 
-	var _utilitiesLibIndex = __webpack_require__(34);
+	var _utilitiesLibIndex = __webpack_require__(5);
 
-	var _moduleFactory = __webpack_require__(42);
+	var _moduleFactory = __webpack_require__(41);
 
 	function bootstrap(app) {
 	    var defer = (0, _utilitiesLibIndex.deferred)();
