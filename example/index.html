@@ -14,6 +14,10 @@
   </div>
 <script type="html/template" id="main">
   <p>{{name}}</p>
+  <p>Every little thing she does is magic</p>
+  <ul>
+    <li repeat.each="{{names}}">{{this}}</li>
+  </ul>
 </script>  
 <script>
   var utils = cupjs.constructor.utils
@@ -31,7 +35,7 @@
   }).controller('main', function (ctx) {
       console.log(ctx)
       ctx.name = "Hello"
-    
+      ctx.names = ["Rasmus", "Peter", 'Maria']
   })
 
   cupjs.service('router', function (config) {

@@ -68,15 +68,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var templ = _interopRequireWildcard(_templ);
 
-	var _templateControllerComponent = __webpack_require__(43);
+	var _templateIndex = __webpack_require__(43);
 
-	var _servicesTemplateResolver = __webpack_require__(44);
+	var _servicesTemplateResolver = __webpack_require__(46);
 
 	var _internal = __webpack_require__(9);
 
 	var cupjs = new _application.Application();
 	exports.cupjs = cupjs;
-	templ.component("controller", _templateControllerComponent.ControllerComponent);
+	templ.component("controller", _templateIndex.ControllerComponent);
+	templ.component('repeat', _templateIndex.RepeatComponent);
 	cupjs.container.registerSingleton("templateResolver", _servicesTemplateResolver.TemplateResolver, _internal.DINamespace);
 
 /***/ },
@@ -3806,19 +3807,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var attr = _get_atributes.attr;
 	            var deferred = _get_atributes.deferred;
 
-	            if (Object.keys(attr).length) this.model.set(attr);
+	            if (Object.keys(attr).length) this.model.set(this.__normalizeAttr(attr));
 	            if (Object.keys(deferred).length) {
 	                this.__queue++;
 	                (0, _utilitiesLibIndex.toPromise)(deferred).then(function (props) {
 	                    if (--_this2.__queue === 0) {
 	                        _this2.unobserve();
 	                    }
-	                    _this2.model.set(props);
+	                    _this2.model.set(_this2.__normalizeAttr(props));
 	                })['catch'](function (e) {
 	                    _this2.model.trigger('error', e);
 	                    _this2.unobserve();
 	                });
 	            }
+	        }
+	    }, {
+	        key: '__normalizeAttr',
+	        value: function __normalizeAttr(attr) {
+	            for (var key in attr) {
+	                var val = attr[key];
+	                if (Array.isArray(val) && val.length > 0 && (0, _utilitiesLibIndex.isObject)(val[0])) {
+	                    val = new _collection.Collection(val);
+	                    attr[key] = val;
+	                }
+	            }
+	            return attr;
 	        }
 	    }, {
 	        key: 'observe',
@@ -5986,6 +5999,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	          else {}
 	        }
 	      };
+	/*setProperty (key:string, value:string) {
+	          if (!this.setAsRegisteredAttribute(key, value)) {
+	    
+	            // no node type? It's a registered component.
+	            if (!this.ref.nodeType) {
+	              this.ref.setAttribute(key, value);
+	            } else {
+	              this.ref[key] = value;
+	            }
+	          }
+	        }*/
 	      Binding.prototype.setAsRegisteredAttribute = function (key, value) {
 	        if (this._attrBindings[key]) {
 	          this._attrBindings[key].value = value;
@@ -6928,11 +6952,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function get(key) {
 	            if (!Array.isArray(key)) key = key.split(/[,.]/);
 	            var value = undefined;
-	            if (key[0] === '$') {
+	            if (key[0].substr(0, 1) === "@") {
+	                key[0] = key[0].substr(1);
+	                key.unshift('this');
+	            }
+	            if (key[0] === 'this') {
 	                key.shift();
 	                if (key.length === 0) {
 	                    value = this.context;
 	                }
+	            } else if (key[0] === 'root') {
+	                key.shift();
 	            }
 	            key = key.join('.');
 	            if (!value) {
@@ -6948,7 +6978,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: 'context',
 	        set: function set(context) {
 	            if (this._context && this._context instanceof _collection.Model) {}
-	            if (context != null) {
+	            if (context != null && context instanceof _collection.Model) {
 	                context.on('change', function () {
 	                    var changed = context.changed;
 	                    for (var k in changed) {
@@ -7564,6 +7594,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	function _interopExportWildcard(obj, defaults) { var newObj = defaults({}, obj); delete newObj['default']; return newObj; }
+
+	function _defaults(obj, defaults) { var keys = Object.getOwnPropertyNames(defaults); for (var i = 0; i < keys.length; i++) { var key = keys[i]; var value = Object.getOwnPropertyDescriptor(defaults, key); if (value && value.configurable && obj[key] === undefined) { Object.defineProperty(obj, key, value); } } return obj; }
+
+	var _controllerComponent = __webpack_require__(44);
+
+	_defaults(exports, _interopExportWildcard(_controllerComponent, _defaults));
+
+	var _repeatComponent = __webpack_require__(45);
+
+	_defaults(exports, _interopExportWildcard(_repeatComponent, _defaults));
+
+/***/ },
+/* 44 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
 	    value: true
 	});
 
@@ -7671,7 +7723,168 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.ControllerComponent = ControllerComponent;
 
 /***/ },
-/* 44 */
+/* 45 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path="../typings" />
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var _templ = __webpack_require__(36);
+
+	var _collection = __webpack_require__(23);
+
+	var _utilitiesLibIndex = __webpack_require__(33);
+
+	var RepeatComponent = (function (_components$BaseComponent) {
+	    _inherits(RepeatComponent, _components$BaseComponent);
+
+	    function RepeatComponent() {
+	        _classCallCheck(this, RepeatComponent);
+
+	        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	            args[_key] = arguments[_key];
+	        }
+
+	        _get(Object.getPrototypeOf(RepeatComponent.prototype), 'constructor', this).apply(this, args);
+	        this._children = [];
+	    }
+
+	    _createClass(RepeatComponent, [{
+	        key: 'update',
+	        value: function update() {
+	            var as = this['as'];
+	            var each = this['each'];
+	            var key = this['key'] || "key";
+	            var n = 0;
+	            var self = this;
+	            var parent = this.view;
+	            if (each === this._collection || !each) {
+	                return;
+	            }
+	            if (this._collection && this._collection instanceof _collection.Collection) {
+	                //this._collection.off('remove',this._update)
+	                //this._collection.off('add', this._update)
+	                this.__removeEventListeners(this._collection);
+	            }
+	            this._collection = each;
+	            this._update();
+	            if (each instanceof _collection.Collection) {
+	                this.__addEventListeners(each);
+	            }
+	        }
+	    }, {
+	        key: '_update',
+	        value: function _update() {
+	            var _this = this;
+
+	            var properties;
+	            var as = this['as'];
+	            var parent = this.view;
+	            var n = 0;
+	            var delegateID = (0, _utilitiesLibIndex.uniqueId)('.repeat');
+	            this._collection.forEach(function (m) {
+	                var child;
+	                if (as) {
+	                    properties = new _collection.NestedModel(_defineProperty({}, as, m));
+	                } else {
+	                    properties = m;
+	                }
+	                // TODO - provide SAME context here for speed and stability
+	                if (n >= _this._children.length) {
+	                    child = _this.childTemplate.view(properties, {
+	                        parent: parent
+	                    });
+	                    _this._children.push(child);
+	                    _this.section.appendChild(child.render(properties));
+	                } else {
+	                    child = _this._children[n];
+	                    child.context = properties;
+	                    child.update();
+	                }
+	                n++;
+	            });
+	            this._children.splice(n).forEach(function (child) {
+	                child.remove();
+	            });
+	        }
+	    }, {
+	        key: '__addEventListeners',
+	        value: function __addEventListeners(collection) {
+	            collection.on('add', this._update, this);
+	            collection.on('remove', this._update, this);
+	            collection.on('reset', this._update, this);
+	        }
+	    }, {
+	        key: '__removeEventListeners',
+	        value: function __removeEventListeners(collection) {
+	            collection.off('remove', this._update);
+	            collection.off('add', this._update);
+	            collection.reset('reset', this._update);
+	        }
+	    }, {
+	        key: 'setAttribute',
+	        value: function setAttribute(key, value) {
+	            this[key] = value;
+	        }
+	    }, {
+	        key: 'setProperty',
+	        value: function setProperty() {
+	            console.log(arguments);
+	        }
+	    }, {
+	        key: 'destroy',
+	        value: function destroy() {
+	            this._collection.destroy();
+	            var _iteratorNormalCompletion = true;
+	            var _didIteratorError = false;
+	            var _iteratorError = undefined;
+
+	            try {
+	                for (var _iterator = this._children[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	                    var child = _step.value;
+
+	                    child.remove();
+	                }
+	            } catch (err) {
+	                _didIteratorError = true;
+	                _iteratorError = err;
+	            } finally {
+	                try {
+	                    if (!_iteratorNormalCompletion && _iterator['return']) {
+	                        _iterator['return']();
+	                    }
+	                } finally {
+	                    if (_didIteratorError) {
+	                        throw _iteratorError;
+	                    }
+	                }
+	            }
+
+	            _get(Object.getPrototypeOf(RepeatComponent.prototype), 'destroy', this).call(this);
+	        }
+	    }]);
+
+	    return RepeatComponent;
+	})(_templ.components.BaseComponent);
+
+	exports.RepeatComponent = RepeatComponent;
+
+/***/ },
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";

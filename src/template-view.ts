@@ -12,7 +12,7 @@ export class TemplateView extends templ.View {
 		if (this._context && this._context instanceof Model) {
 			//this._context.off('change');
 		}
-		if (context != null) {
+		if (context != null && context instanceof Model) {
 			context.on('change', function () {
 				let changed = context.changed
 				for (let k in changed) {
@@ -79,14 +79,23 @@ export class TemplateView extends templ.View {
 
 		if (!Array.isArray(key)) key = (<string>key).split(/[,.]/);
 
-		let value
+		let value;
 
-		if (key[0] === '$') {
+		if (key[0].substr(0,1) === "@") {
+			key[0] = key[0].substr(1);
+			(<string[]>key).unshift('this');
+		}
+
+		if (key[0] === 'this') {
 			(<any>key).shift();
 			if (key.length === 0) {
 				value = this.context
 			}
+		} else if (key[0] === 'root') {
+			(<any>key).shift();
+			
 		}
+		
 		key = (<any>key).join('.')
 		if (!value) {
 			if (!(this.context instanceof Model)) {

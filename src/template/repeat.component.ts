@@ -1,13 +1,12 @@
 /// <reference path="../typings" />
-//import {Controller} from '../controller'
+
 import {components, View, compile, vnode} from 'templ'
-//import {DIContainer} from 'di'
-//import {isPromise, IPromise, Promise} from 'utilities/lib/index'
 import {TemplateResolver} from '../services/template.resolver'
 import {TemplateView} from '../template-view'
 import {Collection, IModel, NestedModel} from 'collection'
 import {uniqueId} from 'utilities/lib/index'
-class RepeatComponent extends components.BaseComponent {
+
+export class RepeatComponent extends components.BaseComponent {
 	_children: View[] = []
 	_collection: Collection<IModel>
 	
@@ -25,18 +24,20 @@ class RepeatComponent extends components.BaseComponent {
 			return
 		}
 		
-		if (this._collection) {
-			this._collection.off('remove',this._update)
-			this._collection.off('add', this._update)
+		if (this._collection && this._collection instanceof Collection) {
+			//this._collection.off('remove',this._update)
+			//this._collection.off('add', this._update)
+			this.__removeEventListeners(this._collection)
 		}
 		
 		this._collection = each
 
 		this._update()
 
-		each.on('add', this._update, this);
-		each.on('remove', this._update, this);
-		each.on('reset', this._update, this);
+		if (each instanceof Collection) {
+			this.__addEventListeners(each)
+		}
+
 	}
 
 	_update() {
@@ -101,6 +102,10 @@ class RepeatComponent extends components.BaseComponent {
 	setAttribute(key: string, value: any) {
 		this[key] = value
 
+	}
+	
+	setProperty() {
+		console.log(arguments)
 	}
 	
 	destroy () {

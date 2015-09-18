@@ -8,6 +8,7 @@ export declare abstract class AbstractProxy {
     constructor(model?: IModel, parent?: IProxy);
     $run(fn: Function, ctx: any, args: any[]): any;
     protected _onchange(events: ProxyEvent[]): void;
+    private __normalizeAttr(attr);
     observe(): void;
     unobserve(): void;
     destroy(): void;

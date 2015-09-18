@@ -37,6 +37,8 @@
     "src/proxy/proxy-observe.ts",
     "src/proxy/proxy.ts",
     "src/services/template.resolver.ts",
-    "src/template/controller.component.ts"
+    "src/template/controller.component.ts",
+    "src/template/index.ts",
+    "src/template/repeat.component.ts"
   ]
 }

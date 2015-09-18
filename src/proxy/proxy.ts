@@ -1,5 +1,5 @@
-import {toPromise, bind, callFunc, nextTick, deferred, Deferred} from 'utilities/lib/index'
-import {IModel, NestedModel} from 'collection'
+import {toPromise, bind, callFunc, nextTick, deferred, Deferred, isObject} from 'utilities/lib/index'
+import {IModel, NestedModel, Collection} from 'collection'
 import {IProxy, ProxyEvent, get_atributes} from './index'
 
 export abstract class AbstractProxy {
@@ -57,7 +57,7 @@ export abstract class AbstractProxy {
 		let {attr, deferred} = get_atributes(props);
 		
 		if (Object.keys(attr).length)
-			this.model.set(attr);
+			this.model.set(this.__normalizeAttr(attr));
 		
 		if (Object.keys(deferred).length) {
 			this.__queue++
@@ -67,7 +67,7 @@ export abstract class AbstractProxy {
 				if (--this.__queue === 0) {
 					this.unobserve();
 				}
-				this.model.set(props);
+				this.model.set(this.__normalizeAttr(props));
 				
 			}).catch( (e) => {
 				this.model.trigger('error', e);
@@ -75,6 +75,19 @@ export abstract class AbstractProxy {
 			})
 			
 		}
+	}
+	
+	private __normalizeAttr (attr): any {
+		for (let key in attr) {
+			let val = attr[key];
+	
+			if (Array.isArray(val) && val.length > 0 && isObject(val[0])) {
+				val = new Collection(val);
+	
+				attr[key] = val;
+    	}
+  	}
+		return attr
 	}
 	
 	observe () {}
