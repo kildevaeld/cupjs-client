@@ -57,13 +57,14 @@ export class AbstractProxy {
 		
 		if (Object.keys(deferred).length) {
 			this.__queue++
-			toPromise(props)
+			toPromise(deferred)
 			.then((props) => {
 				
 				if (--this.__queue === 0) {
 					this.unobserve();
 				}
 				this.model.set(props);
+				
 			}).catch( (e) => {
 				this.model.trigger('error', e);
 				this.unobserve();

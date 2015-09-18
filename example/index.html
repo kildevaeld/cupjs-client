@@ -6,19 +6,23 @@
 </head>
 <body>
   <div id="app">
-    {{title}}
+    {{title}} 
+    {{description}}
   </div>
 
 <script>
-
+  var utils = cupsjs.constructor.utils
   cupsjs.module("app",{
     initialize: function (router, userID, ctx) {
       console.log('started', router)
       console.log('userID', userID)
       
       ctx.title = "Hello, world!"
-      console.log(ctx)
       
+      ctx.description = utils.delay(1000).then(function () {
+        return "Ta da!"
+      })
+      console.log(ctx)
       this.module('router')
     }
   }).controller('main', {

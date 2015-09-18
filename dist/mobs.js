@@ -3776,7 +3776,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (Object.keys(attr).length) this.model.set(attr);
 	            if (Object.keys(deferred).length) {
 	                this.__queue++;
-	                (0, _utilitiesLibIndex.toPromise)(props).then(function (props) {
+	                (0, _utilitiesLibIndex.toPromise)(deferred).then(function (props) {
 	                    if (--_this2.__queue === 0) {
 	                        _this2.unobserve();
 	                    }
@@ -4046,7 +4046,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    }
 	                    ev.oldValue = attributes[k];
 	                    events.push(ev);
-	                    delete attributes[k]; // = void 0
+	                    delete attributes[k];
 	                }
 	            } catch (err) {
 	                _didIteratorError = true;
@@ -4063,6 +4063,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	                }
 	            }
 
+	            for (var k in attributes) {
+	                events.push({
+	                    name: k,
+	                    object: this,
+	                    type: 'delete',
+	                    oldValue: attributes[k]
+	                });
+	            }
 	            if (events.length) this._onchange(events);
 	        }
 	    }, {
