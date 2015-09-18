@@ -3,6 +3,6 @@
 const gulp = require('gulp');
 
 
-gulp.task('default', ['build', 'uglify'], function () {
+gulp.task('default', ['build'], function () {
 
 });

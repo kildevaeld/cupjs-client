@@ -10,7 +10,7 @@ import {TemplateResolver, HttpService} from './services/index'
 import {DINamespace} from './internal'
 
 import {bootstrap} from './bootstrap'
-export const Moby = Application
+export const Moby: typeof Application = Application
 export const moby = new Application();
 
 templ.component("controller", ControllerComponent);

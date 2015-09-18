@@ -4,12 +4,12 @@ import {Module} from './module'
 import {Controller} from './controller'
 import {ModuleFactory} from './module.factory'
 import {BaseObject} from './object'
-import * as utils from 'utilities/lib/index'
+import * as utils from 'utilities'
 import {isClassType, ClassType, DINamespace, setActivator, setDependencyResolver, classtype} from './internal'
 import {DIContainer} from 'di'
 import {ServiceActivator} from './service.activator'
 import * as templ from 'templ'
-import {has, isObject} from 'utilities/lib/index'
+import {has, isObject} from 'utilities'
 
 export class Application extends BaseObject {
 
