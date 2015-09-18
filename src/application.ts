@@ -20,6 +20,10 @@ export class Application extends BaseObject {
   private _container: DIContainer
   private _activator: ServiceActivator
 
+  get container (): DIContainer {
+    return this._container;
+  }
+
   constructor () {
     super();
     this._container = new DIContainer();

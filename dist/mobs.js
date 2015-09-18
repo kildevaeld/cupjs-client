@@ -70,9 +70,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _templateControllerComponent = __webpack_require__(43);
 
+	var _servicesTemplateResolver = __webpack_require__(44);
+
+	var _internal = __webpack_require__(9);
+
+	var cupjs = new _application.Application();
+	exports.cupjs = cupjs;
 	templ.component("controller", _templateControllerComponent.ControllerComponent);
-	var cupsjs = new _application.Application();
-	exports.cupsjs = cupsjs;
+	cupjs.container.registerSingleton("templateResolver", _servicesTemplateResolver.TemplateResolver, _internal.DINamespace);
 
 /***/ },
 /* 1 */
@@ -179,6 +184,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: 'component',
 	        value: function component(name) {
 	            templ.component(name, null);
+	        }
+	    }, {
+	        key: 'container',
+	        get: function get() {
+	            return this._container;
 	        }
 	    }]);
 
@@ -7570,6 +7580,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _utilitiesLibIndex = __webpack_require__(33);
 
+	var _templateView = __webpack_require__(37);
+
 	var ControllerComponent = (function (_components$BaseComponent) {
 	    _inherits(ControllerComponent, _components$BaseComponent);
 
@@ -7602,11 +7614,39 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: '__initView',
 	        value: function __initView(controller) {
-	            this.subview = this.childTemplate.view(controller.ctx.model, {
-	                container: this.container
+	            var _this2 = this;
+
+	            this.__resolveTemplate(this.attributes['template']).then(function (template) {
+	                if (_this2.subview) {
+	                    _this2.subview.remove();
+	                }
+	                _this2.subview = _this2.childTemplate.view(controller.ctx.model, {
+	                    container: _this2.container
+	                });
+	                var node = _this2.subview.render();
+	                _this2.section.appendChild(node);
 	            });
-	            var node = this.subview.render();
-	            this.section.appendChild(node);
+	        }
+	    }, {
+	        key: '__resolveTemplate',
+	        value: function __resolveTemplate(template) {
+	            var _this3 = this;
+
+	            if (template != null) {
+	                var resolver = this.container.get('templateResolver');
+	                return resolver.resolve(this.attributes["template"]).then(function (template) {
+	                    var templ = (0, _templ.compile)(template, {
+	                        viewClass: _templateView.TemplateView
+	                    });
+	                    if (_this3.childTemplate) {
+	                        delete _this3.childTemplate;
+	                    }
+	                    _this3.childTemplate = templ;
+	                    return templ;
+	                });
+	            } else {
+	                return _utilitiesLibIndex.Promise.resolve(this.childTemplate);
+	            }
 	        }
 	    }, {
 	        key: 'update',
@@ -7625,6 +7665,63 @@ return /******/ (function(modules) { // webpackBootstrap
 	})(_templ.components.BaseComponent);
 
 	exports.ControllerComponent = ControllerComponent;
+
+/***/ },
+/* 44 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var _utilitiesLibIndex = __webpack_require__(33);
+
+	var _internal = __webpack_require__(9);
+
+	var __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+	    switch (arguments.length) {
+	        case 2:
+	            return decorators.reduceRight(function (o, d) {
+	                return d && d(o) || o;
+	            }, target);
+	        case 3:
+	            return decorators.reduceRight(function (o, d) {
+	                return (d && d(target, key), void 0);
+	            }, void 0);
+	        case 4:
+	            return decorators.reduceRight(function (o, d) {
+	                return d && d(target, key, o) || o;
+	            }, desc);
+	    }
+	};
+	var __metadata = undefined && undefined.__metadata || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var TemplateResolver = (function () {
+	    function TemplateResolver() {
+	        _classCallCheck(this, TemplateResolver);
+	    }
+
+	    _createClass(TemplateResolver, [{
+	        key: "resolve",
+	        value: function resolve(templateID) {
+	            var template = document.getElementById(templateID);
+	            if (template == null) return _utilitiesLibIndex.Promise.reject(new Error("template with id: '" + templateID + "' not found"));
+	            return _utilitiesLibIndex.Promise.resolve(template.innerHTML);
+	        }
+	    }]);
+
+	    return TemplateResolver;
+	})();
+	exports.TemplateResolver = TemplateResolver;
+	exports.TemplateResolver = TemplateResolver = __decorate([(0, _internal.classtype)(_internal.ClassType.Service), __metadata('design:paramtypes', [])], TemplateResolver);
 
 /***/ }
 /******/ ])

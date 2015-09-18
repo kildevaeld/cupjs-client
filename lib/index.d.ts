@@ -1,2 +1,2 @@
 import { Application } from './application';
-export declare const cupsjs: Application;
+export declare const cupjs: Application;

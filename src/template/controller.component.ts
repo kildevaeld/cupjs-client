@@ -1,9 +1,10 @@
 /// <reference path="../typings" />
 import {Controller} from '../controller'
-import {components, View} from 'templ'
+import {components, View, compile, vnode} from 'templ'
 import {DIContainer} from 'di'
-import {isPromise} from 'utilities/lib/index'
-
+import {isPromise, IPromise, Promise} from 'utilities/lib/index'
+import {TemplateResolver} from '../services/template.resolver'
+import {TemplateView} from '../template-view'
 export class ControllerComponent extends components.BaseComponent {
 	container: DIContainer
 	name: string
@@ -33,13 +34,47 @@ export class ControllerComponent extends components.BaseComponent {
 	
 	__initView (controller) {
 		
-		this.subview = <View>this.childTemplate.view(controller.ctx.model, {
-			container: this.container
-		});
+		this.__resolveTemplate(this.attributes['template'])
+		.then( template => {
+			if (this.subview) {
+				this.subview.remove()
+			}
+			this.subview = <View>this.childTemplate.view(controller.ctx.model, {
+				container: this.container
+			});
 		
-		let node = this.subview.render()
-		this.section.appendChild(node)
+			let node = this.subview.render()
+			this.section.appendChild(node)	
+			
+		})
 		
+			
+	}
+	
+	__resolveTemplate (template?:string): IPromise<vnode.Template> {
+		if (template != null) {
+			let resolver = <TemplateResolver>this.container.get('templateResolver');
+			return resolver.resolve(this.attributes["template"])
+			.then( template => {
+				
+				let templ = compile(template,{
+					viewClass: TemplateView
+				});
+				
+				if (this.childTemplate) {
+					delete this.childTemplate
+				}
+				
+				this.childTemplate = templ
+				
+				return templ
+			})
+			
+			
+			
+		} else {
+			return Promise.resolve(this.childTemplate)
+		}
 	}
 	
 	update () {
