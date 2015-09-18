@@ -2,26 +2,10 @@
 <html>
 <head>
   <title>CupJS</title>
-  <script src="../dist/mobs.js"></script>
-</head>
-<body>
-  <div id="app">
-    {{title}} 
-    {{description}}
-    <controller name="main" template="main">
-      <h1>{{name}}</h1>
-    </controller>
-  </div>
-<script type="html/template" id="main">
-  <p>{{name}}</p>
-  <p click="{{hello}}">Every little thing she does is magic</p>
-  <ul>
-    <li repeat.each="{{names}}">{{this}}</li>
-  </ul>
-</script>  
-<script>
-  var utils = cupjs.constructor.utils
-  cupjs.module("app",{
+  <script src="../dist/moby.js"></script>
+  <script>
+  var utils = moby.constructor.utils
+  moby.module("app",{
     initialize: function (router, userID, ctx) {
       
       ctx.title = "Hello, world!"
@@ -42,22 +26,36 @@
       }
   })
 
-  cupjs.service('router', function (config) {
+  moby.service('router', function (config) {
     console.log('this is a coool router', config)
     this.config = config
   }, {config: 'yessir'})
 
   
-  var app = cupjs.module('app')
+  var app = moby.module('app')
   app.service('userID', 'det er det der tæller')
 
-  var router = cupjs._container.get('router', 'cupsjs')
-
-  
-  app.create({el:document.getElementById('app')}).then(function (app) {
+  /*app.create({el:document.getElementById('app')}).then(function (app) {
     console.log('app',app)
-  })
+  })*/
 
 </script>
+</head>
+<body>
+  <div moby-app="app">
+    {{title}} 
+    {{description}}
+    <controller name="main" template="main">
+      <h1>{{name}}</h1>
+    </controller>
+  </div>
+<script type="html/template" id="main">
+  <p>{{name}}</p>
+  <p click="{{hello}}">Every little thing she does is magic</p>
+  <ul>
+    <li repeat.each="{{names}}">{{this}}</li>
+  </ul>
+</script>  
+
 </body>
 </html>

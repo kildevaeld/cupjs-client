@@ -9,11 +9,15 @@ import {ClickAttribute} from './attributes/index'
 import {TemplateResolver} from './services/template.resolver'
 import {DINamespace} from './internal'
 
-export const cupjs = new Application();
+import {bootstrap} from './bootstrap'
+
+export const moby = new Application();
 
 templ.component("controller", ControllerComponent);
 templ.component('repeat', RepeatComponent)
 
 templ.attribute("click", ClickAttribute)
 
-cupjs.container.registerSingleton("templateResolver",TemplateResolver,DINamespace)
+moby.container.registerSingleton("templateResolver",TemplateResolver,DINamespace)
+
+bootstrap(moby)

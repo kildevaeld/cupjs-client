@@ -22,6 +22,7 @@
   ],
   "files": [
     "src/application.ts",
+    "src/bootstrap.ts",
     "src/controller.ts",
     "src/index.ts",
     "src/internal.ts",

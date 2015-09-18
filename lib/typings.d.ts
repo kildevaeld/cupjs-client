@@ -4,7 +4,7 @@ import { DIContainer } from 'di';
 import { View } from 'templ';
 export interface ModuleOptions {
     el?: HTMLElement;
-    name: string;
+    name?: string;
 }
 export interface ModuleConstructor {
     new (container: DIContainer, options: ModuleOptions): Module;

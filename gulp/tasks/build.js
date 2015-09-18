@@ -2,7 +2,8 @@
 
 const gulp = require('gulp'),
   typescript = require('gulp-typescript'),
-  merge = require('merge2');
+  merge = require('merge2'),
+  config = require('../config');
 
 const webpack = require('gulp-webpack')
 
@@ -35,8 +36,8 @@ gulp.task('build:webpack', ['build:typescript'], function () {
       ]
     },
     output: {
-      filename: 'mobs.js',
-      libraryName: 'mobs',
+      filename: config.buildFile,
+      libraryName: config.libraryName,
       libraryTarget: 'umd',
       umdNamedDefine: 'moby'
     }

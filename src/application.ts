@@ -19,13 +19,14 @@ export class Application extends BaseObject {
 
   private _container: DIContainer
   private _activator: ServiceActivator
-
+  private _bootstraped: boolean
   get container (): DIContainer {
     return this._container;
   }
 
   constructor () {
     super();
+    this._bootstraped = false
     this._container = new DIContainer();
     this._activator = new ServiceActivator(this._container)
 

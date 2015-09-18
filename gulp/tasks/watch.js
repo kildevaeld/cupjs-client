@@ -3,6 +3,6 @@
 const gulp = require('gulp');
 
 
-gulp.task('watch', function () {
+gulp.task('watch', ['build'], function () {
   gulp.watch('./src/**/*.ts', ['build'])
 });
