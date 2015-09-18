@@ -24,11 +24,17 @@
     "typescript": "^1.7.0-dev.20150918",
     "webpack": "^1.12.2"
   },
+  "typings": {
+    "mobyjs": "mobyjs.d.ts"
+  },
+  "typescript": {
+    "definition": "moby.d.ts"
+  },
   "dependencies": {
-    "templ": "git+https://github.com/kildevaeld/templ.git",
+    "collection": "git+https://github.com/kildevaeld/collectionjs.git",
     "di": "git+https://github.com/kildevaeld/dijs.git",
     "eventsjs": "git+https://github.com/kildevaeld/eventsjs.git",
-    "collection": "git+https://github.com/kildevaeld/collectionjs.git",
+    "templ": "git+https://github.com/kildevaeld/templ.git",
     "utilities": "git+https://github.com/kildevaeld/utilitiesjs.git"
   }
 }
