@@ -39,6 +39,8 @@
     "src/proxy/object-observe.ts",
     "src/proxy/proxy-observe.ts",
     "src/proxy/proxy.ts",
+    "src/services/http.service.ts",
+    "src/services/index.ts",
     "src/services/template.resolver.ts",
     "src/template/controller.component.ts",
     "src/template/index.ts",

@@ -12,6 +12,11 @@ export declare class Module extends BaseObject {
     el: HTMLElement;
     ctx: IProxy;
     module<T>(name: any): T;
+    /**
+     * Module
+     * @param {DIContainer} container
+     * @param {Object} options
+     */
     constructor(container: DIContainer, options: ModuleOptions);
     initialize(): void;
     destroy(): void;

@@ -1,6 +1,6 @@
 {
-  "name": "mobs",
-  "version": "0.0.1",
+  "name": "mobyjs",
+  "version": "0.0.2",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -17,6 +17,7 @@
     "gulp-uglify": "^1.4.1",
     "gulp-webpack": "^1.5.0",
     "gutil": "^1.6.4",
+    "jsdoc": "git+https://github.com/jsdoc3/jsdoc.git",
     "merge2": "^0.3.6",
     "recursive-readdir": "^1.2.1",
     "requiredir": "^1.0.7",
@@ -27,6 +28,7 @@
     "templ": "git+https://github.com/kildevaeld/templ.git",
     "di": "git+https://github.com/kildevaeld/dijs.git",
     "eventsjs": "git+https://github.com/kildevaeld/eventsjs.git",
-    "collection": "git+https://github.com/kildevaeld/collectionjs.git"
+    "collection": "git+https://github.com/kildevaeld/collectionjs.git",
+    "utilities": "git+https://github.com/kildevaeld/utilitiesjs.git"
   }
 }

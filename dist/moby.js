@@ -72,18 +72,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _attributesIndex = __webpack_require__(46);
 
-	var _servicesTemplateResolver = __webpack_require__(48);
+	var _servicesIndex = __webpack_require__(48);
 
 	var _internal = __webpack_require__(13);
 
-	var _bootstrap = __webpack_require__(49);
+	var _bootstrap = __webpack_require__(51);
 
 	var moby = new _application.Application();
 	exports.moby = moby;
 	templ.component("controller", _templateIndex.ControllerComponent);
 	templ.component('repeat', _templateIndex.RepeatComponent);
 	templ.attribute("click", _attributesIndex.ClickAttribute);
-	moby.container.registerSingleton("templateResolver", _servicesTemplateResolver.TemplateResolver, _internal.DINamespace);
+	moby.container.registerSingleton("templateResolver", _servicesIndex.TemplateResolver, _internal.DINamespace);
+	moby.service('http', _servicesIndex.HttpService);
 	(0, _bootstrap.bootstrap)(moby);
 
 /***/ },
@@ -265,6 +266,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	var Module = (function (_BaseObject) {
 	    _inherits(Module, _BaseObject);
+
+	    /**
+	     * Module
+	     * @param {DIContainer} container
+	     * @param {Object} options
+	     */
 
 	    function Module(container, options) {
 	        _classCallCheck(this, Module);
@@ -7811,6 +7818,99 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	function _interopExportWildcard(obj, defaults) { var newObj = defaults({}, obj); delete newObj['default']; return newObj; }
+
+	function _defaults(obj, defaults) { var keys = Object.getOwnPropertyNames(defaults); for (var i = 0; i < keys.length; i++) { var key = keys[i]; var value = Object.getOwnPropertyDescriptor(defaults, key); if (value && value.configurable && obj[key] === undefined) { Object.defineProperty(obj, key, value); } } return obj; }
+
+	var _httpService = __webpack_require__(49);
+
+	_defaults(exports, _interopExportWildcard(_httpService, _defaults));
+
+	var _templateResolver = __webpack_require__(50);
+
+	_defaults(exports, _interopExportWildcard(_templateResolver, _defaults));
+
+/***/ },
+/* 49 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path="../typings" />
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var _utilitiesLibIndex = __webpack_require__(5);
+
+	var _internal = __webpack_require__(13);
+
+	var __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+	    switch (arguments.length) {
+	        case 2:
+	            return decorators.reduceRight(function (o, d) {
+	                return d && d(o) || o;
+	            }, target);
+	        case 3:
+	            return decorators.reduceRight(function (o, d) {
+	                return (d && d(target, key), void 0);
+	            }, void 0);
+	        case 4:
+	            return decorators.reduceRight(function (o, d) {
+	                return d && d(target, key, o) || o;
+	            }, desc);
+	    }
+	};
+	var __metadata = undefined && undefined.__metadata || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var HttpService = (function () {
+	    function HttpService() {
+	        _classCallCheck(this, HttpService);
+	    }
+
+	    _createClass(HttpService, [{
+	        key: "get",
+	        value: function get(url) {
+	            return _utilitiesLibIndex.request.get(url);
+	        }
+	    }, {
+	        key: "post",
+	        value: function post(url) {
+	            return _utilitiesLibIndex.request.post(url);
+	        }
+	    }, {
+	        key: "put",
+	        value: function put(url) {
+	            return _utilitiesLibIndex.request.put(url);
+	        }
+	    }, {
+	        key: "del",
+	        value: function del(url) {
+	            return _utilitiesLibIndex.request.del(url);
+	        }
+	    }]);
+
+	    return HttpService;
+	})();
+	exports.HttpService = HttpService;
+	exports.HttpService = HttpService = __decorate([(0, _internal.classtype)(_internal.ClassType.Service), __metadata('design:paramtypes', [])], HttpService);
+
+/***/ },
+/* 50 */
+/***/ function(module, exports, __webpack_require__) {
+
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
@@ -7865,7 +7965,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.TemplateResolver = TemplateResolver = __decorate([(0, _internal.classtype)(_internal.ClassType.Service), __metadata('design:paramtypes', [])], TemplateResolver);
 
 /***/ },
-/* 49 */
+/* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="typings" />

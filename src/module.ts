@@ -37,6 +37,11 @@ export class Module extends BaseObject {
 		return this._container.get(name)
 	} 
 	
+	/**
+	 * Module
+	 * @param {DIContainer} container
+	 * @param {Object} options
+	 */
 	constructor (container:DIContainer, options:ModuleOptions) {
 		super()
 		this._name = options.name
