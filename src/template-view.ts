@@ -53,7 +53,7 @@ export class TemplateView extends templ.View {
 
 			if (!Array.isArray(key)) key = (<string>key).split(/[,.]/);
 
-			if (key[0] === '$') {
+			if (key[0] === 'this') {
 				(<string[]>key).shift();
 
 
@@ -79,7 +79,7 @@ export class TemplateView extends templ.View {
 
 		if (!Array.isArray(key)) key = (<string>key).split(/[,.]/);
 
-		let value;
+		let value, context = this.context;
 
 		if (key[0].substr(0,1) === "@") {
 			key[0] = key[0].substr(1);
@@ -93,7 +93,7 @@ export class TemplateView extends templ.View {
 			}
 		} else if (key[0] === 'root') {
 			(<any>key).shift();
-			
+			context = this.context.root
 		}
 		
 		key = (<any>key).join('.')
@@ -101,7 +101,7 @@ export class TemplateView extends templ.View {
 			if (!(this.context instanceof Model)) {
 				value = super.get(key)
 			} else {
-				value = this.context.get(key)
+				value = context.get(key)
 			}
 		}
 
