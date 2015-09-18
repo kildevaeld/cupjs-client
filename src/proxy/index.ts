@@ -2,10 +2,12 @@
 
 import {IModel} from 'collection'
 import {ObjectObserveProxy} from './object-observe'
-import {has, isPromise} from 'utilities/lib/index'
-export enum ProxyEventType {
+import {DirtyObjectObserver} from './dirty-observe'
+import {has, isPromise, toPromise, bind, callFunc, nextTick} from 'utilities/lib/index'
+
+/*export enum ProxyEventType {
 	Add, Update, Delete
-}
+}*/
 
 export interface ProxyEvent {
 	name: string
@@ -24,13 +26,15 @@ export interface IProxy {
 }
 
 
+
+
 export function createProxy(model:IModel): IProxy {
 	if (typeof (<any>Object).observe === 'function') {
 		return new ObjectObserveProxy(<any>model);
-	} else if (typeof (global||window).Proxy  === 'function') {
+	} /*else if (typeof (global||window).Proxy  === 'function') {
 		
-	} else {
-		
+	}*/ else {
+		return new DirtyObjectObserver(model);
 	}
 }
 

@@ -1,18 +1,14 @@
-import { Model } from 'collection';
-export declare enum ProxyEventType {
-    Add = 0,
-    Update = 1,
-    Delete = 2,
-}
-export interface ProxyEvent {
-    name: string;
-    object: any;
-    type: string;
-    oldValue?: any;
-}
-export interface IProxy {
-    $run(fn: Function, ctx: any, args: any[]): any;
+import { IModel } from 'collection';
+import { IProxy, ProxyEvent } from './index';
+export declare class AbstractProxy {
+    model: IModel;
+    __queue: number;
     [x: string]: any;
-    destroy(): any;
+    parent: IProxy;
+    constructor(model: IModel, parent?: IProxy);
+    $run(fn: Function, ctx: any, args: any[]): any;
+    protected _onchange(events: ProxyEvent[]): void;
+    observe(): void;
+    unobserve(): void;
+    destroy(): void;
 }
-export declare function createProxy(model: Model): IProxy;

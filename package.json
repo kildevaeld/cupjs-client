@@ -18,6 +18,7 @@
     "merge2": "^0.3.6",
     "recursive-readdir": "^1.2.1",
     "requiredir": "^1.0.7",
+    "typescript": "^1.7.0-dev.20150918",
     "webpack": "^1.12.2"
   },
   "dependencies": {

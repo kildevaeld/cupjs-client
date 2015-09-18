@@ -1,9 +1,4 @@
 import { IModel } from 'collection';
-export declare enum ProxyEventType {
-    Add = 0,
-    Update = 1,
-    Delete = 2,
-}
 export interface ProxyEvent {
     name: string;
     object: any;
