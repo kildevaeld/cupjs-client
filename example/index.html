@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CupJS</title>
+  <script src="../dist/mobs.js"></script>
+</head>
+<body>
+
+
+<script>
+
+  cupsjs.module("app",{
+    initialize: function (router, userID) {
+      console.log('started', router)
+      console.log('userID', userID)
+    }
+  }).controller('main', {
+
+  })
+
+  cupsjs.service('router', function (config) {
+    console.log('this is a coool router', config)
+    this.config = config
+  }, {config: 'yessir'})
+
+  
+  var app = cupsjs.module('app')
+  app.service('userID', 'det er det der tæller')
+
+  var router = cupsjs._container.get('router', 'cupsjs')
+
+  
+  app.create().then(function (app) {
+    console.log('app',app)
+  })
+
+</script>
+</body>
+</html>

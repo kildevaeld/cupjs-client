@@ -1,0 +1,18 @@
+import { ModuleConstructor, ControllerConstructor, ModuleOptions } from './typings';
+import { Module } from './module';
+import { BaseObject } from './object';
+import { Application } from './application';
+import { IPromise } from 'utilities/lib/promises';
+export declare class ModuleFactory extends BaseObject {
+    private _name;
+    private _app;
+    private _module;
+    private _container;
+    private _activator;
+    private _serviceActivator;
+    name: string;
+    constructor(app: Application, name: string, ctor: ModuleConstructor, config: any);
+    controller(name: string, controller: ControllerConstructor | Object): ModuleFactory;
+    service(name: string, service: any, config?: any): ModuleFactory;
+    create(options?: ModuleOptions): IPromise<Module>;
+}

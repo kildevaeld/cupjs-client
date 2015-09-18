@@ -1,0 +1,36 @@
+{
+  "version": "1.6.0",
+  "compilerOptions": {
+    "target": "es6",
+    "module": "systemjs",
+    "isolatedModules": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "declaration": true,
+    "noImplicitAny": false,
+    "removeComments": false,
+    "noLib": false,
+    "preserveConstEnums": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "outDir": "./lib",
+    "rootDir": "./src"
+  },
+  "filesGlob": [
+    "./src/**/*.ts",
+    "./**/*.tsx",
+    "!./node_modules/**/*.ts"
+  ],
+  "files": [
+    "src/application.ts",
+    "src/controller.ts",
+    "src/index.ts",
+    "src/internal.ts",
+    "src/module.factory.ts",
+    "src/module.ts",
+    "src/object.ts",
+    "src/service.activator.ts",
+    "src/typings.ts",
+    "src/proxy/index.ts",
+    "src/proxy/object-observe.ts"
+  ]
+}
