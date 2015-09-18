@@ -31,6 +31,8 @@
     "src/service.activator.ts",
     "src/template-view.ts",
     "src/typings.ts",
+    "src/attributes/click.attribute.ts",
+    "src/attributes/index.ts",
     "src/proxy/dirty-observe.ts",
     "src/proxy/index.ts",
     "src/proxy/object-observe.ts",

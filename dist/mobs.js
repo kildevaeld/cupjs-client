@@ -70,7 +70,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _templateIndex = __webpack_require__(43);
 
-	var _servicesTemplateResolver = __webpack_require__(46);
+	var _attributesIndex = __webpack_require__(46);
+
+	var _servicesTemplateResolver = __webpack_require__(48);
 
 	var _internal = __webpack_require__(9);
 
@@ -78,6 +80,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.cupjs = cupjs;
 	templ.component("controller", _templateIndex.ControllerComponent);
 	templ.component('repeat', _templateIndex.RepeatComponent);
+	templ.attribute("click", _attributesIndex.ClickAttribute);
 	cupjs.container.registerSingleton("templateResolver", _servicesTemplateResolver.TemplateResolver, _internal.DINamespace);
 
 /***/ },
@@ -4147,7 +4150,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}(this, function (require, exports, module) {
 	  var templ;
 	  (function (templ) {
-	    templ.version = "0.0.9";
+	    templ.version = "0.1.0";
 
 	    function attribute(name, attr) {
 	      if (typeof attr !== 'function') {
@@ -5405,6 +5408,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            capture = false;
 	          }
 	          elm.addEventListener(eventName, callback, capture);
+	          return callback;
 	        };
 	        View.prototype.removeListener = function (elm, eventName, callback, capture) {
 	          if (capture === void 0) {
@@ -5999,17 +6003,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	          else {}
 	        }
 	      };
-	/*setProperty (key:string, value:string) {
-	          if (!this.setAsRegisteredAttribute(key, value)) {
-	    
-	            // no node type? It's a registered component.
-	            if (!this.ref.nodeType) {
-	              this.ref.setAttribute(key, value);
-	            } else {
-	              this.ref[key] = value;
-	            }
+	      Binding.prototype.setProperty = function (key, value) {
+	        if (!this.setAsRegisteredAttribute(key, value)) {
+	          // no node type? It's a registered component.
+	          if (!this.ref.nodeType) {
+	            this.ref.setAttribute(key, value);
 	          }
-	        }*/
+	          else {
+	            this.ref[key] = value;
+	          }
+	        }
+	      };
 	      Binding.prototype.setAsRegisteredAttribute = function (key, value) {
 	        if (this._attrBindings[key]) {
 	          this._attrBindings[key].value = value;
@@ -6163,10 +6167,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        var delegator = this._getDelegator();
 	        if (delegator) {
-	          delegator.addListener(elm, eventName, callback, capture);
+	          return delegator.addListener(elm, eventName, callback, capture);
 	        }
-	        else {
-	          _super.prototype.addListener.call(this, elm, eventName, callback, capture);
+	        else if (typeof callback === 'function') {
+	          return _super.prototype.addListener.call(this, elm, eventName, callback, capture);
 	        }
 	      };
 	      View.prototype.removeListener = function (elm, eventName, callback, capture) {
@@ -6177,7 +6181,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (delegator) {
 	          this._delegator.removeListener(elm, eventName, callback, capture);
 	        }
-	        else {
+	        else if (typeof callback === 'function') {
 	          _super.prototype.removeListener.call(this, elm, eventName, callback, capture);
 	        }
 	      };
@@ -7885,6 +7889,78 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 46 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	function _interopExportWildcard(obj, defaults) { var newObj = defaults({}, obj); delete newObj['default']; return newObj; }
+
+	function _defaults(obj, defaults) { var keys = Object.getOwnPropertyNames(defaults); for (var i = 0; i < keys.length; i++) { var key = keys[i]; var value = Object.getOwnPropertyDescriptor(defaults, key); if (value && value.configurable && obj[key] === undefined) { Object.defineProperty(obj, key, value); } } return obj; }
+
+	var _clickAttribute = __webpack_require__(47);
+
+	_defaults(exports, _interopExportWildcard(_clickAttribute, _defaults));
+
+/***/ },
+/* 47 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path="../typings" />
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var _templ = __webpack_require__(36);
+
+	var ClickAttribute = (function (_attributes$BaseAttribute) {
+	    _inherits(ClickAttribute, _attributes$BaseAttribute);
+
+	    function ClickAttribute() {
+	        _classCallCheck(this, ClickAttribute);
+
+	        _get(Object.getPrototypeOf(ClickAttribute.prototype), 'constructor', this).apply(this, arguments);
+	    }
+
+	    _createClass(ClickAttribute, [{
+	        key: 'update',
+	        value: function update() {
+	            console.log('hello', this);
+	            if (this._boundFunction) {
+	                this.view.removeListener(this.ref, 'click', this._boundFunction);
+	            }
+	            this._boundFunction = this.view.addListener(this.ref, 'click', this.value);
+	        }
+	    }, {
+	        key: 'destroy',
+	        value: function destroy() {
+	            if (this._boundFunction) {
+	                this.view.removeListener(this.ref, 'click', this._boundFunction);
+	            }
+	            _get(Object.getPrototypeOf(ClickAttribute.prototype), 'destroy', this).call(this);
+	        }
+	    }]);
+
+	    return ClickAttribute;
+	})(_templ.attributes.BaseAttribute);
+
+	exports.ClickAttribute = ClickAttribute;
+
+/***/ },
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
