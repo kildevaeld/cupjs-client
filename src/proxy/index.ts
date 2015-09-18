@@ -1,6 +1,6 @@
 
 
-import {Model} from 'collection'
+import {IModel} from 'collection'
 import {ObjectObserveProxy} from './object-observe'
 import {has, isPromise} from 'utilities/lib/index'
 export enum ProxyEventType {
@@ -15,6 +15,7 @@ export interface ProxyEvent {
 }
 
 export interface IProxy {
+	model: IModel
 	parent?: IProxy
 	$run (fn:Function, ctx:any, args:any[]): any
 	[x: string]: any 
@@ -23,9 +24,9 @@ export interface IProxy {
 }
 
 
-export function createProxy(model:Model): IProxy {
+export function createProxy(model:IModel): IProxy {
 	if (typeof (<any>Object).observe === 'function') {
-		return new ObjectObserveProxy(model);
+		return new ObjectObserveProxy(<any>model);
 	} else if (typeof (global||window).Proxy  === 'function') {
 		
 	} else {

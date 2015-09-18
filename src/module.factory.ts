@@ -120,7 +120,7 @@ export class ModuleFactory extends BaseObject {
         toPromise(args).then((result) => {
           
           try {
-            callFunc(mod.initialize, mod, result);  
+            mod.ctx.$run(mod.initialize, mod, result)
             resolve(mod)
           } catch (e) {
             reject(e)

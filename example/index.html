@@ -5,14 +5,21 @@
   <script src="../dist/mobs.js"></script>
 </head>
 <body>
-
+  <div id="app">
+    {{title}}
+  </div>
 
 <script>
 
   cupsjs.module("app",{
-    initialize: function (router, userID) {
+    initialize: function (router, userID, ctx) {
       console.log('started', router)
       console.log('userID', userID)
+      
+      ctx.title = "Hello, world!"
+      console.log(ctx)
+      
+      this.module('router')
     }
   }).controller('main', {
 
@@ -30,7 +37,7 @@
   var router = cupsjs._container.get('router', 'cupsjs')
 
   
-  app.create().then(function (app) {
+  app.create({el:document.getElementById('app')}).then(function (app) {
     console.log('app',app)
   })
 

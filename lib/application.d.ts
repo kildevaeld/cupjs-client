@@ -13,4 +13,5 @@ export declare class Application extends BaseObject {
     module(name: string, definition?: ModuleConstructor | Object, config?: any): ModuleFactory;
     service(name: string, definition?: any, config?: any): Application;
     createContainer(): DIContainer;
+    component(name: string): void;
 }

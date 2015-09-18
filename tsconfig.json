@@ -29,8 +29,11 @@
     "src/module.ts",
     "src/object.ts",
     "src/service.activator.ts",
+    "src/template-view.ts",
     "src/typings.ts",
+    "src/proxy/dirty-observe.ts",
     "src/proxy/index.ts",
-    "src/proxy/object-observe.ts"
+    "src/proxy/object-observe.ts",
+    "src/proxy/proxy-observe.ts"
   ]
 }

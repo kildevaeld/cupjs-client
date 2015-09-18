@@ -1,17 +1,17 @@
 import {BaseObject} from '../object'
 import {IProxy, ProxyEvent, get_atributes} from './index'
 import {NestedModel} from 'collection'
-import {callFunc, toPromise, nextTick} from 'utilities/lib/index'
+import {callFunc, toPromise, nextTick, bind} from 'utilities/lib/index'
 
 export class ObjectObserveProxy extends BaseObject implements IProxy {
-	model:NestedModel
+	public model:NestedModel
 	__queue:number
 	[x: string]: any
 	parent: ObjectObserveProxy
 	constructor(model:NestedModel, parent?: ObjectObserveProxy) {
 		super()
 		this.model = model
-		this._onchange = utils.bind(this._onchange, this);
+		this._onchange = bind(this._onchange, this);
 		this.__queue = 0
 		this.parent = parent
 	}
