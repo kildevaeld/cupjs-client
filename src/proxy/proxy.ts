@@ -18,7 +18,7 @@ export abstract class AbstractProxy {
 	$run (fn:Function, ctx:any, args:any[]): any {
 		this.observe();
 		
-		console.log('run')
+		
 		let results = callFunc(fn, ctx, args);
 		
 		if (results) {

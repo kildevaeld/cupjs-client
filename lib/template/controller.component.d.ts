@@ -8,6 +8,7 @@ export declare class ControllerComponent extends components.BaseComponent {
     controller: Controller;
     subview: View;
     initialize(): void;
+    __initController(name: string): void;
     __initView(controller: any): void;
     __resolveTemplate(template?: string): IPromise<vnode.Template>;
     update(): void;

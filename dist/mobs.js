@@ -3763,7 +3763,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var _this = this;
 
 	            this.observe();
-	            console.log('run');
 	            var results = (0, _utilitiesLibIndex.callFunc)(fn, ctx, args);
 	            if (results) {
 	                this.__queue++;
@@ -7594,13 +7593,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _createClass(ControllerComponent, [{
 	        key: 'initialize',
 	        value: function initialize() {
-	            var _this = this;
-
 	            this.container = this.view._container;
 	            if (this.attributes['name']) {
 	                this.name = this.attributes['name'];
 	            }
-	            var ret = this.container.get(this.name);
+	            this.__initController(this.name);
+	        }
+	    }, {
+	        key: '__initController',
+	        value: function __initController(name) {
+	            var _this = this;
+
+	            var ret = this.container.get(name);
 	            if ((0, _utilitiesLibIndex.isPromise)(ret)) {
 	                ret.then(function (controller) {
 	                    _this.controller = controller;

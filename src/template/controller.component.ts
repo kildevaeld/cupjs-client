@@ -16,7 +16,12 @@ export class ControllerComponent extends components.BaseComponent {
 			this.name = this.attributes['name']
 		}
 		
-		let ret = this.container.get(this.name)
+		this.__initController(this.name)
+		
+	}
+	
+	__initController (name:string) {
+		let ret = this.container.get(name)
 			
 		if (isPromise(ret)) {
 			ret.then((controller) => {
@@ -28,8 +33,6 @@ export class ControllerComponent extends components.BaseComponent {
 			this.controller = ret
 			this.__initView(ret)
 		}
-		
-		
 	}
 	
 	__initView (controller) {
@@ -69,9 +72,7 @@ export class ControllerComponent extends components.BaseComponent {
 				
 				return templ
 			})
-			
-			
-			
+	
 		} else {
 			return Promise.resolve(this.childTemplate)
 		}
