@@ -60,6 +60,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 
+	function _interopExportWildcard(obj, defaults) { var newObj = defaults({}, obj); delete newObj['default']; return newObj; }
+
+	function _defaults(obj, defaults) { var keys = Object.getOwnPropertyNames(defaults); for (var i = 0; i < keys.length; i++) { var key = keys[i]; var value = Object.getOwnPropertyDescriptor(defaults, key); if (value && value.configurable && obj[key] === undefined) { Object.defineProperty(obj, key, value); } } return obj; }
+
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
 
 	var _application = __webpack_require__(1);
@@ -78,16 +82,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _bootstrap = __webpack_require__(48);
 
-	var Moby = _application.Application;
-	exports.Moby = Moby;
-	var moby = new _application.Application();
+	var _module2 = __webpack_require__(2);
+
+	_defaults(exports, _interopExportWildcard(_module2, _defaults));
+
+	var instance = new _application.Application();
+	var moby = instance;
 	exports.moby = moby;
 	templ.component("controller", _templateIndex.ControllerComponent);
 	templ.component('repeat', _templateIndex.RepeatComponent);
 	templ.attribute("click", _attributesIndex.ClickAttribute);
-	moby.container.registerSingleton("templateResolver", _servicesIndex.TemplateResolver, _internal.DINamespace);
+	instance.container.registerSingleton("templateResolver", _servicesIndex.TemplateResolver, _internal.DINamespace);
 	moby.service('http', _servicesIndex.HttpService);
-	(0, _bootstrap.bootstrap)(moby);
+	(0, _bootstrap.bootstrap)(instance);
 
 /***/ },
 /* 1 */
@@ -117,10 +124,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _object = __webpack_require__(3);
 
-	var _utilities = __webpack_require__(5);
-
-	var utils = _interopRequireWildcard(_utilities);
-
 	var _internal = __webpack_require__(13);
 
 	var _di = __webpack_require__(15);
@@ -131,6 +134,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var templ = _interopRequireWildcard(_templ);
 
+	var _utilities = __webpack_require__(5);
+
 	var Application = (function (_BaseObject) {
 	    _inherits(Application, _BaseObject);
 
@@ -138,6 +143,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _classCallCheck(this, Application);
 
 	        _get(Object.getPrototypeOf(Application.prototype), 'constructor', this).call(this);
+	        this.Module = _module2.Module;
+	        this.Controller = _controller.Controller;
 	        this._bootstraped = false;
 	        this._container = new _di.DIContainer();
 	        this._activator = new _serviceActivator.ServiceActivator(this._container);
@@ -205,10 +212,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	})(_object.BaseObject);
 
 	exports.Application = Application;
-
-	Application.Module = _module2.Module;
-	Application.Controller = _controller.Controller;
-	Application.utils = utils;
 
 /***/ },
 /* 2 */

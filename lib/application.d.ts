@@ -1,12 +1,11 @@
 import { ModuleConstructor, ControllerConstructor } from './typings';
+import { Module } from './module';
 import { ModuleFactory } from './module.factory';
 import { BaseObject } from './object';
-import * as utils from 'utilities';
 import { DIContainer } from 'di';
 export declare class Application extends BaseObject {
-    static Module: ModuleConstructor;
-    static Controller: ControllerConstructor;
-    static utils: typeof utils;
+    Module: typeof Module;
+    Controller: ControllerConstructor;
     private _container;
     private _activator;
     private _bootstraped;

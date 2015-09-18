@@ -1,3 +1,3 @@
 import { Application } from './application';
-export declare const Moby: typeof Application;
+export * from './module';
 export declare const moby: Application;

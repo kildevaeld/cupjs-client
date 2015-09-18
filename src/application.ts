@@ -12,10 +12,10 @@ import * as templ from 'templ'
 import {has, isObject} from 'utilities'
 
 export class Application extends BaseObject {
-
-  static Module: ModuleConstructor = Module
-  static Controller: ControllerConstructor = Controller
-  static utils = utils
+  
+  Module: typeof Module = Module
+  Controller: ControllerConstructor = Controller
+  
 
   private _container: DIContainer
   private _activator: ServiceActivator
