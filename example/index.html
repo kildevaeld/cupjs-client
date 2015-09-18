@@ -4,7 +4,7 @@
   <title>CupJS</title>
   <script src="../dist/moby.js"></script>
   <script>
-  var utils = moby.constructor.utils
+  var utils = moby.utils
   moby.module("app",{
     initialize: function (router, userID, ctx) {
       
@@ -48,6 +48,7 @@
     <controller name="main" template="main">
       <h1>{{name}}</h1>
     </controller>
+    <view template="main"></view>
   </div>
 <script type="html/template" id="main">
   <p>{{name}}</p>

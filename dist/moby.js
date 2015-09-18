@@ -74,13 +74,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _templateIndex = __webpack_require__(40);
 
-	var _attributesIndex = __webpack_require__(43);
+	var _attributesIndex = __webpack_require__(44);
 
-	var _servicesIndex = __webpack_require__(45);
+	var _servicesIndex = __webpack_require__(46);
 
 	var _internal = __webpack_require__(13);
 
-	var _bootstrap = __webpack_require__(48);
+	var _bootstrap = __webpack_require__(49);
 
 	var _module2 = __webpack_require__(2);
 
@@ -90,6 +90,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var moby = instance;
 	exports.moby = moby;
 	templ.component("controller", _templateIndex.ControllerComponent);
+	templ.component('view', _templateIndex.ViewComponent);
 	templ.component('repeat', _templateIndex.RepeatComponent);
 	templ.attribute("click", _attributesIndex.ClickAttribute);
 	instance.container.registerSingleton("templateResolver", _servicesIndex.TemplateResolver, _internal.DINamespace);
@@ -124,6 +125,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _object = __webpack_require__(3);
 
+	var _utilities = __webpack_require__(5);
+
+	var utils = _interopRequireWildcard(_utilities);
+
 	var _internal = __webpack_require__(13);
 
 	var _di = __webpack_require__(15);
@@ -134,8 +139,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var templ = _interopRequireWildcard(_templ);
 
-	var _utilities = __webpack_require__(5);
-
 	var Application = (function (_BaseObject) {
 	    _inherits(Application, _BaseObject);
 
@@ -145,6 +148,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _get(Object.getPrototypeOf(Application.prototype), 'constructor', this).call(this);
 	        this.Module = _module2.Module;
 	        this.Controller = _controller.Controller;
+	        this.utils = utils;
 	        this._bootstraped = false;
 	        this._container = new _di.DIContainer();
 	        this._activator = new _serviceActivator.ServiceActivator(this._container);
@@ -6822,6 +6826,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	_defaults(exports, _interopExportWildcard(_repeatComponent, _defaults));
 
+	var _viewComponent = __webpack_require__(43);
+
+	_defaults(exports, _interopExportWildcard(_viewComponent, _defaults));
+
 /***/ },
 /* 41 */
 /***/ function(module, exports, __webpack_require__) {
@@ -7103,6 +7111,121 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var _templ = __webpack_require__(35);
+
+	var _utilitiesLibIndex = __webpack_require__(5);
+
+	var _templateView = __webpack_require__(36);
+
+	var ViewComponent = (function (_components$BaseComponent) {
+	    _inherits(ViewComponent, _components$BaseComponent);
+
+	    function ViewComponent() {
+	        _classCallCheck(this, ViewComponent);
+
+	        _get(Object.getPrototypeOf(ViewComponent.prototype), 'constructor', this).apply(this, arguments);
+	    }
+
+	    _createClass(ViewComponent, [{
+	        key: 'initialize',
+	        value: function initialize() {
+	            this.container = this.view._container;
+	            if (this.attributes['name']) {
+	                this.name = this.attributes['name'];
+	            }
+	            this.__initView();
+	        }
+
+	        /*__initController (name:string) {
+	            let ret = this.container.get(name)
+	                
+	            if (isPromise(ret)) {
+	                ret.then((controller) => {
+	                    
+	                    this.controller = controller
+	                    this.__initView.call(this,controller);
+	                })
+	            } else {
+	                this.controller = ret
+	                this.__initView(ret)
+	            }
+	        }*/
+	    }, {
+	        key: '__initView',
+	        value: function __initView() {
+	            var _this = this;
+
+	            this.__resolveTemplate(this.attributes['template']).then(function (template) {
+	                if (_this.subview) {
+	                    _this.subview.remove();
+	                }
+	                _this.subview = _this.childTemplate.view(_this.view.context, {
+	                    container: _this.container
+	                });
+	                var node = _this.subview.render();
+	                _this.section.appendChild(node);
+	            });
+	        }
+	    }, {
+	        key: '__resolveTemplate',
+	        value: function __resolveTemplate(template) {
+	            var _this2 = this;
+
+	            if (template != null) {
+	                var resolver = this.container.get('templateResolver');
+	                return resolver.resolve(this.attributes["template"]).then(function (template) {
+	                    var templ = (0, _templ.compile)(template, {
+	                        viewClass: _templateView.TemplateView
+	                    });
+	                    if (_this2.childTemplate) {
+	                        delete _this2.childTemplate;
+	                    }
+	                    _this2.childTemplate = templ;
+	                    return templ;
+	                });
+	            } else {
+	                return _utilitiesLibIndex.Promise.resolve(this.childTemplate);
+	            }
+	        }
+	    }, {
+	        key: 'update',
+	        value: function update() {
+	            //console.log('update', arguments)
+	            if (this.subview) {
+	                this.subview.update();
+	            }
+	        }
+	    }, {
+	        key: 'destroy',
+	        value: function destroy() {
+	            _get(Object.getPrototypeOf(ViewComponent.prototype), 'destroy', this).call(this);
+	            this.subview.remove();
+	        }
+	    }]);
+
+	    return ViewComponent;
+	})(_templ.components.BaseComponent);
+
+	exports.ViewComponent = ViewComponent;
+
+/***/ },
+/* 44 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
 
@@ -7110,12 +7233,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _defaults(obj, defaults) { var keys = Object.getOwnPropertyNames(defaults); for (var i = 0; i < keys.length; i++) { var key = keys[i]; var value = Object.getOwnPropertyDescriptor(defaults, key); if (value && value.configurable && obj[key] === undefined) { Object.defineProperty(obj, key, value); } } return obj; }
 
-	var _clickAttribute = __webpack_require__(44);
+	var _clickAttribute = __webpack_require__(45);
 
 	_defaults(exports, _interopExportWildcard(_clickAttribute, _defaults));
 
 /***/ },
-/* 44 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../typings" />
@@ -7168,7 +7291,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.ClickAttribute = ClickAttribute;
 
 /***/ },
-/* 45 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7181,16 +7304,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _defaults(obj, defaults) { var keys = Object.getOwnPropertyNames(defaults); for (var i = 0; i < keys.length; i++) { var key = keys[i]; var value = Object.getOwnPropertyDescriptor(defaults, key); if (value && value.configurable && obj[key] === undefined) { Object.defineProperty(obj, key, value); } } return obj; }
 
-	var _httpService = __webpack_require__(46);
+	var _httpService = __webpack_require__(47);
 
 	_defaults(exports, _interopExportWildcard(_httpService, _defaults));
 
-	var _templateResolver = __webpack_require__(47);
+	var _templateResolver = __webpack_require__(48);
 
 	_defaults(exports, _interopExportWildcard(_templateResolver, _defaults));
 
 /***/ },
-/* 46 */
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../typings" />
@@ -7261,7 +7384,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.HttpService = HttpService = __decorate([(0, _internal.classtype)(_internal.ClassType.Service), __metadata('design:paramtypes', [])], HttpService);
 
 /***/ },
-/* 47 */
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -7318,7 +7441,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.TemplateResolver = TemplateResolver = __decorate([(0, _internal.classtype)(_internal.ClassType.Service), __metadata('design:paramtypes', [])], TemplateResolver);
 
 /***/ },
-/* 48 */
+/* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="typings" />

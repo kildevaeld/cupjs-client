@@ -15,7 +15,7 @@ export class Application extends BaseObject {
   
   Module: typeof Module = Module
   Controller: ControllerConstructor = Controller
-  
+  utils: typeof utils = utils
 
   private _container: DIContainer
   private _activator: ServiceActivator

@@ -44,6 +44,7 @@
     "src/services/template.resolver.ts",
     "src/template/controller.component.ts",
     "src/template/index.ts",
-    "src/template/repeat.component.ts"
+    "src/template/repeat.component.ts",
+    "src/template/view.component.ts"
   ]
 }
