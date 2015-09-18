@@ -52,8 +52,17 @@ export class DirtyObjectObserver extends AbstractProxy implements IProxy {
       ev.oldValue = attributes[k];
       
       events.push(ev)
-      delete attributes[k]// = void 0
+      delete attributes[k]
     } 
+    
+    for (let k in attributes) {
+      events.push({
+        name: k,
+        object:this,
+        type: 'delete',
+        oldValue: attributes[k]
+      })
+    }
 		
     if (events.length)
       this._onchange(events)
