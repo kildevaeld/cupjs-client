@@ -1,4 +1,4 @@
-import {toPromise, bind, callFunc, nextTick, deferred, Deferred, isObject} from 'utilities/lib/index'
+import {extend, toPromise, bind, callFunc, nextTick, deferred, Deferred, isObject} from 'utilities/lib/index'
 import {IModel, NestedModel, Collection} from 'collection'
 import {IProxy, ProxyEvent, get_atributes} from './index'
 
@@ -67,6 +67,9 @@ export abstract class AbstractProxy {
 				if (--this.__queue === 0) {
 					this.unobserve();
 				}
+				
+				extend(this, props)
+				
 				this.model.set(this.__normalizeAttr(props));
 				
 			}).catch( (e) => {

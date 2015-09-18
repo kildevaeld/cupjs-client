@@ -3817,6 +3817,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    if (--_this2.__queue === 0) {
 	                        _this2.unobserve();
 	                    }
+	                    (0, _utilitiesLibIndex.extend)(_this2, props);
 	                    _this2.model.set(_this2.__normalizeAttr(props));
 	                })['catch'](function (e) {
 	                    _this2.model.trigger('error', e);

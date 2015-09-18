@@ -9,8 +9,6 @@ let reserved = ['model','parent','__queue', '_onchange', '__timer']
 export class DirtyObjectObserver extends AbstractProxy implements IProxy {
 	private __timer: number
 
-
-	
 	observe () {
 		this.unobserve()
     nextTick(() => {
