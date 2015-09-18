@@ -29,15 +29,10 @@ export class Module extends BaseObject {
 	
 	module<T> (name): T {
 		
-		console.log('finding', name)
+		//console.log('finding', name)
 		if (!this._container.hasHandler(name, true)) {
 			return null
 		}
-		
-		let mod = <any>this._container.parent.entries.get(name)[0]
-		
-		
-		console.log('mod meta',mod.__metadata__)
 		
 		return this._container.get(name)
 	} 
@@ -49,12 +44,17 @@ export class Module extends BaseObject {
 		this._container = container
 		this._ctx = createProxy(new NestedModel())
 		
+		this._container.registerInstance('context', this._ctx);
+		
 		if (this.el) {
 			
 			let template = templ.compile(this.el.outerHTML, {
 				viewClass: <any>TemplateView
 			})
-			this._templ = <any>template.view(this._ctx.model,{})
+			this._templ = <any>template.view(this._ctx.model,{
+				container: this._container
+			});
+			
 			let el = this._templ.render()
 			
 			this.el.parentNode.replaceChild(el,this.el)
@@ -68,6 +68,7 @@ export class Module extends BaseObject {
 	}
 	
 	destroy () {
+		this._container.unregister('context');
 		this._ctx.destroy();
 		super.destroy()
 	}

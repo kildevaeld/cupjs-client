@@ -1,15 +1,15 @@
-import {toPromise, bind, callFunc, nextTick} from 'utilities/lib/index'
-import {IModel} from 'collection'
+import {toPromise, bind, callFunc, nextTick, deferred, Deferred} from 'utilities/lib/index'
+import {IModel, NestedModel} from 'collection'
 import {IProxy, ProxyEvent, get_atributes} from './index'
 
-export class AbstractProxy {
+export abstract class AbstractProxy {
 	public model:IModel
 	__queue:number
 	[x: string]: any
 	parent: IProxy
 	
-	constructor (model:IModel, parent?:IProxy) {
-		this.model = model
+	constructor (model?:IModel, parent?:IProxy) {
+		this.model = model||new NestedModel()
 		this.parent = parent
 		this.__queue = 0
 		this._onchange = bind(this._onchange, this);
@@ -17,22 +17,26 @@ export class AbstractProxy {
 	
 	$run (fn:Function, ctx:any, args:any[]): any {
 		this.observe();
+		
+		console.log('run')
 		let results = callFunc(fn, ctx, args);
+		
 		if (results) {
 			this.__queue++
-			toPromise(results)
+			return toPromise(results)
 			.then(() => {
 				if (--this.__queue === 0)
 					this.unobserve();	
+				return results
 			});	
 		} else {
-		
+			let defer = <Deferred<any>>deferred()
 			nextTick(() => { 
-				
 				if (this.__queue == 0)
 					this.unobserve() 
+				defer.resolve(null)
 			});
-			
+			return defer.promise
 		}
 	}
 	
@@ -73,13 +77,9 @@ export class AbstractProxy {
 		}
 	}
 	
-	observe () {
-		
-	}
+	observe () {}
 	
-	unobserve () {
-		
-	}
+	unobserve () {}
 	
 	destroy () {
 		(<any>this.model).destroy()

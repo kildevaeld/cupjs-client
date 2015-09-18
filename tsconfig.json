@@ -2,7 +2,7 @@
   "version": "1.6.0",
   "compilerOptions": {
     "target": "es6",
-    "module": "systemjs",
+    "module": "umd",
     "isolatedModules": false,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -35,6 +35,8 @@
     "src/proxy/index.ts",
     "src/proxy/object-observe.ts",
     "src/proxy/proxy-observe.ts",
-    "src/proxy/proxy.ts"
+    "src/proxy/proxy.ts",
+    "src/services/template.resolver.ts",
+    "src/template/controller.component.ts"
   ]
 }

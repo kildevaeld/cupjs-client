@@ -8,25 +8,29 @@
   <div id="app">
     {{title}} 
     {{description}}
+    <controller name="main">
+      <h1>{{name}}</h1>
+    </controller>
   </div>
+  
 
 <script>
   var utils = cupsjs.constructor.utils
   cupsjs.module("app",{
     initialize: function (router, userID, ctx) {
-      console.log('started', router)
-      console.log('userID', userID)
       
       ctx.title = "Hello, world!"
       
       ctx.description = utils.delay(1000).then(function () {
         return "Ta da!"
       })
-      console.log(ctx)
+      
       this.module('router')
     }
-  }).controller('main', {
-
+  }).controller('main', function (ctx) {
+      console.log(ctx)
+      ctx.name = "Hello"
+    
   })
 
   cupsjs.service('router', function (config) {

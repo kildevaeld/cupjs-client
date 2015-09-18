@@ -7,19 +7,74 @@ import {BaseObject} from './object'
 import {Application} from './application'
 import {DIContainer, Metadata, getFunctionParameters} from 'di'
 import {isObject, extend} from 'utilities/lib/objects'
-import {callFunc} from 'utilities/lib/utils'
+import {callFunc, nextTick} from 'utilities/lib/utils'
 import {IPromise, Promise, toPromise, isPromise} from 'utilities/lib/promises'
 import {DINamespace, setActivator, setDependencyResolver, classtype, ClassType} from './internal'
 import {ServiceActivator} from './service.activator'
-
+import {IProxy} from './proxy/index'
 
 class ControllerActivator {
-  private _factory: ModuleFactory
-  constructor(app: Application, factory: ModuleFactory) {
-
+  private container: DIContainer
+  constructor(container: DIContainer) {
+    this.container = container
   }
-  invoke(target: Function, deps: any[], keys: string[]): any {
-
+  
+  resolveDependencies(fn: Function): any[] {
+    
+      if ((<any>fn).__metadata__.undefined['design:paramtypes']) {
+        delete (<any>fn).__metadata__.undefined['design:paramtypes']
+      }
+    
+      let params = getFunctionParameters(fn),
+        args = new Array(params.length)
+      let p
+       let ctx = this.container.get('context')
+       let childCtx = ctx.createChild()
+      for (let i=0,ii=args.length; i < ii; i++) {
+         p = params[i];
+        
+         if (p === 'config') {
+           args[i] = this.container.get(fn)
+         } else if (p === 'ctx' || p === 'context') {
+          
+           args[i] = childCtx
+         } else {
+           args[i] = this.container.get(p)
+         }
+      }
+      return [args, childCtx]
+      
+     
+    }
+  
+  invoke(target: FunctionConstructor, args: any[], keys: string[]): any {
+      let deps = args[0]
+      let ctx: any = args[1]
+      
+      ctx.observe()
+      
+      let instance
+      if (typeof Reflect.construct === 'function') {
+        instance = Reflect.construct(target, deps)
+      } else {
+        instance = new target(...deps)
+      }
+      
+      if (instance.$instance) {
+        instance = instance.$instance
+      }
+        
+      if (isPromise(instance)) {
+        return instance.then(function (i) {
+          i.ctx = args[1];
+          ctx.unobserve();
+          return i
+        })
+      }
+      
+      instance.ctx = args[1]
+      
+      return instance;  
   }
 }
 
@@ -42,7 +97,7 @@ export class ModuleFactory extends BaseObject {
     this._module = ctor
     this._app = app
     this._container = app.createContainer();
-    this._activator = new ControllerActivator(app, this);
+    this._activator = new ControllerActivator(this._container);
     this._serviceActivator = new ServiceActivator(this._container)
   }
 

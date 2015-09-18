@@ -2,9 +2,11 @@
 
 import * as templ from 'templ'
 import {Model,NestedModel} from 'collection'
+import {DIContainer} from 'di'
 
 export class TemplateView extends templ.View {
 	_context: any
+	_container: DIContainer
 	set context(context: any) {
 		
 		if (this._context && this._context instanceof Model) {
@@ -35,6 +37,9 @@ export class TemplateView extends templ.View {
 			
 			if (options.delegator) {
 				this._delegator = options.delegator
+			}
+			if (options.container) {
+				this._container = options.container
 			}
 			
 	}

@@ -25,7 +25,7 @@ export class ServiceActivator {
 
 
     invoke(fn: any, deps: any[], keys?: any[]): any {
-      console.log('service activator')
+      
       var instance = Reflect.construct(fn, deps)
 
       if (instance.$instance) {

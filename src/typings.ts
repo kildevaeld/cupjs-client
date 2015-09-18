@@ -7,6 +7,7 @@
 import {Module} from './module'
 import {Controller} from './controller'
 import {DIContainer} from 'di'
+import {View} from 'templ'
 export interface ModuleOptions {
   el?: HTMLElement
   name: string
@@ -18,7 +19,7 @@ export interface ModuleConstructor {
 
 
 export interface ControllerOptions {
-  
+  template?: View
 }
 
 export interface ControllerConstructor {
