@@ -2,7 +2,7 @@
 
 import {components, View, compile, vnode, Assignment} from 'templ'
 import {DIContainer} from 'di'
-import {isPromise, IPromise, Promise, extend} from 'utilities'
+import {isPromise, IPromise, Promise, extend, equal} from 'utilities'
 import {TemplateView} from '../template-view'
 import {EventDelegator} from '../event.delegator'
 
@@ -36,14 +36,19 @@ export class ClickComponent extends components.BaseComponent {
 			action = action.assign
 		}
 		
-		if (action === this._oldAction) {
+		let isAssignment = (attr.action instanceof Assignment) && 
+			(this._oldAction instanceof Assignment)
+		
+		if ( (isAssignment && attr.action.path == this._oldAction.path) || 
+			action == this._oldAction) {
 			return
 		}
 		
-		this._oldAction = action
+		this._oldAction = attr.action
 		
 		if (this.subview) {
 			this.subview.remove()
+			delete this.subview
 		}
 		
 		this._undelegateEvent();

@@ -56,7 +56,7 @@
     {{title}}
     {{description}}
     <button click="onClick">Click</button>
-    <controller name="main" template="main">
+    <controller name="main" template="main" model="">
       <h1>{{name}}</h1>
     </controller>
     <!--view template="main"></view-->
@@ -64,9 +64,9 @@
 <script type="html/template" id="main">
   <p>{{name}}</p>
   <!--p click="{{hello}}">Every little thing she does is magic</p-->
-  <ul click.delegate="li" click.action="{{hello}}">
+  <!--<ul click.delegate="li" click.action="{{hello}}">
     <li repeat.each="{{names}}">{{this.name}}</li>
-  </ul>
+  </ul>-->
   <click delegate=".click" action="{{ count = count + 1 }}">
     <div>Clicked in click me button {{count}} times</div>
     <button class="click">click me</button>

@@ -8,4 +8,5 @@ export declare class TemplateView extends templ.View {
     constructor(section: any, template: any, context: any, options?: any);
     set(key: string | string[], val: any, silent?: boolean): any;
     get(key: string | string[]): any;
+    remove(): void;
 }

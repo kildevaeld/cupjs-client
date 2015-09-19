@@ -42,6 +42,7 @@ export class ControllerComponent extends components.BaseComponent {
 		.then( template => {
 			if (this.subview) {
 				this.subview.remove()
+				delete this.subview
 			}
 			this.subview = <View>this.childTemplate.view(controller.ctx.model, {
 				container: this.container,
@@ -58,6 +59,7 @@ export class ControllerComponent extends components.BaseComponent {
 	}
 	
 	__resolveTemplate (template?:string): IPromise<vnode.Template> {
+		
 		if (template != null) {
 			let resolver = <TemplateResolver>this.container.get('templateResolver');
 			return resolver.resolve(this.attributes["template"])
@@ -81,12 +83,13 @@ export class ControllerComponent extends components.BaseComponent {
 		}
 	}
 	
-	update () {
-		//console.log('update', arguments)
-	}
-	
 	destroy () {
+		
 		super.destroy();
+		if (this.subview) {
+			this.subview.remove()
+			delete this.subview
+		}
 		this.controller.destroy();
 	}
 	

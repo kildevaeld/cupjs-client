@@ -108,4 +108,11 @@ export class TemplateView extends templ.View {
 
 		return value;
 	}
+	
+	remove () {
+		super.remove()
+		delete this._container
+		delete this._delegator
+		delete this._context
+	}
 }

@@ -35,6 +35,7 @@
     "src/typings.ts",
     "src/attributes/click.attribute.ts",
     "src/attributes/index.ts",
+    "src/attributes/model.attribute.ts",
     "src/proxy/dirty-observe.ts",
     "src/proxy/index.ts",
     "src/proxy/object-observe.ts",

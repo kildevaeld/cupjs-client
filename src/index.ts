@@ -23,7 +23,7 @@ templ.component('view', ViewComponent);
 templ.component('repeat', RepeatComponent);
 templ.component('click', ClickComponent);
 templ.attribute("click", ClickAttribute);
-
+//templ.attribute('model', ModelAttribute);
 
 instance.container.registerSingleton("templateResolver",TemplateResolver,DINamespace)
 moby.service('http', HttpService)

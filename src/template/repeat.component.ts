@@ -23,11 +23,12 @@ export class RepeatComponent extends components.BaseComponent {
 		if (each === this._collection || !each) {
 			return
 		}
-		
+	
 		if (this._collection && this._collection instanceof Collection) {
+			this.__removeEventListeners(this._collection)
 			//this._collection.off('remove',this._update)
 			//this._collection.off('add', this._update)
-			this.__removeEventListeners(this._collection)
+			//this.__removeEventListeners(this._collection)
 		}
 		
 		this._collection = each
@@ -84,6 +85,7 @@ export class RepeatComponent extends components.BaseComponent {
 		this._children.splice(n).forEach(function(child) {
 			(<any>child).remove();
 		});
+		
 		
 	}
 	

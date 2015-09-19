@@ -76,11 +76,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _attributesIndex = __webpack_require__(46);
 
-	var _servicesIndex = __webpack_require__(48);
+	var _servicesIndex = __webpack_require__(49);
 
 	var _internal = __webpack_require__(13);
 
-	var _bootstrap = __webpack_require__(51);
+	var _bootstrap = __webpack_require__(52);
 
 	var _module2 = __webpack_require__(2);
 
@@ -94,6 +94,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	templ.component('repeat', _templateIndex.RepeatComponent);
 	templ.component('click', _templateIndex.ClickComponent);
 	templ.attribute("click", _attributesIndex.ClickAttribute);
+	//templ.attribute('model', ModelAttribute);
 	instance.container.registerSingleton("templateResolver", _servicesIndex.TemplateResolver, _internal.DINamespace);
 	moby.service('http', _servicesIndex.HttpService);
 	(0, _bootstrap.bootstrap)(instance);
@@ -6513,6 +6514,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return value;
 	        }
 	    }, {
+	        key: 'remove',
+	        value: function remove() {
+	            _get(Object.getPrototypeOf(TemplateView.prototype), 'remove', this).call(this);
+	            delete this._container;
+	            delete this._delegator;
+	            delete this._context;
+	        }
+	    }, {
 	        key: 'context',
 	        set: function set(context) {
 	            if (this._context && this._context instanceof _collection.Model) {}
@@ -7057,6 +7066,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.__resolveTemplate(this.attributes['template']).then(function (template) {
 	                if (_this2.subview) {
 	                    _this2.subview.remove();
+	                    delete _this2.subview;
 	                }
 	                _this2.subview = _this2.childTemplate.view(controller.ctx.model, {
 	                    container: _this2.container,
@@ -7089,14 +7099,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	        }
 	    }, {
-	        key: 'update',
-	        value: function update() {
-	            //console.log('update', arguments)
-	        }
-	    }, {
 	        key: 'destroy',
 	        value: function destroy() {
 	            _get(Object.getPrototypeOf(ControllerComponent.prototype), 'destroy', this).call(this);
+	            if (this.subview) {
+	                this.subview.remove();
+	                delete this.subview;
+	            }
 	            this.controller.destroy();
 	        }
 	    }]);
@@ -7160,8 +7169,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	                return;
 	            }
 	            if (this._collection && this._collection instanceof _collection.Collection) {
-	                //this._collection.off('remove',this._update)
-	                //this._collection.off('add', this._update)
 	                this.__removeEventListeners(this._collection);
 	            }
 	            this._collection = each;
@@ -7421,12 +7428,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (action instanceof _templ.Assignment) {
 	                action = action.assign;
 	            }
-	            if (action === this._oldAction) {
+	            var isAssignment = attr.action instanceof _templ.Assignment && this._oldAction instanceof _templ.Assignment;
+	            if (isAssignment && attr.action.path == this._oldAction.path || action == this._oldAction) {
 	                return;
 	            }
-	            this._oldAction = action;
+	            this._oldAction = attr.action;
 	            if (this.subview) {
 	                this.subview.remove();
+	                delete this.subview;
 	            }
 	            this._undelegateEvent();
 	            this.subview = this.childTemplate.view(this.view.context, {
@@ -7500,6 +7509,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	_defaults(exports, _interopExportWildcard(_clickAttribute, _defaults));
 
+	var _modelAttribute = __webpack_require__(48);
+
+	_defaults(exports, _interopExportWildcard(_modelAttribute, _defaults));
+
 /***/ },
 /* 47 */
 /***/ function(module, exports, __webpack_require__) {
@@ -7555,6 +7568,32 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 48 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	/// <reference path="../typings" />
+	/*export class ModelAttribute extends attributes.BaseAttribute {
+	    _boundFunction:Function
+	    _oldValue:any
+	    update() {
+	        
+	        let val = this.value
+	        if (equal(val, this._oldValue)) {
+	            console.log('equal')
+	            return
+	        }
+	        
+	        if (typeof val !== 'string') return
+	        val = val.trim()
+	        if (!val.substr(0) != '{') {
+	            val = "{"
+	        }
+	    }
+	}*/
+
+/***/ },
+/* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7567,16 +7606,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _defaults(obj, defaults) { var keys = Object.getOwnPropertyNames(defaults); for (var i = 0; i < keys.length; i++) { var key = keys[i]; var value = Object.getOwnPropertyDescriptor(defaults, key); if (value && value.configurable && obj[key] === undefined) { Object.defineProperty(obj, key, value); } } return obj; }
 
-	var _httpService = __webpack_require__(49);
+	var _httpService = __webpack_require__(50);
 
 	_defaults(exports, _interopExportWildcard(_httpService, _defaults));
 
-	var _templateResolver = __webpack_require__(50);
+	var _templateResolver = __webpack_require__(51);
 
 	_defaults(exports, _interopExportWildcard(_templateResolver, _defaults));
 
 /***/ },
-/* 49 */
+/* 50 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../typings" />
@@ -7647,7 +7686,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.HttpService = HttpService = __decorate([(0, _internal.classtype)(_internal.ClassType.Service), __metadata('design:paramtypes', [])], HttpService);
 
 /***/ },
-/* 50 */
+/* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -7704,7 +7743,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.TemplateResolver = TemplateResolver = __decorate([(0, _internal.classtype)(_internal.ClassType.Service), __metadata('design:paramtypes', [])], TemplateResolver);
 
 /***/ },
-/* 51 */
+/* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="typings" />
