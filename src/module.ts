@@ -6,7 +6,7 @@ import {IProxy, createProxy} from './proxy/index'
 import {NestedModel} from 'collection'
 import * as templ from 'templ'
 import {TemplateView} from './template-view'
-
+import {EventDelegator} from './event.delegator'
 @classtype(ClassType.Module)
 export class Module extends BaseObject {
 	private _container: DIContainer
@@ -25,6 +25,10 @@ export class Module extends BaseObject {
 	
 	get ctx (): IProxy {
 		return this._ctx
+	}
+	
+	get container (): DIContainer {
+		return this._container
 	}
 	
 	module<T> (name): T {
@@ -56,8 +60,9 @@ export class Module extends BaseObject {
 			let template = templ.compile(this.el.outerHTML, {
 				viewClass: <any>TemplateView
 			})
-			this._templ = <any>template.view(this._ctx.model,{
-				container: this._container
+			this._templ = <any>template.view(this._ctx.model, {
+				container: this._container,
+				delegator: new EventDelegator(this, this.ctx, this._container)
 			});
 			
 			let el = this._templ.render()

@@ -11,6 +11,7 @@ export declare class Module extends BaseObject {
     name: string;
     el: HTMLElement;
     ctx: IProxy;
+    container: DIContainer;
     module<T>(name: any): T;
     /**
      * Module

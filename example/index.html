@@ -7,23 +7,32 @@
   var utils = moby.utils
   moby.module("app",{
     initialize: function (router, userID, ctx) {
-      
+
       ctx.title = "Hello, world!"
-      
+
       ctx.description = utils.delay(1000).then(function () {
         return "Ta da!"
       })
-      
+
       this.module('router')
+    },
+    onClick: function (e, ctx) {
+     
+      ctx.title = "Hello, New World!"
     }
-  }).controller('main', function (ctx) {
+  }).controller('main', {
+    constructor: function (ctx) {
       console.log(ctx)
       ctx.name = "Hello"
       ctx.names = ["Rasmus", "Peter", 'Maria']
-      
+
       ctx.hello = function () {
         alert('Hello')
       }
+    },
+    onClick: function () {
+      
+    }
   })
 
   moby.service('router', function (config) {
@@ -31,7 +40,7 @@
     this.config = config
   }, {config: 'yessir'})
 
-  
+
   var app = moby.module('app')
   app.service('userID', 'det er det der tæller')
 
@@ -43,20 +52,25 @@
 </head>
 <body>
   <div moby-app="app">
-    {{title}} 
+    {{title}}
     {{description}}
+    <button click="onClick">Click</button>
     <controller name="main" template="main">
       <h1>{{name}}</h1>
     </controller>
-    <view template="main"></view>
+    <!--view template="main"></view-->
   </div>
 <script type="html/template" id="main">
   <p>{{name}}</p>
-  <p click="{{hello}}">Every little thing she does is magic</p>
-  <ul>
+  <!--p click="{{hello}}">Every little thing she does is magic</p-->
+  <ul click.delegate="li" click.action="{{hello}}">
     <li repeat.each="{{names}}">{{this}}</li>
   </ul>
-</script>  
+  <click delegate=".click" action="onClick">
+    <div></div>
+    <button class="click">click me</button>
+  </click>
+</script>
 
 </body>
 </html>

@@ -5,6 +5,7 @@ import {DIContainer} from 'di'
 import {isPromise, IPromise, Promise} from 'utilities/lib/index'
 import {TemplateResolver} from '../services/template.resolver'
 import {TemplateView} from '../template-view'
+import {EventDelegator} from '../event.delegator'
 export class ControllerComponent extends components.BaseComponent {
 	container: DIContainer
 	name: string
@@ -43,7 +44,9 @@ export class ControllerComponent extends components.BaseComponent {
 				this.subview.remove()
 			}
 			this.subview = <View>this.childTemplate.view(controller.ctx.model, {
-				container: this.container
+				container: this.container,
+				parent: this.view,
+				delegator: new EventDelegator(controller, controller.ctx, this.container)
 			});
 		
 			let node = this.subview.render()

@@ -41,6 +41,7 @@ export class TemplateView extends templ.View {
 			if (options.container) {
 				this._container = options.container
 			}
+		
 			
 	}
 	
