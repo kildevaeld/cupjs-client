@@ -17,7 +17,7 @@ export class EventDelegator implements IDelegator {
 	addListener(elm: Element, eventName: string, callback: string|EventListener, capture?: boolean): Function {
 		
 		let fn = this._getCallback(callback)
-	
+
 		utils.addEventListener(elm, eventName, fn, capture)
 		
 		return fn
@@ -30,8 +30,6 @@ export class EventDelegator implements IDelegator {
 	addDelegate(elm: Element, selector: string, eventName:string, callback: string|EventListener, capture?:boolean): Function {
 	
 		let fn = this._getCallback(callback)
-		
-	
 		utils.delegate(<HTMLElement>elm, selector, eventName, fn, capture)
 		
 		return fn

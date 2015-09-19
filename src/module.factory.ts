@@ -108,6 +108,12 @@ export class ModuleFactory extends BaseObject {
     if (typeof controller === 'function') {
       Klass = <ControllerConstructor>controller
     } else if (isObject(controller)) {
+      if ((<any>controller).initialize && controller.constructor === Object) {
+        
+        controller.constructor = (<any>controller).initialize
+        delete (<any>controller).initialize
+      }
+      
       Klass = Controller.extend<ControllerConstructor>(controller)
     } else {
       throw new Error('wrong controller definition type');

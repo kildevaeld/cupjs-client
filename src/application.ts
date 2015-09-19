@@ -45,6 +45,10 @@ export class Application extends BaseObject {
     if (typeof definition === 'function' && isClassType(<Function>definition, ClassType.Module)) {
       mod = <ModuleConstructor>definition
     } else if (isObject(definition)) {
+      if (definition.constructor) {
+        (<any>definition).initialize = definition.constructor
+        delete definition.constructor
+      }
       mod = Module.extend<ModuleConstructor>(definition)
     } else {
       throw new Error('wrong module type')

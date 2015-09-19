@@ -1,59 +1,52 @@
 /// <reference path="../typings" />
-//import {Controller} from '../controller'
-import {components, View, compile, vnode, attributes} from 'templ'
+
+import {components, View, compile, vnode, Assignment} from 'templ'
 import {DIContainer} from 'di'
 import {isPromise, IPromise, Promise, extend} from 'utilities'
-import {TemplateResolver} from '../services/template.resolver'
 import {TemplateView} from '../template-view'
 import {EventDelegator} from '../event.delegator'
 
-export class ActionAttribute extends attributes.BaseAttribute {
-	update () {
-		console.log(this)
-		
-		//this.ref.setAttribute('test', 'mig')
-	}
-}
-
+// TODO: Optimize
 export class ClickComponent extends components.BaseComponent {
 	container: DIContainer
-	name: string
-	//controller: Controller
 	subview: View
-  rootElm: HTMLElement
-  boundFunction: Function
-	boundElement: HTMLElement
-	initialize () {
-    
-    let len = this.vnode.childNodes.length;
-
-    if (len === 1) {
-      this.rootElm = <any>this.vnode.childNodes[0];
-    } else {
-      //this.rootElm = document.createElement('div');
-    }
-
-	}
-
+  private _bound: [HTMLElement, Function, string, string]
+	private _oldAction:any
 	update () {
-
-    let attr: any = this.attributes
-
-		if (this.subview) {
-			this.subview.remove()
-		}
 		
-
-		if (this.rootElm) {
-			attr = extend({},attr,this.rootElm.attributes)
-		}
+		let rootElm
+		if (this.vnode.childNodes.length === 1) {
+      rootElm = <any>this.vnode.childNodes[0];
+    }
 		
+    let attr: any = this.attributes,
+			delegator: EventDelegator = (<any>this.view)._delegator
+		
+		if (rootElm) {
+			attr = extend({},attr,rootElm.attributes)
+		}
 		
 		if (!attr.action) {
 			throw new Error('click.component: no action')
 		}
 		
-		let delegator: EventDelegator = (<any>this.view)._delegator
+		let action = attr.action
+		
+		if (action instanceof Assignment) {
+			action = action.assign
+		}
+		
+		if (action === this._oldAction) {
+			return
+		}
+		
+		this._oldAction = action
+		
+		if (this.subview) {
+			this.subview.remove()
+		}
+		
+		this._undelegateEvent();
 		
 		this.subview = <TemplateView>this.childTemplate.view(this.view.context, {
 			parent: this.view,
@@ -63,30 +56,43 @@ export class ClickComponent extends components.BaseComponent {
 		
 		
 		let node = <HTMLElement>this.subview.render();
-		let elm
-		if (attr.delegate && !this.rootElm) {
-			let root = document.createElement('div');
-			root.appendChild(node)
-			node = root
-			elm = root
+		let elm: HTMLElement
+		if (attr.delegate && !rootElm) {
+			elm = document.createElement('div');
+			elm.appendChild(node)
+			node = elm		
 		} else  {
-			elm = node.children[0]
+			elm = <HTMLElement>node.children[0]
 		} 
 		
-   
+   	let fn: Function
 		if (attr.delegate) {
-			delegator.addDelegate(elm, attr.delegate, 'click', attr.action)
+			fn = delegator.addDelegate(elm, attr.delegate, 'click', action)
 		} else {
-			delegator.addListener(elm, 'click', attr.action)
+			fn = delegator.addListener(elm, 'click', action)
 		}
 
+		this._bound = [elm, fn, 'click', <string>attr.delegate]
 
 		this.section.appendChild(node)
 	}
 
+	_undelegateEvent () {
+		let delegator: EventDelegator = (<any>this.view)._delegator
+		if (this._bound) {
+			let [elm, fn, eventName, selector] = this._bound;
+			
+			(selector != null)  ? delegator.removeDelegate(elm, selector, eventName, <EventListener>fn) : 
+				delegator.removeListener(elm, eventName, <EventListener>fn)
+			delete this._bound
+		}
+	}
+
 	destroy () {
-		super.destroy();
+		this._undelegateEvent()
 		this.subview.remove();
+		super.destroy();
+		
 	}
 
 

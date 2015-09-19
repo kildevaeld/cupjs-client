@@ -94,7 +94,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	templ.component('repeat', _templateIndex.RepeatComponent);
 	templ.component('click', _templateIndex.ClickComponent);
 	templ.attribute("click", _attributesIndex.ClickAttribute);
-	//templ.attribute('action', ActionAttribute);
 	instance.container.registerSingleton("templateResolver", _servicesIndex.TemplateResolver, _internal.DINamespace);
 	moby.service('http', _servicesIndex.HttpService);
 	(0, _bootstrap.bootstrap)(instance);
@@ -169,6 +168,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (typeof definition === 'function' && (0, _internal.isClassType)(definition, _internal.ClassType.Module)) {
 	                mod = definition;
 	            } else if ((0, _utilities.isObject)(definition)) {
+	                if (definition.constructor) {
+	                    definition.initialize = definition.constructor;
+	                    delete definition.constructor;
+	                }
 	                mod = _module2.Module.extend(definition);
 	            } else {
 	                throw new Error('wrong module type');
@@ -6823,6 +6826,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (typeof _controller === 'function') {
 	                Klass = _controller;
 	            } else if ((0, _utilitiesLibIndex.isObject)(_controller)) {
+	                if (_controller.initialize && _controller.constructor === Object) {
+	                    _controller.constructor = _controller.initialize;
+	                    delete _controller.initialize;
+	                }
 	                Klass = _controller2.Controller.extend(_controller);
 	            } else {
 	                throw new Error('wrong controller definition type');
@@ -7363,11 +7370,14 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/// <reference path="../typings" />
 	'use strict';
 
 	Object.defineProperty(exports, '__esModule', {
 	    value: true
 	});
+
+	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
 
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -7381,27 +7391,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _utilities = __webpack_require__(5);
 
-	var ActionAttribute = (function (_attributes$BaseAttribute) {
-	    _inherits(ActionAttribute, _attributes$BaseAttribute);
-
-	    function ActionAttribute() {
-	        _classCallCheck(this, ActionAttribute);
-
-	        _get(Object.getPrototypeOf(ActionAttribute.prototype), 'constructor', this).apply(this, arguments);
-	    }
-
-	    _createClass(ActionAttribute, [{
-	        key: 'update',
-	        value: function update() {
-	            console.log(this);
-	            //this.ref.setAttribute('test', 'mig')
-	        }
-	    }]);
-
-	    return ActionAttribute;
-	})(_templ.attributes.BaseAttribute);
-
-	exports.ActionAttribute = ActionAttribute;
+	// TODO: Optimize
 
 	var ClickComponent = (function (_components$BaseComponent) {
 	    _inherits(ClickComponent, _components$BaseComponent);
@@ -7413,27 +7403,32 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    _createClass(ClickComponent, [{
-	        key: 'initialize',
-	        value: function initialize() {
-	            var len = this.vnode.childNodes.length;
-	            if (len === 1) {
-	                this.rootElm = this.vnode.childNodes[0];
-	            } else {}
-	        }
-	    }, {
 	        key: 'update',
 	        value: function update() {
-	            var attr = this.attributes;
-	            if (this.subview) {
-	                this.subview.remove();
+	            var rootElm = undefined;
+	            if (this.vnode.childNodes.length === 1) {
+	                rootElm = this.vnode.childNodes[0];
 	            }
-	            if (this.rootElm) {
-	                attr = (0, _utilities.extend)({}, attr, this.rootElm.attributes);
+	            var attr = this.attributes,
+	                delegator = this.view._delegator;
+	            if (rootElm) {
+	                attr = (0, _utilities.extend)({}, attr, rootElm.attributes);
 	            }
 	            if (!attr.action) {
 	                throw new Error('click.component: no action');
 	            }
-	            var delegator = this.view._delegator;
+	            var action = attr.action;
+	            if (action instanceof _templ.Assignment) {
+	                action = action.assign;
+	            }
+	            if (action === this._oldAction) {
+	                return;
+	            }
+	            this._oldAction = action;
+	            if (this.subview) {
+	                this.subview.remove();
+	            }
+	            this._undelegateEvent();
 	            this.subview = this.childTemplate.view(this.view.context, {
 	                parent: this.view,
 	                delegator: delegator,
@@ -7441,26 +7436,44 @@ return /******/ (function(modules) { // webpackBootstrap
 	            });
 	            var node = this.subview.render();
 	            var elm = undefined;
-	            if (attr.delegate && !this.rootElm) {
-	                var root = document.createElement('div');
-	                root.appendChild(node);
-	                node = root;
-	                elm = root;
+	            if (attr.delegate && !rootElm) {
+	                elm = document.createElement('div');
+	                elm.appendChild(node);
+	                node = elm;
 	            } else {
 	                elm = node.children[0];
 	            }
+	            var fn = undefined;
 	            if (attr.delegate) {
-	                delegator.addDelegate(elm, attr.delegate, 'click', attr.action);
+	                fn = delegator.addDelegate(elm, attr.delegate, 'click', action);
 	            } else {
-	                delegator.addListener(elm, 'click', attr.action);
+	                fn = delegator.addListener(elm, 'click', action);
 	            }
+	            this._bound = [elm, fn, 'click', attr.delegate];
 	            this.section.appendChild(node);
+	        }
+	    }, {
+	        key: '_undelegateEvent',
+	        value: function _undelegateEvent() {
+	            var delegator = this.view._delegator;
+	            if (this._bound) {
+	                var _bound = _slicedToArray(this._bound, 4);
+
+	                var elm = _bound[0];
+	                var fn = _bound[1];
+	                var eventName = _bound[2];
+	                var selector = _bound[3];
+
+	                selector != null ? delegator.removeDelegate(elm, selector, eventName, fn) : delegator.removeListener(elm, eventName, fn);
+	                delete this._bound;
+	            }
 	        }
 	    }, {
 	        key: 'destroy',
 	        value: function destroy() {
-	            _get(Object.getPrototypeOf(ClickComponent.prototype), 'destroy', this).call(this);
+	            this._undelegateEvent();
 	            this.subview.remove();
+	            _get(Object.getPrototypeOf(ClickComponent.prototype), 'destroy', this).call(this);
 	        }
 	    }]);
 

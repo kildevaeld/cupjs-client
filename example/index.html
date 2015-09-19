@@ -6,7 +6,7 @@
   <script>
   var utils = moby.utils
   moby.module("app",{
-    initialize: function (router, userID, ctx) {
+    constructor: function (router, userID, ctx) {
 
       ctx.title = "Hello, world!"
 
@@ -21,10 +21,11 @@
       ctx.title = "Hello, New World!"
     }
   }).controller('main', {
-    constructor: function (ctx) {
+    initialize: function (ctx) {
       console.log(ctx)
+      ctx.count = 0
       ctx.name = "Hello"
-      ctx.names = ["Rasmus", "Peter", 'Maria']
+      ctx.names = [{name: 'Rasmus'}, { name:"Peter"}]
 
       ctx.hello = function () {
         alert('Hello')
@@ -64,10 +65,10 @@
   <p>{{name}}</p>
   <!--p click="{{hello}}">Every little thing she does is magic</p-->
   <ul click.delegate="li" click.action="{{hello}}">
-    <li repeat.each="{{names}}">{{this}}</li>
+    <li repeat.each="{{names}}">{{this.name}}</li>
   </ul>
-  <click delegate=".click" action="onClick">
-    <div></div>
+  <click delegate=".click" action="{{ count = count + 1 }}">
+    <div>Clicked in click me button {{count}} times</div>
     <button class="click">click me</button>
   </click>
 </script>
