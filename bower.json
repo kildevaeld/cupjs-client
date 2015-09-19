@@ -1,0 +1,22 @@
+{
+  "name": "mobyjs",
+  "version": "0.0.4",
+  "homepage": "https://github.com/kildevaeld/cupjs-client",
+  "authors": [
+    "Rasmus Kildevæld <rasmuskildevaeld@gmail.com>"
+  ],
+  "main": "dist/moby.js",
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

@@ -2,7 +2,7 @@
   "name": "mobyjs",
   "version": "0.0.4",
   "description": "",
-  "main": "dist/moby.js",
+  "main": "lib/index",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,6 +12,7 @@
     "babel-core": "^5.8.24",
     "babel-loader": "^5.3.2",
     "gulp": "^3.9.0",
+    "gulp-bump": "^0.3.1",
     "gulp-rename": "^1.2.2",
     "gulp-typescript": "^2.9.0",
     "gulp-uglify": "^1.4.1",
@@ -28,7 +29,10 @@
     "mobyjs": "mobyjs.d.ts"
   },
   "typescript": {
-    "definition": "moby.d.ts"
+    "definition": "mobyjs.d.ts"
+  },
+  "jspm": {
+    "main": "dist/moby.js" 
   },
   "dependencies": {
     "collection": "git+https://github.com/kildevaeld/collectionjs.git",
