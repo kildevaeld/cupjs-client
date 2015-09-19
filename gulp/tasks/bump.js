@@ -1,5 +1,5 @@
 'use strict';
-
+const gulp = require('gulp');
 const bump = require('gulp-bump');
 
 gulp.task('bump:patch', function () {

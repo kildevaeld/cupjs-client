@@ -1,6 +1,6 @@
 {
   "name": "mobyjs",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "",
   "main": "lib/index",
   "scripts": {
@@ -32,7 +32,7 @@
     "definition": "mobyjs.d.ts"
   },
   "jspm": {
-    "main": "dist/moby.js" 
+    "main": "dist/moby.js"
   },
   "dependencies": {
     "collection": "git+https://github.com/kildevaeld/collectionjs.git",
