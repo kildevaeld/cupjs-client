@@ -23,6 +23,8 @@ export interface IProxy {
 	[x: string]: any 
 	destroy()
 	createChild(): IProxy
+	observe()
+	unobserve()
 }
 
 

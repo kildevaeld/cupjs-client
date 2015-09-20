@@ -8,10 +8,13 @@ export class ObjectObserveProxy extends AbstractProxy implements IProxy {
 	
 	observe () {
 		(<any>Object).observe(this, this._onchange);
+		if (this.parent) this.parent.observe();
 	}
 	
 	unobserve () {
 		(<any>Object).unobserve(this, this._onchange);
+		if (this.parent) this.parent.unobserve();
+		
 	}
 	
 	createChild (): ObjectObserveProxy {

@@ -2,11 +2,21 @@ import {extend, toPromise, bind, callFunc, nextTick, deferred, Deferred, isObjec
 import {IModel, NestedModel, Collection} from 'collection'
 import {IProxy, ProxyEvent, get_atributes} from './index'
 
-export abstract class AbstractProxy {
+export abstract class AbstractProxy implements IProxy {
 	public model:IModel
 	__queue:number
 	[x: string]: any
 	parent: IProxy
+	
+	get root (): IProxy {
+		if (!this.parent) return <any>this
+		let root = this, tmp
+		while (tmp) {
+			tmp = this.parent
+			if (tmp) root = tmp
+		}
+		return <any>root;
+	}
 	
 	constructor (model?:IModel, parent?:IProxy) {
 		this.model = model||new NestedModel()
@@ -68,9 +78,10 @@ export abstract class AbstractProxy {
 					this.unobserve();
 				}
 				
+				props = this.__normalizeAttr(props)
 				extend(this, props)
 				
-				this.model.set(this.__normalizeAttr(props));
+				this.model.set(props);
 				
 			}).catch( (e) => {
 				this.model.trigger('error', e);
@@ -100,4 +111,6 @@ export abstract class AbstractProxy {
 	destroy () {
 		(<any>this.model).destroy()
 	}
+	
+	createChild (): IProxy { return null; }
 }
