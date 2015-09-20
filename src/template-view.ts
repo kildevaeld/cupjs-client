@@ -46,7 +46,7 @@ export class TemplateView extends templ.View {
 	}
 	
 	set(key: string|string[], val: any, silent: boolean = false) {
-
+		console.log('set key', key, val)
 		if (!silent) {
 			if (!(this.context instanceof Model)) {
 				return super.set(key, val)
@@ -66,6 +66,9 @@ export class TemplateView extends templ.View {
 					this.root.update();
 				}
 				return
+			} else if (key[0] === 'root') {
+				(<string[]>key).shift()
+				this.root.set(key, val);
 			} else {
 
 				this.context.set((<string[]>key).join('.'), val)

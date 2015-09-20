@@ -29,6 +29,7 @@
 
       ctx.hello = function () {
         alert('Hello')
+        console.log(ctx)
       }
     },
     onClick: function () {
@@ -62,8 +63,8 @@
     <!--view template="main"></view-->
   </div>
 <script type="html/template" id="main">
-  <p>{{name}}</p>
-  <!--p click="{{hello}}">Every little thing she does is magic</p-->
+  <p click.action="{{ root.title = 2000 }}">{{name}}</p>
+  <p click="{{hello}}">Every little thing she does is magic</p>
   <!--<ul click.delegate="li" click.action="{{hello}}">
     <li repeat.each="{{names}}">{{this.name}}</li>
   </ul>-->

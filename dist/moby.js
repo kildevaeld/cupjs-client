@@ -151,6 +151,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.Module = _module2.Module;
 	        this.Controller = _controller.Controller;
 	        this.utils = utils;
+	        this.templ = templ;
 	        this._bootstraped = false;
 	        this._container = new _di.DIContainer();
 	        this._activator = new _serviceActivator.ServiceActivator(this._container);
@@ -2594,11 +2595,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: 'observe',
 	        value: function observe() {
 	            Object.observe(this, this._onchange);
+	            if (this.parent) this.parent.observe();
 	        }
 	    }, {
 	        key: 'unobserve',
 	        value: function unobserve() {
 	            Object.unobserve(this, this._onchange);
+	            if (this.parent) this.parent.unobserve();
 	        }
 	    }, {
 	        key: 'createChild',
@@ -3505,8 +3508,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    if (--_this2.__queue === 0) {
 	                        _this2.unobserve();
 	                    }
+	                    props = _this2.__normalizeAttr(props);
 	                    (0, _utilitiesLibIndex.extend)(_this2, props);
-	                    _this2.model.set(_this2.__normalizeAttr(props));
+	                    _this2.model.set(props);
 	                })['catch'](function (e) {
 	                    _this2.model.trigger('error', e);
 	                    _this2.unobserve();
@@ -3535,6 +3539,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: 'destroy',
 	        value: function destroy() {
 	            this.model.destroy();
+	        }
+	    }, {
+	        key: 'createChild',
+	        value: function createChild() {
+	            return null;
+	        }
+	    }, {
+	        key: 'root',
+	        get: function get() {
+	            if (!this.parent) return this;
+	            var root = this.parent;
+	            while (root) {
+	                if (root.parent) root = root.parent;else return root;
+	            }
+	            return root;
 	        }
 	    }]);
 
@@ -6463,6 +6482,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function set(key, val) {
 	            var silent = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
 
+	            console.log('set key', key, val);
 	            if (!silent) {
 	                if (!(this.context instanceof _collection.Model)) {
 	                    return _get(Object.getPrototypeOf(TemplateView.prototype), 'set', this).call(this, key, val);
@@ -6478,6 +6498,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        this.root.update();
 	                    }
 	                    return;
+	                } else if (key[0] === 'root') {
+	                    key.shift();
+	                    this.root.set(key, val);
 	                } else {
 	                    this.context.set(key.join('.'), val);
 	                }

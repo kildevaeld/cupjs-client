@@ -12,6 +12,8 @@ export interface IProxy {
     [x: string]: any;
     destroy(): any;
     createChild(): IProxy;
+    observe(): any;
+    unobserve(): any;
 }
 export declare function createProxy(model: IModel): IProxy;
 export declare const get_atributes: (attributes: any) => {

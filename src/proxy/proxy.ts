@@ -10,10 +10,10 @@ export abstract class AbstractProxy implements IProxy {
 	
 	get root (): IProxy {
 		if (!this.parent) return <any>this
-		let root = this, tmp
-		while (tmp) {
-			tmp = this.parent
-			if (tmp) root = tmp
+		let root = this.parent
+		while (root) {
+			if (root.parent) root = root.parent
+			else return root
 		}
 		return <any>root;
 	}
