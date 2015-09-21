@@ -1,4 +1,4 @@
-/// <reference path="../typings" />
+/// <reference path="../../typings" />
 
 import {components, View, compile, vnode, Assignment} from 'templ'
 import {DIContainer} from 'di'
@@ -20,7 +20,7 @@ export class ClickComponent extends components.BaseComponent {
     }
 		
     let attr: any = this.attributes,
-			delegator: EventDelegator = (<any>this.view)._delegator
+			delegator: EventDelegator = (<any>this.view)._getDelegator()||this.view;
 		
 		if (rootElm) {
 			attr = extend({},attr,rootElm.attributes)

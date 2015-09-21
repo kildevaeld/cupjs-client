@@ -1,7 +1,7 @@
-/// <reference path="../typings" />
+/// <reference path="../../typings" />
 
 import {components, View, compile, vnode} from 'templ'
-import {TemplateResolver} from '../services/template.resolver'
+import {TemplateResolver} from '../../services/template.resolver'
 import {TemplateView} from '../template-view'
 import {Collection, IModel, NestedModel} from 'collection'
 import {uniqueId} from 'utilities/lib/index'

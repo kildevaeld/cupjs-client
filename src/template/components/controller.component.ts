@@ -1,9 +1,9 @@
-/// <reference path="../typings" />
+/// <reference path="../../typings" />
 import {Controller} from '../controller'
 import {components, View, compile, vnode} from 'templ'
 import {DIContainer} from 'di'
 import {isPromise, IPromise, Promise} from 'utilities/lib/index'
-import {TemplateResolver} from '../services/template.resolver'
+import {TemplateResolver} from '../../services/template.resolver'
 import {TemplateView} from '../template-view'
 import {EventDelegator} from '../event.delegator'
 export class ControllerComponent extends components.BaseComponent {

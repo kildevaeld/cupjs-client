@@ -1,7 +1,7 @@
-/// <reference path="typings"/>
+/// <reference path="../typings"/>
 import {IDelegator} from 'templ'
 import * as utils from 'utilities'
-import {IProxy} from './proxy/index'
+import {IProxy} from '../proxy/index'
 import {getFunctionParameters, DIContainer} from 'di'
 
 export class EventDelegator implements IDelegator {

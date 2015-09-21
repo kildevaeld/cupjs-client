@@ -37,7 +37,7 @@ gulp.task('build:webpack', ['build:typescript'], function () {
     },
     output: {
       filename: config.buildFile,
-      libraryName: config.libraryName,
+      //library: config.libraryName,
       libraryTarget: 'umd',
       umdNamedDefine: 'moby'
     }

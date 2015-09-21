@@ -5,6 +5,11 @@ export declare enum ClassType {
     ModuleFactory = 3,
 }
 export declare const DINamespace: string;
+export interface MetaMap {
+    name: string;
+    handler: any;
+}
+export declare const metadata: Map<string, MetaMap[]>;
 export declare function classtype(type: ClassType): ClassDecorator;
 export declare function getClassType(target: Function): ClassType;
 export declare function isClassType(target: Function, type: ClassType): boolean;

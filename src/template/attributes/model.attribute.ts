@@ -1,4 +1,4 @@
-/// <reference path="../typings" />
+/// <reference path="../../typings" />
 
 import {attributes} from 'templ'
 import {equal} from 'utilities'

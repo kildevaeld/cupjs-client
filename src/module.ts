@@ -5,8 +5,8 @@ import {DIContainer} from 'di'
 import {IProxy, createProxy} from './proxy/index'
 import {NestedModel} from 'collection'
 import * as templ from 'templ'
-import {TemplateView} from './template-view'
-import {EventDelegator} from './event.delegator'
+import {TemplateView} from './template/template-view'
+import {EventDelegator} from './template/event.delegator'
 @classtype(ClassType.Module)
 export class Module extends BaseObject {
 	private _container: DIContainer

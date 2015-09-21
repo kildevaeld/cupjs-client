@@ -51,7 +51,7 @@ export abstract class AbstractProxy implements IProxy {
 	}
 	
 	protected _onchange (events:ProxyEvent[]) {
-		
+		console.log('on chnage')
 		let props = {}
 		
 		for (let i=0,ii=events.length;i<ii;i++) {
@@ -66,8 +66,17 @@ export abstract class AbstractProxy implements IProxy {
 		
 		let {attr, deferred} = get_atributes(props);
 		
-		if (Object.keys(attr).length)
-			this.model.set(this.__normalizeAttr(attr));
+		if (Object.keys(attr).length) {
+			let props = this.__normalizeAttr(attr);
+			
+			this.unobserve();
+			
+			this.model.set(props);
+			extend(this, props);
+			
+			this.observe();
+		}
+			
 		
 		if (Object.keys(deferred).length) {
 			this.__queue++

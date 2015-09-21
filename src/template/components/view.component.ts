@@ -1,10 +1,11 @@
-/// <reference path="../typings" />
-//import {Controller} from '../controller'
+/// <reference path="../../typings" />
+
 import {components, View, compile, vnode} from 'templ'
 import {DIContainer} from 'di'
 import {isPromise, IPromise, Promise} from 'utilities/lib/index'
-import {TemplateResolver} from '../services/template.resolver'
+import {TemplateResolver} from '../../services/template.resolver'
 import {TemplateView} from '../template-view'
+
 export class ViewComponent extends components.BaseComponent {
 	container: DIContainer
 	name: string
@@ -45,7 +46,7 @@ export class ViewComponent extends components.BaseComponent {
 			.then( template => {
 
 				let templ = compile(template,{
-					viewClass: TemplateView
+					viewClass: <any>TemplateView
 				});
 
 				if (this.childTemplate) {

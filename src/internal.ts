@@ -1,5 +1,5 @@
 import {Metakey} from './typings'
-import {Metadata} from 'di'
+import {Metadata, DIContainer} from 'di'
 
 export enum ClassType {
   Module,
@@ -9,6 +9,14 @@ export enum ClassType {
 }
 
 export const DINamespace = "cupsjs"
+
+export interface MetaMap {
+  name: string
+  handler: any
+  //type: ClassType
+}
+
+export const metadata = new Map<string,MetaMap[]>();
 
 export function classtype(type: ClassType): ClassDecorator {
 

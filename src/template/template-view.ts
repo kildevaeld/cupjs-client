@@ -1,4 +1,4 @@
-/// <reference path="typings" />
+/// <reference path="../typings" />
 
 import * as templ from 'templ'
 import {Model,NestedModel} from 'collection'
@@ -42,7 +42,6 @@ export class TemplateView extends templ.View {
 				this._container = options.container
 			}
 		
-			
 	}
 	
 	set(key: string|string[], val: any, silent: boolean = false) {

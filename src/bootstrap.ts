@@ -1,10 +1,53 @@
 /// <reference path="typings" />
 
-import {domReady, deferred, Deferred, IPromise, Promise} from 'utilities/lib/index'
+import {domReady, deferred, Deferred, IPromise, Promise, find} from 'utilities'
 import {Application} from './application'
 import {Module} from './module'
 import {ModuleFactory} from './module.factory'
-import {isClassType, ClassType} from './internal'
+import {isClassType, ClassType, metadata} from './internal'
+import {DIContainer} from 'di'
+
+function resolveControllers (moduleName: string): any {
+	
+	if (metadata.has(moduleName)) {
+		
+		let meta = metadata.get(moduleName);
+		let items = meta.filter(x => isClassType(x.handler, ClassType.Controller))
+		
+		return items	
+	}
+	
+}
+
+function resolveModule(app:Application, moduleName: string): ModuleFactory {
+	let factory
+	if (metadata.has(moduleName)) {
+		
+		let meta = metadata.get(moduleName);
+		let item = find(meta, x => x.name === name)
+		if (item && !isClassType(item.handler, ClassType.Module)) 
+			throw new Error('same same by different');
+		
+		if (item) {
+			factory = app.module(moduleName, item.handler);
+		}
+		
+	}
+	
+	if (!factory && app.container.hasHandler(moduleName)) {
+		factory = <ModuleFactory>app.container.get(moduleName);
+	}
+	
+	if (factory) {
+		let controllers = resolveControllers(moduleName)
+		controllers.forEach( x => {
+			factory.controller(x.name, x.handler)
+		});
+	}
+	
+	return factory;
+	
+}
 
 export function bootstrap (app:Application): IPromise<Module[]>  {
 	
@@ -20,9 +63,13 @@ export function bootstrap (app:Application): IPromise<Module[]>  {
 		for (let i=0,ii=elements.length;i<ii;i++) {
 			elm = elements[i]
 			name = elm.getAttribute('moby-app')
-			if (!app.container.hasHandler(name)) continue
-				
-			mod = <ModuleFactory>app.container.get(name);
+			
+			mod = resolveModule(app, name);
+			
+			if (mod == null) {
+				console.warn('could not find module for ', name)	
+				continue;	
+			}
 			
 			if (!(mod instanceof ModuleFactory)) {
 				throw new Error(`Module ${name} is not of type: module`);

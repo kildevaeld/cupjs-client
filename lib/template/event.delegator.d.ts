@@ -1,5 +1,5 @@
 import { IDelegator } from 'templ';
-import { IProxy } from './proxy/index';
+import { IProxy } from '../proxy/index';
 import { DIContainer } from 'di';
 export declare class EventDelegator implements IDelegator {
     target: any;

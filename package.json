@@ -32,7 +32,11 @@
     "definition": "mobyjs.d.ts"
   },
   "jspm": {
-    "main": "dist/moby.js"
+    "main": "dist/moby.js",
+    "registry": "github",
+    "version": "dev",
+    "name": "kildevaeld/mobyjs",
+    "dependencies": {}
   },
   "dependencies": {
     "collection": "git+https://github.com/kildevaeld/collectionjs.git",
