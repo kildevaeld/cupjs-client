@@ -5,7 +5,6 @@ import {ControllerOptions} from './typings'
 import {View} from 'templ'
 import {IProxy} from './proxy/index'
 
-
 @classtype(ClassType.Controller)
 export class Controller extends BaseObject {
   private _template: View

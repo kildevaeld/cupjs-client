@@ -20,7 +20,7 @@ export class ClickComponent extends components.BaseComponent {
     }
 		
     let attr: any = this.attributes,
-			delegator: EventDelegator = (<any>this.view)._getDelegator()||this.view;
+			delegator: EventDelegator = (<any>this.view).getDelegator()||this.view;
 		
 		if (rootElm) {
 			attr = extend({},attr,rootElm.attributes)
@@ -52,7 +52,7 @@ export class ClickComponent extends components.BaseComponent {
 		}
 		
 		this._undelegateEvent();
-		
+	
 		this.subview = <TemplateView>this.childTemplate.view(this.view.context, {
 			parent: this.view,
 			delegator: delegator,
@@ -83,7 +83,7 @@ export class ClickComponent extends components.BaseComponent {
 	}
 
 	_undelegateEvent () {
-		let delegator: EventDelegator = (<any>this.view)._delegator
+		let delegator: EventDelegator = <EventDelegator>(<TemplateView>this.view).getDelegator()
 		if (this._bound) {
 			let [elm, fn, eventName, selector] = this._bound;
 			

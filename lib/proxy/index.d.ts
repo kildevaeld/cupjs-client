@@ -1,11 +1,12 @@
 import { IModel } from 'collection';
+import { IEventEmitter } from 'eventsjs';
 export interface ProxyEvent {
     name: string;
     object: any;
     type: string;
     oldValue?: any;
 }
-export interface IProxy {
+export interface IProxy extends IEventEmitter {
     model: IModel;
     parent?: IProxy;
     $run(fn: Function, ctx: any, args: any[]): any;

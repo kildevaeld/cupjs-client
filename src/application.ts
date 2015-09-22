@@ -6,7 +6,7 @@ import {ModuleFactory} from './module.factory'
 import {BaseObject} from './object'
 import * as utils from 'utilities'
 import {isClassType, ClassType, DINamespace, setActivator, setDependencyResolver, classtype} from './internal'
-import {DIContainer} from 'di'
+import {DIContainer, FactoryActivator} from 'di'
 import {ServiceActivator} from './service.activator'
 import * as templ from 'templ'
 import {has, isObject} from 'utilities'
@@ -80,6 +80,19 @@ export class Application extends BaseObject {
     }
 
     return this
+  }
+  
+  factory (name: string, factory: Function): Application {
+    
+    if (typeof factory === 'function') {
+      setActivator(factory, FactoryActivator.instance)
+      setDependencyResolver(factory, this._activator);
+      this._container.registerSingleton(name, factory);
+    }  else {
+      this._container.registerInstance(name, factory);
+    }   
+    
+    return this;
   }
 
   createContainer () : DIContainer {

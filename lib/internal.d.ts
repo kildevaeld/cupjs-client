@@ -15,3 +15,4 @@ export declare function getClassType(target: Function): ClassType;
 export declare function isClassType(target: Function, type: ClassType): boolean;
 export declare function setActivator(target: Function, activator: Object): void;
 export declare function setDependencyResolver(target: Function, activator: any): void;
+export declare function getDependencies(fn: Function | any[]): [Function, any[]];

@@ -26,6 +26,7 @@ function resolveServices (moduleName: string): any {
 
 function resolveModule(app:Application, moduleName: string): ModuleFactory {
 	let factory
+	
 	if (metadata.has(moduleName)) {
 		
 		let meta = metadata.get(moduleName);
@@ -51,7 +52,7 @@ function resolveModule(app:Application, moduleName: string): ModuleFactory {
 		});
 		
 		let services = resolveServices(moduleName)
-		services.forEach( x => factory.service(x.name, x.hander));
+		services.forEach( x => factory.service(x.name, x.handler));
 		
 	}
 	

@@ -4,7 +4,7 @@ import {IModel} from 'collection'
 import {ObjectObserveProxy} from './object-observe'
 import {DirtyObjectObserver} from './dirty-observe'
 import {has, isPromise, toPromise, bind, callFunc, nextTick} from 'utilities/lib/index'
-
+import {IEventEmitter} from 'eventsjs'
 /*export enum ProxyEventType {
 	Add, Update, Delete
 }*/
@@ -16,7 +16,7 @@ export interface ProxyEvent {
 	oldValue?:any
 }
 
-export interface IProxy {
+export interface IProxy extends IEventEmitter {
 	model: IModel
 	parent?: IProxy
 	$run (fn:Function, ctx:any, args:any[]): any

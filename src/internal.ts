@@ -1,5 +1,6 @@
 import {Metakey} from './typings'
-import {Metadata, DIContainer} from 'di'
+import {Metadata, DIContainer, getFunctionParameters} from 'di'
+import {result} from 'utilities'
 
 export enum ClassType {
   Module,
@@ -45,4 +46,20 @@ export function setActivator (target:Function, activator:Object) {
 export function setDependencyResolver(target:Function, activator:any) {
   let dependencyResolverKey: string = (<any>Metadata).dependencyResolver
   Metadata.define(dependencyResolverKey, activator, target, undefined);
+}
+
+export function getDependencies (fn:Function|any[]): [Function, any[]] {
+  
+  let dependencies: any[];
+  if (fn.constructor === Array) {
+    fn = (<any[]>fn).pop()
+    dependencies = <any>fn
+  } else {
+    dependencies = result(fn, "inject");
+    if (!dependencies || dependencies.length == 0) {
+      dependencies = getFunctionParameters(<Function>fn);
+    }    
+  }
+  
+  return [<Function>fn, dependencies];
 }

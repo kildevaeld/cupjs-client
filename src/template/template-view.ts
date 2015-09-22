@@ -36,7 +36,7 @@ export class TemplateView extends templ.View {
 			super(section, template, context, options)
 			
 			if (options.delegator) {
-				this._delegator = options.delegator
+				this.delegator = options.delegator
 			}
 			if (options.container) {
 				this._container = options.container
@@ -114,7 +114,7 @@ export class TemplateView extends templ.View {
 	remove () {
 		super.remove()
 		delete this._container
-		delete this._delegator
+		delete this.delegator
 		delete this._context
 	}
 }

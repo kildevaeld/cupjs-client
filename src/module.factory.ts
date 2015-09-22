@@ -4,9 +4,9 @@ import {Module} from './module'
 import {Controller} from './controller'
 import {BaseObject} from './object'
 import {Application} from './application'
-import {DIContainer, Metadata, getFunctionParameters} from 'di'
-import {callFunc, nextTick, isObject, extend, IPromise, Promise, toPromise, isPromise} from 'utilities/lib/index'
-import {DINamespace, setActivator, setDependencyResolver, classtype, ClassType} from './internal'
+import {DIContainer, Metadata, getFunctionParameters, instanceActivator, FactoryActivator} from 'di'
+import {callFunc, nextTick, isObject, extend, IPromise, Promise, toPromise, isPromise, mapAsync} from 'utilities/lib/index'
+import {DINamespace, setActivator, setDependencyResolver, classtype, ClassType, getDependencies} from './internal'
 import {ServiceActivator} from './service.activator'
 import {IProxy} from './proxy/index'
 
@@ -16,13 +16,13 @@ class ControllerActivator {
     this.container = container
   }
   
-  resolveDependencies(fn: Function): any[] {
+  resolveDependencies(fn: Function, deps?:any[]): any[] {
     
       if ((<any>fn).__metadata__.undefined['design:paramtypes']) {
         delete (<any>fn).__metadata__.undefined['design:paramtypes']
       }
     
-      let params = getFunctionParameters(fn),
+      let params = deps||getFunctionParameters(fn),
         args = new Array(params.length)
       let p
        let ctx = this.container.get('context')
@@ -75,6 +75,8 @@ class ControllerActivator {
   }
 }
 
+type DependencyMap = [Function, any[]];
+
 classtype(ClassType.ModuleFactory)
 export class ModuleFactory extends BaseObject {
   private _name: string
@@ -83,6 +85,8 @@ export class ModuleFactory extends BaseObject {
   private _container: DIContainer
   private _activator: ControllerActivator
   private _serviceActivator: ServiceActivator
+  private _initializers: DependencyMap[]
+  
   get name(): string {
     return this._name
   }
@@ -96,6 +100,7 @@ export class ModuleFactory extends BaseObject {
     this._container = app.createContainer();
     this._activator = new ControllerActivator(this._container);
     this._serviceActivator = new ServiceActivator(this._container)
+    this._initializers = [];
   }
 
   controller(name: string, controller: ControllerConstructor|Object): ModuleFactory {
@@ -151,6 +156,27 @@ export class ModuleFactory extends BaseObject {
 
   }
   
+  factory (name: string, factory: Function): ModuleFactory {
+    
+    if (typeof factory === 'function') {
+      setActivator(factory, FactoryActivator.instance)
+      setDependencyResolver(factory, this._serviceActivator);
+      this._container.registerSingleton(name, factory);
+    }  else {
+      this._container.registerInstance(name, factory);
+    }   
+    
+    return this;
+  }
+  
+  
+   
+  initialize(fn:Function|Array<any>): ModuleFactory {
+    let result = getDependencies(fn);
+    this._initializers.push(result); 
+    return this;
+  }
+  
   create (options?: ModuleOptions): IPromise<Module> {
     options = extend({}, options, {name:this.name})
     
@@ -174,8 +200,14 @@ export class ModuleFactory extends BaseObject {
           }
           return k
         });
-       
-        toPromise(args).then((result) => {
+        
+        mapAsync(this._initializers, init => {
+          let [deps, ctx] = this._activator.resolveDependencies(init[0], init[1]);
+          return callFunc(init[0], mod, deps) 
+        }).then(() => {
+          return toPromise(args);
+        })
+        .then((result) => {
           
           try {
             mod.ctx.$run(mod.initialize, mod, result)

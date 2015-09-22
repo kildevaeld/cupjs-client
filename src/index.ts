@@ -3,6 +3,7 @@ import './template/index';
 import {Application} from './application'
 import * as utils from 'utilities'
 
+import {Collection, NestedModel} from 'collection'
 import {BaseObject} from './object'
 import {Module} from './module'
 import {ModuleConstructor} from './typings'
@@ -17,7 +18,6 @@ export interface ITemplateDeclaration {
 	initialize?: () => void		
 }
 
-
 const instance = new Application();
 
 instance.container.registerSingleton("templateResolver",TemplateResolver,DINamespace)
@@ -29,6 +29,8 @@ export const moby = {
 	EventEmitter: BaseObject,
 	utils: utils,
 	Module: Module,
+	Collection: Collection,
+	Model: NestedModel,
 	annotations: annotations,
 	component (name:string, cmp:ITemplateDeclaration|templ.vnode.ComponentConstructor): Application {
 		
@@ -62,7 +64,11 @@ export const moby = {
   service (name:string, definition?:any, config?:any): Application {
 		instance.service(name, definition, config);
 		return instance;
-  }
+  },
+	
+	factory (name:string, facory:any): Application {
+		return instance.factory(name, facory);
+	}
 }
 
 

@@ -24,6 +24,9 @@ export abstract class AbstractProxy extends BaseObject implements IProxy {
 		this.model = model||new NestedModel()
 		this.listenTo(this.model, 'change', this.__onModelChange);
 		this.parent = parent
+		if (parent) {
+			this.listenTo(parent, 'destroy', this.destroy);
+		}
 		this.__queue = 0
 		this._onchange = bind(this._onchange, this);
 
@@ -142,9 +145,14 @@ export abstract class AbstractProxy extends BaseObject implements IProxy {
 	unobserve () {}
 	
 	destroy () {
+		this.trigger('before:destroy');
 		(<any>this.model).destroy()
 		super.destroy();
+		this.trigger('destroy');
+		if (typeof Object.freeze === 'function') {
+			Object.freeze(this);
+		}
 	}
 	
-	createChild (): IProxy { return null; }
+	createChild (): IProxy { throw new Error('not implemented'); }
 }

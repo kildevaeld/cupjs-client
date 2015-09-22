@@ -53,8 +53,8 @@ export function module (moduleName?:string): ClassDecorator {
 		
 		let exists = find(types, i => i.name == name);
 		
-		if (!exists) {
-			throw new Error('module already exists!');
+		if (exists) {
+			throw new Error(`module '${name}' already exists!`);
 		} 
 		
 		classtype(ClassType.Module)(target);
@@ -82,11 +82,11 @@ export function service (serviceName?:string, moduleName?:string): ClassDecorato
 		
 		let exists = find(types, i => i.name == name);
 		
-		if (!exists) {
-			throw new Error('module already exists!');
+		if (exists) {
+			throw new Error(`service '${name}' already exists!`);
 		} 
 		
-		classtype(ClassType.Module)(target);
+		classtype(ClassType.Service)(target);
 		
 		types.push(map)
 			
