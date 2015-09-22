@@ -1,5 +1,6 @@
 import { Application } from './application';
 import * as utils from 'utilities';
+import { BaseObject } from './object';
 import { Module } from './module';
 import { ModuleConstructor } from './typings';
 import { ModuleFactory } from './module.factory';
@@ -9,6 +10,7 @@ export interface ITemplateDeclaration {
     initialize?: () => void;
 }
 export declare const moby: {
+    EventEmitter: typeof BaseObject;
     utils: typeof utils;
     Module: typeof Module;
     annotations: typeof annotations;

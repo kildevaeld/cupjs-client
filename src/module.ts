@@ -67,7 +67,9 @@ export class Module extends BaseObject {
 			
 			let el = this._templ.render()
 			
+			
 			this.el.parentNode.replaceChild(el,this.el)
+			
 		}
 		
 		

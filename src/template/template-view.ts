@@ -45,7 +45,7 @@ export class TemplateView extends templ.View {
 	}
 	
 	set(key: string|string[], val: any, silent: boolean = false) {
-		console.log('set key', key, val)
+		
 		if (!silent) {
 			if (!(this.context instanceof Model)) {
 				return super.set(key, val)

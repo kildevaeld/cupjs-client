@@ -3,7 +3,7 @@ import './template/index';
 import {Application} from './application'
 import * as utils from 'utilities'
 
-
+import {BaseObject} from './object'
 import {Module} from './module'
 import {ModuleConstructor} from './typings'
 import {TemplateResolver, HttpService} from './services/index'
@@ -17,16 +17,16 @@ export interface ITemplateDeclaration {
 	initialize?: () => void		
 }
 
+
 const instance = new Application();
 
 instance.container.registerSingleton("templateResolver",TemplateResolver,DINamespace)
 instance.service('http', HttpService)
 
-bootstrap(instance)
-
+bootstrap(instance);
 
 export const moby = {
-	
+	EventEmitter: BaseObject,
 	utils: utils,
 	Module: Module,
 	annotations: annotations,
@@ -35,7 +35,6 @@ export const moby = {
 		if (typeof cmp !== 'function') {
 			cmp = utils.inherits(<any>templ.components.BaseComponent, cmp);
 		}
-		
 		templ.component(name, <any>cmp);
 		
 		return instance
@@ -45,8 +44,7 @@ export const moby = {
 		
 		if (typeof attr !== 'function') {
 			attr = utils.inherits(<any>templ.attributes.BaseAttribute, attr);
-		}
-		
+		}	
 		templ.attribute(name, <any>attr)
 		
 		return instance

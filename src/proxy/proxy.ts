@@ -1,8 +1,9 @@
 import {extend, toPromise, bind, callFunc, nextTick, deferred, Deferred, isObject} from 'utilities/lib/index'
 import {IModel, NestedModel, Collection} from 'collection'
 import {IProxy, ProxyEvent, get_atributes} from './index'
+import {BaseObject} from '../object';
 
-export abstract class AbstractProxy implements IProxy {
+export abstract class AbstractProxy extends BaseObject implements IProxy {
 	public model:IModel
 	__queue:number
 	[x: string]: any
@@ -17,12 +18,15 @@ export abstract class AbstractProxy implements IProxy {
 		}
 		return <any>root;
 	}
-	
+
 	constructor (model?:IModel, parent?:IProxy) {
+		super();
 		this.model = model||new NestedModel()
+		this.listenTo(this.model, 'change', this.__onModelChange);
 		this.parent = parent
 		this.__queue = 0
 		this._onchange = bind(this._onchange, this);
+
 	}
 	
 	$run (fn:Function, ctx:any, args:any[]): any {
@@ -50,13 +54,33 @@ export abstract class AbstractProxy implements IProxy {
 		}
 	}
 	
+	__executeListener (fn:Function, ctx:any, args: any[]) {
+		this.$run(fn, ctx, args);
+	}
+	
+	private __onModelChange () {
+		
+		console.log(this.model)
+		
+		/*let changed = this.model.changed;
+		this.observe();
+		for (let key in changed) {
+			this.trigger(key, changed[key]);
+		}
+		this.unobserve();*/
+			
+	}
+	
 	protected _onchange (events:ProxyEvent[]) {
-		console.log('on chnage')
+		
 		let props = {}
 		
 		for (let i=0,ii=events.length;i<ii;i++) {
 			let e = events[i]
-			if (e.name === '__queue') continue;
+			let names = e.name.split('.');
+			
+			if (e.name === '__queue' || names[0] == '_listeners') continue;
+			
 			if (e.type === 'delete') {
 				this.model.set(e.name, {unset:true});
 			} else {
@@ -119,6 +143,7 @@ export abstract class AbstractProxy implements IProxy {
 	
 	destroy () {
 		(<any>this.model).destroy()
+		super.destroy();
 	}
 	
 	createChild (): IProxy { return null; }

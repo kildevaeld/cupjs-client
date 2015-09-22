@@ -20,7 +20,6 @@ export class ViewComponent extends components.BaseComponent {
 		this.__initView()
 
 	}
-
 	__initView () {
 
 		this.__resolveTemplate(this.attributes['template'])
@@ -29,7 +28,9 @@ export class ViewComponent extends components.BaseComponent {
 				this.subview.remove()
 			}
 			this.subview = <View>this.childTemplate.view(this.view.context, {
-				container: this.container
+				container: this.container,
+				parent: this.view,
+				//delegator: this.view._getDelegator()||this.view
 			});
 
 			let node = this.subview.render()

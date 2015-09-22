@@ -3,7 +3,7 @@ import {IProxy, get_atributes, ProxyEvent} from './index'
 import {BaseObject} from '../object'
 import {IModel, NestedModel} from 'collection'
 import {toPromise, callFunc, nextTick, equal} from 'utilities/lib/index'
-let reserved = ['model','parent','__queue', '_onchange', '__timer']
+let reserved = ['model','parent','__queue', '_onchange', '__timer', '_listeners']
 
 
 export class DirtyObjectObserver extends AbstractProxy implements IProxy {

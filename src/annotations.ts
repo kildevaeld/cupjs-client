@@ -38,5 +38,57 @@ export function controller (moduleName:string, controllerName?:string): ClassDec
 export function module (moduleName?:string): ClassDecorator {
 	return function (target:Function) {
 		
+		let name = moduleName||camelcase(target.name);
+		
+		let map: MetaMap = {
+			name: name,
+			handler: target
+		}
+		
+		if (!metadata.has(name)) {
+			metadata.set(name, []);
+		}
+		
+		let types = metadata.get(moduleName)
+		
+		let exists = find(types, i => i.name == name);
+		
+		if (!exists) {
+			throw new Error('module already exists!');
+		} 
+		
+		classtype(ClassType.Module)(target);
+		
+		types.push(map)
+			
+	}
+}
+
+export function service (serviceName?:string, moduleName?:string): ClassDecorator {
+	return function (target:Function) {
+		
+		let name = serviceName||camelcase(target.name);
+		
+		let map: MetaMap = {
+			name: name,
+			handler: target
+		}
+		
+		if (!metadata.has(name)) {
+			metadata.set(name, []);
+		}
+		
+		let types = metadata.get(moduleName)
+		
+		let exists = find(types, i => i.name == name);
+		
+		if (!exists) {
+			throw new Error('module already exists!');
+		} 
+		
+		classtype(ClassType.Module)(target);
+		
+		types.push(map)
+			
 	}
 }
