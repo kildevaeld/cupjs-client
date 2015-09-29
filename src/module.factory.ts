@@ -8,7 +8,7 @@ import {DIContainer, Metadata, getFunctionParameters, instanceActivator, Factory
 import {callFunc, nextTick, isObject, extend, IPromise, Promise, toPromise, isPromise, mapAsync} from 'utilities/lib/index'
 import {DINamespace, setActivator, setDependencyResolver, classtype, ClassType, getDependencies} from './internal'
 import {ServiceActivator} from './service.activator'
-import {IProxy} from './proxy/index'
+import {IProxy, getProxy} from './proxy/index'
 
 class ControllerActivator {
   private container: DIContainer
@@ -91,16 +91,17 @@ export class ModuleFactory extends BaseObject {
     return this._name
   }
 
-  constructor(app: Application, name: string, ctor: ModuleConstructor, config: any) {
+  constructor(name: string, ctor: ModuleConstructor, container: DIContainer) {
     super()
 
     this._name = name
     this._module = ctor
-    this._app = app
-    this._container = app.createContainer();
+    this._container = container
     this._activator = new ControllerActivator(this._container);
     this._serviceActivator = new ServiceActivator(this._container)
     this._initializers = [];
+    
+    container.registerSingleton('context', getProxy());
   }
 
   controller(name: string, controller: ControllerConstructor|Object): ModuleFactory {
@@ -132,36 +133,38 @@ export class ModuleFactory extends BaseObject {
     return this
   }
 
-  service(name: string, service: any, config?:any) {
+  service(name: string, service: any) {
+    
+    if (service == null) {
+      throw new Error('on service');
+    }
+    
+    let [fn] = getDependencies(service)
 
-
-    if (typeof service === 'function') {
-      setActivator(service, this._activator);
-      setDependencyResolver(service, this._activator);
-      classtype(ClassType.Service)(service)
-
-      if (config != null) {
-        if (typeof config === 'function') {
-          this._container.registerSingleton(service, config);
-        } else {
-          this._container.registerInstance(service, config);
-        }
-      }
-      this._container.registerSingleton(name, service, DINamespace)
+    if (typeof fn == 'function') {
+     // (<any>fn).inject = deps;
+      setActivator(fn, this._activator);
+      setDependencyResolver(fn, this._activator);
+      classtype(ClassType.Service)(fn);
+      this._container.registerSingleton(name, fn);
     } else {
-      this._container.registerInstance(name, service)
+      throw new Error('service not a function')
+      //this._container.registerInstance(name, service);
     }
 
     return this
 
   }
   
-  factory (name: string, factory: Function): ModuleFactory {
+  factory (name: string, factory: Function|Function[]): ModuleFactory {
     
-    if (typeof factory === 'function') {
-      setActivator(factory, FactoryActivator.instance)
-      setDependencyResolver(factory, this._serviceActivator);
-      this._container.registerSingleton(name, factory);
+    let [fn] = getDependencies(factory);
+    
+    if (typeof fn == 'function') {
+      //(<any>fn).inject = deps;
+      setActivator(fn, FactoryActivator.instance);
+      setDependencyResolver(fn, this._serviceActivator);
+      this._container.registerSingleton(name, fn);
     }  else {
       this._container.registerInstance(name, factory);
     }   
@@ -169,6 +172,7 @@ export class ModuleFactory extends BaseObject {
     return this;
   }
   
+  resolveDepdencies
   
    
   initialize(fn:Function|Array<any>): ModuleFactory {
@@ -220,4 +224,36 @@ export class ModuleFactory extends BaseObject {
          
     })
   }
+  
+  resolveDependencies(fn: Function): any[] {
+      
+      let [_, params] = getDependencies(fn);
+      
+      let args = new Array(params.length), p;
+      
+      
+      
+      for (let i=0,ii=args.length; i < ii; i++) {
+         p = params[i];
+         
+         if (p === 'config') {
+           //args[i] = this.container.get(fn)
+         } else {
+           args[i] = this._container.get(p)
+         }
+      }
+      return args
+      
+    }
+
+    invoke(fn: any, deps: any[], keys?: any[]): any {
+      
+      var instance = Reflect.construct(fn, deps)
+
+      if (instance.$instance) {
+        instance = instance.$instance
+      }
+
+      return instance;
+    }
 }

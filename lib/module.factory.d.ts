@@ -1,7 +1,7 @@
 import { ModuleConstructor, ControllerConstructor, ModuleOptions } from './typings';
 import { Module } from './module';
 import { BaseObject } from './object';
-import { Application } from './application';
+import { DIContainer } from 'di';
 import { IPromise } from 'utilities/lib/index';
 export declare class ModuleFactory extends BaseObject {
     private _name;
@@ -12,10 +12,13 @@ export declare class ModuleFactory extends BaseObject {
     private _serviceActivator;
     private _initializers;
     name: string;
-    constructor(app: Application, name: string, ctor: ModuleConstructor, config: any);
+    constructor(name: string, ctor: ModuleConstructor, container: DIContainer);
     controller(name: string, controller: ControllerConstructor | Object): ModuleFactory;
-    service(name: string, service: any, config?: any): ModuleFactory;
-    factory(name: string, factory: Function): ModuleFactory;
+    service(name: string, service: any): ModuleFactory;
+    factory(name: string, factory: Function | Function[]): ModuleFactory;
+    resolveDepdencies: any;
     initialize(fn: Function | Array<any>): ModuleFactory;
     create(options?: ModuleOptions): IPromise<Module>;
+    resolveDependencies(fn: Function): any[];
+    invoke(fn: any, deps: any[], keys?: any[]): any;
 }

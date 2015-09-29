@@ -3,6 +3,7 @@ export declare enum ClassType {
     Controller = 1,
     Service = 2,
     ModuleFactory = 3,
+    Factory = 4,
 }
 export declare const DINamespace: string;
 export interface MetaMap {

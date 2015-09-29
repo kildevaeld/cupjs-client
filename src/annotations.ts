@@ -33,8 +33,6 @@ export function controller (moduleName:string, controllerName?:string): ClassDec
 	}	
 }
 
-
-
 export function module (moduleName?:string): ClassDecorator {
 	return function (target:Function) {
 		
@@ -68,6 +66,8 @@ export function service (serviceName?:string, moduleName?:string): ClassDecorato
 	return function (target:Function) {
 		
 		let name = serviceName||camelcase(target.name);
+		
+		
 		
 		let map: MetaMap = {
 			name: name,

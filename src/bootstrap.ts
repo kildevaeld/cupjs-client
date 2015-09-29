@@ -6,8 +6,8 @@ import {Module} from './module'
 import {ModuleFactory} from './module.factory'
 import {isClassType, ClassType, metadata, getClassType} from './internal'
 import {DIContainer} from 'di'
-
-
+import {Moby} from './typings'
+import {Repository} from './repository'
 function _resolve (moduleName: string, type: ClassType): any {
 	if (metadata.has(moduleName)) {
 		let meta = metadata.get(moduleName);
@@ -24,8 +24,8 @@ function resolveServices (moduleName: string): any {
 	return _resolve(moduleName, ClassType.Service);
 }
 
-function resolveModule(app:Application, moduleName: string): ModuleFactory {
-	let factory
+function resolveModule(app:Moby, moduleName: string): ModuleFactory {
+	let factory: ModuleFactory
 	
 	if (metadata.has(moduleName)) {
 		
@@ -41,8 +41,11 @@ function resolveModule(app:Application, moduleName: string): ModuleFactory {
 		
 	}
 	
-	if (!factory && app.container.hasHandler(moduleName)) {
-		factory = <ModuleFactory>app.container.get(moduleName);
+	
+	
+	
+	if (!factory) {
+		factory = <ModuleFactory>Repository.get(ClassType.ModuleFactory, moduleName);
 	}
 	
 	if (factory) {
@@ -60,7 +63,7 @@ function resolveModule(app:Application, moduleName: string): ModuleFactory {
 	
 }
 
-export function bootstrap (app:Application): IPromise<Module[]>  {
+export function bootstrap (app:Moby): IPromise<Module[]>  {
 	
 	let defer = <Deferred<Module[]>>deferred()
 	

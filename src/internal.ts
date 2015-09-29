@@ -6,7 +6,8 @@ export enum ClassType {
   Module,
   Controller,
   Service,
-  ModuleFactory
+  ModuleFactory,
+  Factory
 }
 
 export const DINamespace = "cupsjs"
@@ -49,16 +50,21 @@ export function setDependencyResolver(target:Function, activator:any) {
 }
 
 export function getDependencies (fn:Function|any[]): [Function, any[]] {
-  
   let dependencies: any[];
+ 
   if (fn.constructor === Array) {
-    fn = (<any[]>fn).pop()
-    dependencies = <any>fn
-  } else {
+    let tmp = (<any[]>fn).pop()
+    dependencies = <any>fn;
+    fn = tmp;
+  } else if (typeof fn === 'function') {
     dependencies = result(fn, "inject");
     if (!dependencies || dependencies.length == 0) {
       dependencies = getFunctionParameters(<Function>fn);
+      (<any>fn).inject = dependencies;
     }    
+    
+  } else {
+    return [<any>fn,null]
   }
   
   return [<Function>fn, dependencies];

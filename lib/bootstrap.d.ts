@@ -1,4 +1,4 @@
 import { IPromise } from 'utilities';
-import { Application } from './application';
 import { Module } from './module';
-export declare function bootstrap(app: Application): IPromise<Module[]>;
+import { Moby } from './typings';
+export declare function bootstrap(app: Moby): IPromise<Module[]>;

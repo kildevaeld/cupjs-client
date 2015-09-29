@@ -16,7 +16,11 @@ export interface IProxy extends IEventEmitter {
     observe(): any;
     unobserve(): any;
 }
+export interface ProxyConstructor {
+    new (): IProxy;
+}
 export declare function createProxy(model: IModel): IProxy;
+export declare function getProxy(): ProxyConstructor;
 export declare const get_atributes: (attributes: any) => {
     attr: {};
     deferred: {};

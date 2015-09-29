@@ -60,36 +60,40 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 
+	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
+
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
 
 	__webpack_require__(1);
-
-	var _application = __webpack_require__(42);
 
 	var _utilities = __webpack_require__(5);
 
 	var utils = _interopRequireWildcard(_utilities);
 
+	var _di = __webpack_require__(27);
+
 	var _collection = __webpack_require__(15);
 
-	var _object = __webpack_require__(44);
+	var _object = __webpack_require__(42);
 
-	var _module2 = __webpack_require__(43);
+	var _module2 = __webpack_require__(44);
 
-	var _servicesIndex = __webpack_require__(55);
+	var _servicesIndex = __webpack_require__(51);
 
-	var _internal = __webpack_require__(46);
+	var _internal = __webpack_require__(45);
 
-	var _bootstrap = __webpack_require__(58);
+	var _moduleFactory = __webpack_require__(54);
+
+	var _bootstrap = __webpack_require__(57);
+
+	var _repository = __webpack_require__(58);
 
 	var _annotations = __webpack_require__(59);
 
 	var annotations = _interopRequireWildcard(_annotations);
 
-	var instance = new _application.Application();
-	instance.container.registerSingleton("templateResolver", _servicesIndex.TemplateResolver, _internal.DINamespace);
-	instance.service('http', _servicesIndex.HttpService);
-	(0, _bootstrap.bootstrap)(instance);
+	var container = new _di.DIContainer();
+	container.registerSingleton("templateResolver", _servicesIndex.TemplateResolver);
 	var moby = {
 	    EventEmitter: _object.BaseObject,
 	    utils: utils,
@@ -102,31 +106,86 @@ return /******/ (function(modules) { // webpackBootstrap
 	            cmp = utils.inherits(templ.components.BaseComponent, cmp);
 	        }
 	        templ.component(name, cmp);
-	        return instance;
+	        return moby;
 	    },
 	    attribute: function attribute(name, attr) {
 	        if (typeof attr !== 'function') {
 	            attr = utils.inherits(templ.attributes.BaseAttribute, attr);
 	        }
 	        templ.attribute(name, attr);
-	        return instance;
+	        return moby;
 	    },
 	    modifier: function modifier(name, converter) {
 	        templ.modifier(name, converter);
-	        return instance;
+	        return moby;
 	    },
-	    module: function module(name, definition, config) {
-	        return instance.module(name, definition);
+	    module: function module(name, definition) {
+	        if (definition == null) {
+	            return _repository.Repository.get(_internal.ClassType.ModuleFactory, name);
+	        }
+
+	        var _getDependencies = (0, _internal.getDependencies)(definition);
+
+	        var _getDependencies2 = _slicedToArray(_getDependencies, 2);
+
+	        var fn = _getDependencies2[0];
+	        var _ = _getDependencies2[1];
+
+	        if (fn == null) {
+	            throw new Error('module');
+	        }
+	        var mod = undefined;
+	        if (utils.isObject(fn) && typeof fn !== 'function') {
+	            if (fn.constructor != null) {
+	                fn.initialize = fn.constructor;
+	                delete definition.constructor;
+	            }
+	            mod = _module2.Module.extend(definition);
+	        } else if (typeof fn == 'function') {
+	            mod = fn;
+	        } else {
+	            throw new Error('module type');
+	        }
+	        var factory = new _moduleFactory.ModuleFactory(name, mod, container.createChild());
+	        _repository.Repository.add(_internal.ClassType.ModuleFactory, name, factory);
+	        return factory;
 	    },
-	    service: function service(name, definition, config) {
-	        instance.service(name, definition, config);
-	        return instance;
+	    service: function service(name, definition) {
+	        if (definition == null) {
+	            throw new Error('no def');
+	        }
+
+	        var _getDependencies3 = (0, _internal.getDependencies)(definition);
+
+	        var _getDependencies32 = _slicedToArray(_getDependencies3, 1);
+
+	        var fn = _getDependencies32[0];
+
+	        if (typeof fn !== 'function') throw new Error('fn');
+	        _repository.Repository.add(_internal.ClassType.Service, name, fn);
+	        return moby;
 	    },
-	    factory: function factory(name, facory) {
-	        return instance.factory(name, facory);
+	    factory: function factory(name, _factory) {
+	        if (_factory == null) {
+	            throw new Error('no factory');
+	        }
+
+	        var _getDependencies4 = (0, _internal.getDependencies)(_factory);
+
+	        var _getDependencies42 = _slicedToArray(_getDependencies4, 1);
+
+	        var fn = _getDependencies42[0];
+
+	        if (fn == null) throw new Error('no factory');
+	        _repository.Repository.add(_internal.ClassType.Service, name, fn);
+	        return moby;
 	    }
 	};
 	exports.moby = moby;
+	// Add default services
+	moby.service('http', _servicesIndex.HttpService);
+	// bootstrap
+	(0, _bootstrap.bootstrap)(moby);
 
 /***/ },
 /* 1 */
@@ -7187,259 +7246,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-	    value: true
-	});
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var _module2 = __webpack_require__(43);
-
-	var _moduleFactory = __webpack_require__(52);
-
-	var _object = __webpack_require__(44);
-
-	var _internal = __webpack_require__(46);
-
-	var _di = __webpack_require__(27);
-
-	var _serviceActivator = __webpack_require__(54);
-
-	var _utilities = __webpack_require__(5);
-
-	var Application = (function (_BaseObject) {
-	    _inherits(Application, _BaseObject);
-
-	    function Application() {
-	        _classCallCheck(this, Application);
-
-	        _get(Object.getPrototypeOf(Application.prototype), 'constructor', this).call(this);
-	        this._bootstraped = false;
-	        this._container = new _di.DIContainer();
-	        this._activator = new _serviceActivator.ServiceActivator(this._container);
-	    }
-
-	    _createClass(Application, [{
-	        key: 'module',
-	        value: function module(name, definition, config) {
-	            if (definition == null) {
-	                if (!this._container.hasHandler(name)) {
-	                    throw new Error("module does not exits");
-	                }
-	                return this._container.get(name);
-	            }
-	            var mod = undefined;
-	            if (typeof definition === 'function' && (0, _internal.isClassType)(definition, _internal.ClassType.Module)) {
-	                mod = definition;
-	            } else if ((0, _utilities.isObject)(definition)) {
-	                if (definition.constructor) {
-	                    definition.initialize = definition.constructor;
-	                    delete definition.constructor;
-	                }
-	                mod = _module2.Module.extend(definition);
-	            } else {
-	                throw new Error('wrong module type');
-	            }
-	            var factory = new _moduleFactory.ModuleFactory(this, name, mod, config);
-	            this._container.registerInstance(name, factory);
-	            return factory;
-	        }
-	    }, {
-	        key: 'service',
-	        value: function service(name, definition, config) {
-	            if (typeof definition === 'function') {
-	                (0, _internal.setActivator)(definition, this._activator);
-	                (0, _internal.setDependencyResolver)(definition, this._activator);
-	                (0, _internal.classtype)(_internal.ClassType.Service)(definition);
-	                if (config != null) {
-	                    if (typeof config === 'function') {
-	                        this._container.registerSingleton(definition, config);
-	                    } else {
-	                        this._container.registerInstance(definition, config);
-	                    }
-	                }
-	                this._container.registerSingleton(name, definition);
-	            } else {
-	                this._container.registerInstance(name, definition);
-	            }
-	            return this;
-	        }
-	    }, {
-	        key: 'factory',
-	        value: function factory(name, _factory) {
-	            if (typeof _factory === 'function') {
-	                (0, _internal.setActivator)(_factory, _di.FactoryActivator.instance);
-	                (0, _internal.setDependencyResolver)(_factory, this._activator);
-	                this._container.registerSingleton(name, _factory);
-	            } else {
-	                this._container.registerInstance(name, _factory);
-	            }
-	            return this;
-	        }
-	    }, {
-	        key: 'createContainer',
-	        value: function createContainer() {
-	            return this._container.createChild();
-	        }
-	    }, {
-	        key: 'container',
-	        get: function get() {
-	            return this._container;
-	        }
-	    }]);
-
-	    return Application;
-	})(_object.BaseObject);
-
-	exports.Application = Application;
-
-/***/ },
-/* 43 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj["default"] = obj; return newObj; } }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var _object = __webpack_require__(44);
-
-	var _internal = __webpack_require__(46);
-
-	var _di = __webpack_require__(27);
-
-	var _proxyIndex = __webpack_require__(48);
-
-	var _collection = __webpack_require__(15);
-
-	var _templ = __webpack_require__(2);
-
-	var templ = _interopRequireWildcard(_templ);
-
-	var _templateTemplateView = __webpack_require__(14);
-
-	var _templateEventDelegator = __webpack_require__(26);
-
-	var __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-	    switch (arguments.length) {
-	        case 2:
-	            return decorators.reduceRight(function (o, d) {
-	                return d && d(o) || o;
-	            }, target);
-	        case 3:
-	            return decorators.reduceRight(function (o, d) {
-	                return (d && d(target, key), void 0);
-	            }, void 0);
-	        case 4:
-	            return decorators.reduceRight(function (o, d) {
-	                return d && d(target, key, o) || o;
-	            }, desc);
-	    }
-	};
-	var __metadata = undefined && undefined.__metadata || function (k, v) {
-	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-	};
-	var Module = (function (_BaseObject) {
-	    _inherits(Module, _BaseObject);
-
-	    /**
-	     * Module
-	     * @param {DIContainer} container
-	     * @param {Object} options
-	     */
-
-	    function Module(container, options) {
-	        _classCallCheck(this, Module);
-
-	        _get(Object.getPrototypeOf(Module.prototype), "constructor", this).call(this);
-	        this._name = options.name;
-	        this._el = options.el;
-	        this._container = container;
-	        this._ctx = (0, _proxyIndex.createProxy)(new _collection.NestedModel());
-	        this._container.registerInstance('context', this._ctx);
-	        if (this.el) {
-	            var template = templ.compile(this.el.outerHTML, {
-	                viewClass: _templateTemplateView.TemplateView
-	            });
-	            this._templ = template.view(this._ctx.model, {
-	                container: this._container,
-	                delegator: new _templateEventDelegator.EventDelegator(this, this.ctx, this._container)
-	            });
-	            var el = this._templ.render();
-	            this.el.parentNode.replaceChild(el, this.el);
-	        }
-	    }
-
-	    _createClass(Module, [{
-	        key: "module",
-	        value: function module(name) {
-	            //console.log('finding', name)
-	            if (!this._container.hasHandler(name, true)) {
-	                return null;
-	            }
-	            return this._container.get(name);
-	        }
-	    }, {
-	        key: "initialize",
-	        value: function initialize() {}
-	    }, {
-	        key: "destroy",
-	        value: function destroy() {
-	            this._container.unregister('context');
-	            this._ctx.destroy();
-	            _get(Object.getPrototypeOf(Module.prototype), "destroy", this).call(this);
-	        }
-	    }, {
-	        key: "name",
-	        get: function get() {
-	            return this._name;
-	        }
-	    }, {
-	        key: "el",
-	        get: function get() {
-	            return this._el;
-	        }
-	    }, {
-	        key: "ctx",
-	        get: function get() {
-	            return this._ctx;
-	        }
-	    }, {
-	        key: "container",
-	        get: function get() {
-	            return this._container;
-	        }
-	    }]);
-
-	    return Module;
-	})(_object.BaseObject);
-	exports.Module = Module;
-	exports.Module = Module = __decorate([(0, _internal.classtype)(_internal.ClassType.Module), __metadata('design:paramtypes', [_di.DIContainer, Object])], Module);
-
-/***/ },
-/* 44 */
-/***/ function(module, exports, __webpack_require__) {
-
 	/// <reference path="typings" />
 	'use strict';
 
@@ -7453,7 +7259,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var _eventsjs = __webpack_require__(45);
+	var _eventsjs = __webpack_require__(43);
 
 	var _utilitiesLibIndex = __webpack_require__(5);
 
@@ -7476,7 +7282,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 45 */
+/* 43 */
 /***/ function(module, exports) {
 
 	var idCounter = 0;
@@ -7631,7 +7437,142 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 46 */
+/* 44 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj["default"] = obj; return newObj; } }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var _object = __webpack_require__(42);
+
+	var _internal = __webpack_require__(45);
+
+	var _di = __webpack_require__(27);
+
+	var _proxyIndex = __webpack_require__(47);
+
+	var _collection = __webpack_require__(15);
+
+	var _templ = __webpack_require__(2);
+
+	var templ = _interopRequireWildcard(_templ);
+
+	var _templateTemplateView = __webpack_require__(14);
+
+	var _templateEventDelegator = __webpack_require__(26);
+
+	var __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+	    switch (arguments.length) {
+	        case 2:
+	            return decorators.reduceRight(function (o, d) {
+	                return d && d(o) || o;
+	            }, target);
+	        case 3:
+	            return decorators.reduceRight(function (o, d) {
+	                return (d && d(target, key), void 0);
+	            }, void 0);
+	        case 4:
+	            return decorators.reduceRight(function (o, d) {
+	                return d && d(target, key, o) || o;
+	            }, desc);
+	    }
+	};
+	var __metadata = undefined && undefined.__metadata || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var Module = (function (_BaseObject) {
+	    _inherits(Module, _BaseObject);
+
+	    /**
+	     * Module
+	     * @param {DIContainer} container
+	     * @param {Object} options
+	     */
+
+	    function Module(container, options) {
+	        _classCallCheck(this, Module);
+
+	        _get(Object.getPrototypeOf(Module.prototype), "constructor", this).call(this);
+	        this._name = options.name;
+	        this._el = options.el;
+	        this._container = container;
+	        this._ctx = (0, _proxyIndex.createProxy)(new _collection.NestedModel());
+	        this._container.registerInstance('context', this._ctx);
+	        if (this.el) {
+	            var template = templ.compile(this.el.outerHTML, {
+	                viewClass: _templateTemplateView.TemplateView
+	            });
+	            this._templ = template.view(this._ctx.model, {
+	                container: this._container,
+	                delegator: new _templateEventDelegator.EventDelegator(this, this.ctx, this._container)
+	            });
+	            var el = this._templ.render();
+	            this.el.parentNode.replaceChild(el, this.el);
+	        }
+	    }
+
+	    _createClass(Module, [{
+	        key: "module",
+	        value: function module(name) {
+	            //console.log('finding', name)
+	            if (!this._container.hasHandler(name, true)) {
+	                return null;
+	            }
+	            return this._container.get(name);
+	        }
+	    }, {
+	        key: "initialize",
+	        value: function initialize() {}
+	    }, {
+	        key: "destroy",
+	        value: function destroy() {
+	            this._container.unregister('context');
+	            this._ctx.destroy();
+	            _get(Object.getPrototypeOf(Module.prototype), "destroy", this).call(this);
+	        }
+	    }, {
+	        key: "name",
+	        get: function get() {
+	            return this._name;
+	        }
+	    }, {
+	        key: "el",
+	        get: function get() {
+	            return this._el;
+	        }
+	    }, {
+	        key: "ctx",
+	        get: function get() {
+	            return this._ctx;
+	        }
+	    }, {
+	        key: "container",
+	        get: function get() {
+	            return this._container;
+	        }
+	    }]);
+
+	    return Module;
+	})(_object.BaseObject);
+	exports.Module = Module;
+	exports.Module = Module = __decorate([(0, _internal.classtype)(_internal.ClassType.Module), __metadata('design:paramtypes', [_di.DIContainer, Object])], Module);
+
+/***/ },
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7646,7 +7587,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.setDependencyResolver = setDependencyResolver;
 	exports.getDependencies = getDependencies;
 
-	var _typings = __webpack_require__(47);
+	var _typings = __webpack_require__(46);
 
 	var _di = __webpack_require__(27);
 
@@ -7659,6 +7600,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    ClassType[ClassType["Controller"] = 1] = "Controller";
 	    ClassType[ClassType["Service"] = 2] = "Service";
 	    ClassType[ClassType["ModuleFactory"] = 3] = "ModuleFactory";
+	    ClassType[ClassType["Factory"] = 4] = "Factory";
 	})(ClassType || (exports.ClassType = ClassType = {}));
 	var DINamespace = "cupsjs";
 	exports.DINamespace = DINamespace;
@@ -7695,19 +7637,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	function getDependencies(fn) {
 	    var dependencies = undefined;
 	    if (fn.constructor === Array) {
-	        fn = fn.pop();
+	        var tmp = fn.pop();
 	        dependencies = fn;
-	    } else {
+	        fn = tmp;
+	    } else if (typeof fn === 'function') {
 	        dependencies = (0, _utilities.result)(fn, "inject");
 	        if (!dependencies || dependencies.length == 0) {
 	            dependencies = (0, _di.getFunctionParameters)(fn);
+	            fn.inject = dependencies;
 	        }
+	    } else {
+	        return [fn, null];
 	    }
 	    return [fn, dependencies];
 	}
 
 /***/ },
-/* 47 */
+/* 46 */
 /***/ function(module, exports) {
 
 	/// <reference path="../node_modules/di/di" />
@@ -7727,7 +7673,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	})(Metakey || (exports.Metakey = Metakey = {}));
 
 /***/ },
-/* 48 */
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7736,10 +7682,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	exports.createProxy = createProxy;
+	exports.getProxy = getProxy;
 
-	var _objectObserve = __webpack_require__(49);
+	var _objectObserve = __webpack_require__(48);
 
-	var _dirtyObserve = __webpack_require__(51);
+	var _dirtyObserve = __webpack_require__(50);
 
 	var _utilitiesLibIndex = __webpack_require__(5);
 
@@ -7751,6 +7698,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }*/
 	    else {
 	            return new _dirtyObserve.DirtyObjectObserver(model);
+	        }
+	}
+
+	function getProxy() {
+	    if (typeof Object.observe === 'function') {
+	        return _objectObserve.ObjectObserveProxy;
+	    } /*else if (typeof (global||window).Proxy  === 'function') {
+	        
+	      }*/
+	    else {
+	            return _dirtyObserve.DirtyObjectObserver;
 	        }
 	}
 
@@ -7776,7 +7734,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.get_atributes = get_atributes;
 
 /***/ },
-/* 49 */
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7795,7 +7753,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _collection = __webpack_require__(15);
 
-	var _proxy = __webpack_require__(50);
+	var _proxy = __webpack_require__(49);
 
 	var ObjectObserveProxy = (function (_AbstractProxy) {
 	    _inherits(ObjectObserveProxy, _AbstractProxy);
@@ -7831,7 +7789,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.ObjectObserveProxy = ObjectObserveProxy;
 
 /***/ },
-/* 50 */
+/* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7852,9 +7810,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _collection = __webpack_require__(15);
 
-	var _index = __webpack_require__(48);
+	var _index = __webpack_require__(47);
 
-	var _object = __webpack_require__(44);
+	var _object = __webpack_require__(42);
 
 	var AbstractProxy = (function (_BaseObject) {
 	    _inherits(AbstractProxy, _BaseObject);
@@ -8013,7 +7971,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.AbstractProxy = AbstractProxy;
 
 /***/ },
-/* 51 */
+/* 50 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8030,7 +7988,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var _proxy = __webpack_require__(50);
+	var _proxy = __webpack_require__(49);
 
 	var _collection = __webpack_require__(15);
 
@@ -8138,7 +8096,157 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.DirtyObjectObserver = DirtyObjectObserver;
 
 /***/ },
+/* 51 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	function _interopExportWildcard(obj, defaults) { var newObj = defaults({}, obj); delete newObj['default']; return newObj; }
+
+	function _defaults(obj, defaults) { var keys = Object.getOwnPropertyNames(defaults); for (var i = 0; i < keys.length; i++) { var key = keys[i]; var value = Object.getOwnPropertyDescriptor(defaults, key); if (value && value.configurable && obj[key] === undefined) { Object.defineProperty(obj, key, value); } } return obj; }
+
+	var _httpService = __webpack_require__(52);
+
+	_defaults(exports, _interopExportWildcard(_httpService, _defaults));
+
+	var _templateResolver = __webpack_require__(53);
+
+	_defaults(exports, _interopExportWildcard(_templateResolver, _defaults));
+
+/***/ },
 /* 52 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path="../typings" />
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var _utilitiesLibIndex = __webpack_require__(5);
+
+	var _internal = __webpack_require__(45);
+
+	var __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+	    switch (arguments.length) {
+	        case 2:
+	            return decorators.reduceRight(function (o, d) {
+	                return d && d(o) || o;
+	            }, target);
+	        case 3:
+	            return decorators.reduceRight(function (o, d) {
+	                return (d && d(target, key), void 0);
+	            }, void 0);
+	        case 4:
+	            return decorators.reduceRight(function (o, d) {
+	                return d && d(target, key, o) || o;
+	            }, desc);
+	    }
+	};
+	var __metadata = undefined && undefined.__metadata || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var HttpService = (function () {
+	    function HttpService() {
+	        _classCallCheck(this, HttpService);
+	    }
+
+	    _createClass(HttpService, [{
+	        key: "get",
+	        value: function get(url) {
+	            return _utilitiesLibIndex.request.get(url);
+	        }
+	    }, {
+	        key: "post",
+	        value: function post(url) {
+	            return _utilitiesLibIndex.request.post(url);
+	        }
+	    }, {
+	        key: "put",
+	        value: function put(url) {
+	            return _utilitiesLibIndex.request.put(url);
+	        }
+	    }, {
+	        key: "del",
+	        value: function del(url) {
+	            return _utilitiesLibIndex.request.del(url);
+	        }
+	    }]);
+
+	    return HttpService;
+	})();
+	exports.HttpService = HttpService;
+	exports.HttpService = HttpService = __decorate([(0, _internal.classtype)(_internal.ClassType.Service), __metadata('design:paramtypes', [])], HttpService);
+
+/***/ },
+/* 53 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var _utilitiesLibIndex = __webpack_require__(5);
+
+	var _internal = __webpack_require__(45);
+
+	var __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+	    switch (arguments.length) {
+	        case 2:
+	            return decorators.reduceRight(function (o, d) {
+	                return d && d(o) || o;
+	            }, target);
+	        case 3:
+	            return decorators.reduceRight(function (o, d) {
+	                return (d && d(target, key), void 0);
+	            }, void 0);
+	        case 4:
+	            return decorators.reduceRight(function (o, d) {
+	                return d && d(target, key, o) || o;
+	            }, desc);
+	    }
+	};
+	var __metadata = undefined && undefined.__metadata || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var TemplateResolver = (function () {
+	    function TemplateResolver() {
+	        _classCallCheck(this, TemplateResolver);
+	    }
+
+	    _createClass(TemplateResolver, [{
+	        key: "resolve",
+	        value: function resolve(templateID) {
+	            var template = document.getElementById(templateID);
+	            if (template == null) return _utilitiesLibIndex.Promise.reject(new Error("template with id: '" + templateID + "' not found"));
+	            return _utilitiesLibIndex.Promise.resolve(template.innerHTML);
+	        }
+	    }]);
+
+	    return TemplateResolver;
+	})();
+	exports.TemplateResolver = TemplateResolver;
+	exports.TemplateResolver = TemplateResolver = __decorate([(0, _internal.classtype)(_internal.ClassType.Service), __metadata('design:paramtypes', [])], TemplateResolver);
+
+/***/ },
+/* 54 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8161,17 +8269,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var _controller2 = __webpack_require__(53);
+	var _controller2 = __webpack_require__(55);
 
-	var _object = __webpack_require__(44);
+	var _object = __webpack_require__(42);
 
 	var _di = __webpack_require__(27);
 
 	var _utilitiesLibIndex = __webpack_require__(5);
 
-	var _internal = __webpack_require__(46);
+	var _internal = __webpack_require__(45);
 
-	var _serviceActivator = __webpack_require__(54);
+	var _serviceActivator = __webpack_require__(56);
+
+	var _proxyIndex = __webpack_require__(47);
 
 	var ControllerActivator = (function () {
 	    function ControllerActivator(container) {
@@ -8238,17 +8348,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	var ModuleFactory = (function (_BaseObject) {
 	    _inherits(ModuleFactory, _BaseObject);
 
-	    function ModuleFactory(app, name, ctor, config) {
+	    function ModuleFactory(name, ctor, container) {
 	        _classCallCheck(this, ModuleFactory);
 
 	        _get(Object.getPrototypeOf(ModuleFactory.prototype), 'constructor', this).call(this);
 	        this._name = name;
 	        this._module = ctor;
-	        this._app = app;
-	        this._container = app.createContainer();
+	        this._container = container;
 	        this._activator = new ControllerActivator(this._container);
 	        this._serviceActivator = new _serviceActivator.ServiceActivator(this._container);
 	        this._initializers = [];
+	        container.registerSingleton('context', (0, _proxyIndex.getProxy)());
 	    }
 
 	    _createClass(ModuleFactory, [{
@@ -8276,31 +8386,42 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    }, {
 	        key: 'service',
-	        value: function service(name, _service, config) {
-	            if (typeof _service === 'function') {
-	                (0, _internal.setActivator)(_service, this._activator);
-	                (0, _internal.setDependencyResolver)(_service, this._activator);
-	                (0, _internal.classtype)(_internal.ClassType.Service)(_service);
-	                if (config != null) {
-	                    if (typeof config === 'function') {
-	                        this._container.registerSingleton(_service, config);
-	                    } else {
-	                        this._container.registerInstance(_service, config);
-	                    }
-	                }
-	                this._container.registerSingleton(name, _service, _internal.DINamespace);
+	        value: function service(name, _service) {
+	            if (_service == null) {
+	                throw new Error('on service');
+	            }
+
+	            var _getDependencies = (0, _internal.getDependencies)(_service);
+
+	            var _getDependencies2 = _slicedToArray(_getDependencies, 1);
+
+	            var fn = _getDependencies2[0];
+
+	            if (typeof fn == 'function') {
+	                // (<any>fn).inject = deps;
+	                (0, _internal.setActivator)(fn, this._activator);
+	                (0, _internal.setDependencyResolver)(fn, this._activator);
+	                (0, _internal.classtype)(_internal.ClassType.Service)(fn);
+	                this._container.registerSingleton(name, fn);
 	            } else {
-	                this._container.registerInstance(name, _service);
+	                throw new Error('service not a function');
 	            }
 	            return this;
 	        }
 	    }, {
 	        key: 'factory',
 	        value: function factory(name, _factory) {
-	            if (typeof _factory === 'function') {
-	                (0, _internal.setActivator)(_factory, _di.FactoryActivator.instance);
-	                (0, _internal.setDependencyResolver)(_factory, this._serviceActivator);
-	                this._container.registerSingleton(name, _factory);
+	            var _getDependencies3 = (0, _internal.getDependencies)(_factory);
+
+	            var _getDependencies32 = _slicedToArray(_getDependencies3, 1);
+
+	            var fn = _getDependencies32[0];
+
+	            if (typeof fn == 'function') {
+	                //(<any>fn).inject = deps;
+	                (0, _internal.setActivator)(fn, _di.FactoryActivator.instance);
+	                (0, _internal.setDependencyResolver)(fn, this._serviceActivator);
+	                this._container.registerSingleton(name, fn);
 	            } else {
 	                this._container.registerInstance(name, _factory);
 	            }
@@ -8360,6 +8481,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	            });
 	        }
 	    }, {
+	        key: 'resolveDependencies',
+	        value: function resolveDependencies(fn) {
+	            var _getDependencies4 = (0, _internal.getDependencies)(fn);
+
+	            var _getDependencies42 = _slicedToArray(_getDependencies4, 2);
+
+	            var _ = _getDependencies42[0];
+	            var params = _getDependencies42[1];
+
+	            var args = new Array(params.length),
+	                p = undefined;
+	            for (var i = 0, ii = args.length; i < ii; i++) {
+	                p = params[i];
+	                if (p === 'config') {} else {
+	                    args[i] = this._container.get(p);
+	                }
+	            }
+	            return args;
+	        }
+	    }, {
+	        key: 'invoke',
+	        value: function invoke(fn, deps, keys) {
+	            var instance = Reflect.construct(fn, deps);
+	            if (instance.$instance) {
+	                instance = instance.$instance;
+	            }
+	            return instance;
+	        }
+	    }, {
 	        key: 'name',
 	        get: function get() {
 	            return this._name;
@@ -8372,7 +8522,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.ModuleFactory = ModuleFactory;
 
 /***/ },
-/* 53 */
+/* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -8389,9 +8539,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var _object = __webpack_require__(44);
+	var _object = __webpack_require__(42);
 
-	var _internal = __webpack_require__(46);
+	var _internal = __webpack_require__(45);
 
 	var __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
 	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
@@ -8445,7 +8595,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.Controller = Controller = __decorate([(0, _internal.classtype)(_internal.ClassType.Controller), __metadata('design:paramtypes', [])], Controller);
 
 /***/ },
-/* 54 */
+/* 56 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8454,11 +8604,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 
+	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
+
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var _di = __webpack_require__(27);
+	var _internal = __webpack_require__(45);
 
 	var ServiceActivator = (function () {
 	    function ServiceActivator(container) {
@@ -8470,14 +8622,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _createClass(ServiceActivator, [{
 	        key: 'resolveDependencies',
 	        value: function resolveDependencies(fn) {
-	            var params = (0, _di.getFunctionParameters)(fn),
-	                args = new Array(params.length);
-	            var p = undefined;
+	            var _getDependencies = (0, _internal.getDependencies)(fn);
+
+	            var _getDependencies2 = _slicedToArray(_getDependencies, 2);
+
+	            var _ = _getDependencies2[0];
+	            var params = _getDependencies2[1];
+
+	            var args = new Array(params.length),
+	                p = undefined;
 	            for (var i = 0, ii = args.length; i < ii; i++) {
 	                p = params[i];
-	                if (p === 'config') {
-	                    args[i] = this.container.get(fn);
-	                } else {
+	                if (p === 'config') {} else {
 	                    args[i] = this.container.get(p);
 	                }
 	            }
@@ -8500,157 +8656,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.ServiceActivator = ServiceActivator;
 
 /***/ },
-/* 55 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-
-	function _interopExportWildcard(obj, defaults) { var newObj = defaults({}, obj); delete newObj['default']; return newObj; }
-
-	function _defaults(obj, defaults) { var keys = Object.getOwnPropertyNames(defaults); for (var i = 0; i < keys.length; i++) { var key = keys[i]; var value = Object.getOwnPropertyDescriptor(defaults, key); if (value && value.configurable && obj[key] === undefined) { Object.defineProperty(obj, key, value); } } return obj; }
-
-	var _httpService = __webpack_require__(56);
-
-	_defaults(exports, _interopExportWildcard(_httpService, _defaults));
-
-	var _templateResolver = __webpack_require__(57);
-
-	_defaults(exports, _interopExportWildcard(_templateResolver, _defaults));
-
-/***/ },
-/* 56 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/// <reference path="../typings" />
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var _utilitiesLibIndex = __webpack_require__(5);
-
-	var _internal = __webpack_require__(46);
-
-	var __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-	    switch (arguments.length) {
-	        case 2:
-	            return decorators.reduceRight(function (o, d) {
-	                return d && d(o) || o;
-	            }, target);
-	        case 3:
-	            return decorators.reduceRight(function (o, d) {
-	                return (d && d(target, key), void 0);
-	            }, void 0);
-	        case 4:
-	            return decorators.reduceRight(function (o, d) {
-	                return d && d(target, key, o) || o;
-	            }, desc);
-	    }
-	};
-	var __metadata = undefined && undefined.__metadata || function (k, v) {
-	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-	};
-	var HttpService = (function () {
-	    function HttpService() {
-	        _classCallCheck(this, HttpService);
-	    }
-
-	    _createClass(HttpService, [{
-	        key: "get",
-	        value: function get(url) {
-	            return _utilitiesLibIndex.request.get(url);
-	        }
-	    }, {
-	        key: "post",
-	        value: function post(url) {
-	            return _utilitiesLibIndex.request.post(url);
-	        }
-	    }, {
-	        key: "put",
-	        value: function put(url) {
-	            return _utilitiesLibIndex.request.put(url);
-	        }
-	    }, {
-	        key: "del",
-	        value: function del(url) {
-	            return _utilitiesLibIndex.request.del(url);
-	        }
-	    }]);
-
-	    return HttpService;
-	})();
-	exports.HttpService = HttpService;
-	exports.HttpService = HttpService = __decorate([(0, _internal.classtype)(_internal.ClassType.Service), __metadata('design:paramtypes', [])], HttpService);
-
-/***/ },
 /* 57 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var _utilitiesLibIndex = __webpack_require__(5);
-
-	var _internal = __webpack_require__(46);
-
-	var __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-	    switch (arguments.length) {
-	        case 2:
-	            return decorators.reduceRight(function (o, d) {
-	                return d && d(o) || o;
-	            }, target);
-	        case 3:
-	            return decorators.reduceRight(function (o, d) {
-	                return (d && d(target, key), void 0);
-	            }, void 0);
-	        case 4:
-	            return decorators.reduceRight(function (o, d) {
-	                return d && d(target, key, o) || o;
-	            }, desc);
-	    }
-	};
-	var __metadata = undefined && undefined.__metadata || function (k, v) {
-	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-	};
-	var TemplateResolver = (function () {
-	    function TemplateResolver() {
-	        _classCallCheck(this, TemplateResolver);
-	    }
-
-	    _createClass(TemplateResolver, [{
-	        key: "resolve",
-	        value: function resolve(templateID) {
-	            var template = document.getElementById(templateID);
-	            if (template == null) return _utilitiesLibIndex.Promise.reject(new Error("template with id: '" + templateID + "' not found"));
-	            return _utilitiesLibIndex.Promise.resolve(template.innerHTML);
-	        }
-	    }]);
-
-	    return TemplateResolver;
-	})();
-	exports.TemplateResolver = TemplateResolver;
-	exports.TemplateResolver = TemplateResolver = __decorate([(0, _internal.classtype)(_internal.ClassType.Service), __metadata('design:paramtypes', [])], TemplateResolver);
-
-/***/ },
-/* 58 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="typings" />
@@ -8663,9 +8669,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _utilities = __webpack_require__(5);
 
-	var _moduleFactory = __webpack_require__(52);
+	var _moduleFactory = __webpack_require__(54);
 
-	var _internal = __webpack_require__(46);
+	var _internal = __webpack_require__(45);
+
+	var _repository = __webpack_require__(58);
 
 	function _resolve(moduleName, type) {
 	    if (_internal.metadata.has(moduleName)) {
@@ -8698,8 +8706,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            factory = app.module(moduleName, item.handler);
 	        }
 	    }
-	    if (!factory && app.container.hasHandler(moduleName)) {
-	        factory = app.container.get(moduleName);
+	    if (!factory) {
+	        factory = _repository.Repository.get(_internal.ClassType.ModuleFactory, moduleName);
 	    }
 	    if (factory) {
 	        var controllers = resolveControllers(moduleName);
@@ -8744,6 +8752,80 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
+/* 58 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+
+	var _internal = __webpack_require__(45);
+
+	var _utilities = __webpack_require__(5);
+
+	var Repository;
+	exports.Repository = Repository;
+	(function (Repository) {
+	    Repository.factories = [];
+	    Repository.services = [];
+	    Repository.modules = [];
+	    function add(type, name, target) {
+	        var array = undefined;
+	        switch (type) {
+	            case _internal.ClassType.Service:
+	                array = Repository.services;
+	                break;
+	            case _internal.ClassType.Factory:
+	                array = Repository.factories;
+	                break;
+	            case _internal.ClassType.ModuleFactory:
+	                array = Repository.modules;
+	                break;
+	            default:
+	                throw new Error('service, factory');
+	        }
+	        var found = (0, _utilities.find)(array, function (i) {
+	            return i.name == name;
+	        });
+	        if (found) {
+	            throw new Error(type + ' named ' + name + ' already imported');
+	        }
+	        array.push({
+	            name: name,
+	            handler: target
+	        });
+	    }
+	    Repository.add = add;
+	    function has(type, name) {
+	        return !!get(type, name);
+	    }
+	    Repository.has = has;
+	    function get(type, name) {
+	        var array = undefined;
+	        switch (type) {
+	            case _internal.ClassType.Service:
+	                array = Repository.services;
+	                break;
+	            case _internal.ClassType.Factory:
+	                array = Repository.factories;
+	                break;
+	            case _internal.ClassType.ModuleFactory:
+	                array = Repository.modules;
+	                break;
+	            default:
+	                throw new Error('service, factory');
+	        }
+	        var found = (0, _utilities.find)(array, function (i) {
+	            return i.name == name;
+	        });
+	        return found ? found.handler : null;
+	    }
+	    Repository.get = get;
+	})(Repository || (exports.Repository = Repository = {}));
+
+/***/ },
 /* 59 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -8756,7 +8838,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.module = _module;
 	exports.service = service;
 
-	var _internal = __webpack_require__(46);
+	var _internal = __webpack_require__(45);
 
 	var _utilities = __webpack_require__(5);
 

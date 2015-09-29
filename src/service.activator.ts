@@ -1,5 +1,5 @@
 import {Metadata, DIContainer, getFunctionParameters} from 'di'
-
+import {getDependencies} from './internal'
 export class ServiceActivator {
     container: DIContainer
     constructor(container: DIContainer) {
@@ -7,20 +7,24 @@ export class ServiceActivator {
     }
 
     resolveDependencies(fn: Function): any[] {
-      let params = getFunctionParameters(fn),
-        args = new Array(params.length)
-      let p
+      
+      let [_, params] = getDependencies(fn);
+      
+      let args = new Array(params.length), p;
+      
+      
+      
       for (let i=0,ii=args.length; i < ii; i++) {
          p = params[i];
          
          if (p === 'config') {
-           args[i] = this.container.get(fn)
+           //args[i] = this.container.get(fn)
          } else {
            args[i] = this.container.get(p)
          }
       }
       return args
-     
+      
     }
 
     invoke(fn: any, deps: any[], keys?: any[]): any {

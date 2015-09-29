@@ -28,6 +28,9 @@ export interface IProxy extends IEventEmitter {
 }
 
 
+export interface ProxyConstructor {
+	new (): IProxy
+}
 
 
 export function createProxy(model:IModel): IProxy {
@@ -37,6 +40,16 @@ export function createProxy(model:IModel): IProxy {
 		
 	}*/ else {
 		return new DirtyObjectObserver(model);
+	}
+}
+
+export function getProxy (): ProxyConstructor {
+	if (typeof (<any>Object).observe === 'function') {
+		return ObjectObserveProxy;
+	} /*else if (typeof (global||window).Proxy  === 'function') {
+		
+	}*/ else {
+		return DirtyObjectObserver;
 	}
 }
 

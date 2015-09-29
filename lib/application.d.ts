@@ -8,8 +8,8 @@ export declare class Application extends BaseObject {
     private _bootstraped;
     container: DIContainer;
     constructor();
-    module(name: string, definition?: ModuleConstructor | Object, config?: any): ModuleFactory;
-    service(name: string, definition?: any, config?: any): Application;
-    factory(name: string, factory: Function): Application;
+    module(name: string, definition?: ModuleConstructor | Object): ModuleFactory;
+    service(name: string, definition?: Function | Function[]): Application;
+    factory(name: string, factory: Function | Array<any>): Application;
     createContainer(): DIContainer;
 }

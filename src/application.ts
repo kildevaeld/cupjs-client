@@ -5,11 +5,15 @@ import {Controller} from './controller'
 import {ModuleFactory} from './module.factory'
 import {BaseObject} from './object'
 import * as utils from 'utilities'
-import {isClassType, ClassType, DINamespace, setActivator, setDependencyResolver, classtype} from './internal'
+import {isClassType, ClassType, DINamespace, setActivator, 
+  setDependencyResolver, classtype, getDependencies} from './internal'
 import {DIContainer, FactoryActivator} from 'di'
 import {ServiceActivator} from './service.activator'
 import * as templ from 'templ'
 import {has, isObject} from 'utilities'
+
+import {Debug} from 'utilities';
+const debug = Debug.create("moby:application");
 
 export class Application extends BaseObject {
   
@@ -28,7 +32,7 @@ export class Application extends BaseObject {
 
   }
 
-  module (name:string, definition?:ModuleConstructor|Object, config?:any): ModuleFactory {
+  module (name:string, definition?:ModuleConstructor|Object): ModuleFactory {
 
     if (definition == null) {
         if (!this._container.hasHandler(name)) {
@@ -49,8 +53,10 @@ export class Application extends BaseObject {
     } else {
       throw new Error('wrong module type')
     }
-
-    let factory = new ModuleFactory(this, name, mod, config);
+    
+    debug("define module: %s", name);
+    
+    let factory = new ModuleFactory(this, name, mod);
 
     this._container.registerInstance(name, factory);
 
@@ -59,35 +65,32 @@ export class Application extends BaseObject {
     return factory
   }
 
-  service (name:string, definition?:any, config?:any): Application {
+  service (name:string, definition?:Function|Function[]): Application {
 
-    if (typeof definition === 'function') {
-      setActivator(definition, this._activator);
-      setDependencyResolver(definition, this._activator);
-      classtype(ClassType.Service)(definition)
+    let [fn, deps] = getDependencies(definition);
+
+    debug('defining service %s',name, fn, deps)
+    if (fn) {
+      (<any>fn).inject = deps;
+      setActivator(fn, this._activator);
+      setDependencyResolver(fn, this._activator);
+      classtype(ClassType.Service)(fn);
+      this._container.registerSingleton(name, fn);
       
-      if (config != null) {
-        if (typeof config === 'function') {
-          this._container.registerSingleton(definition, config);
-        } else {
-          this._container.registerInstance(definition, config);
-        }
-      }
-      
-      this._container.registerSingleton(name, definition)
     } else {
-      this._container.registerInstance(name, definition)
+      this._container.registerInstance(name, definition);
     }
 
     return this
   }
   
-  factory (name: string, factory: Function): Application {
-    
-    if (typeof factory === 'function') {
-      setActivator(factory, FactoryActivator.instance)
-      setDependencyResolver(factory, this._activator);
-      this._container.registerSingleton(name, factory);
+  factory (name: string, factory: Function|Array<any>): Application {
+    let [fn, deps] = getDependencies(factory)
+    if (fn != null) {
+      (<any>fn).inject = deps
+      setActivator(fn, FactoryActivator.instance)
+      setDependencyResolver(fn, this._activator);
+      this._container.registerSingleton(name, fn);
     }  else {
       this._container.registerInstance(name, factory);
     }   

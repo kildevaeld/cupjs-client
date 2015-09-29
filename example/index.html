@@ -6,16 +6,17 @@
   <script>
   var utils = moby.utils
   console.log(moby)
+  utils.Debug.enable(true);
   moby.module("app",{
-    constructor: function (router, userID, ctx) {
-
+    constructor: function (ctx, router, userID) {
+      console.log('raprparp')
       ctx.title = "Hello, world!"
 
       ctx.description = utils.delay(1000).then(function () {
-        return "Ta da!"
+        return "User ID " + userID
       })
 
-      this.module('router')
+      
     },
     onClick: function (e, ctx) {
      
@@ -23,7 +24,7 @@
     }
   }).controller('main', {
     initialize: function (ctx) {
-      console.log(ctx)
+      
       ctx.count = 0
       ctx.name = "Hello"
       ctx.names = [{name: 'Rasmus'}, { name:"Peter"}]
@@ -45,7 +46,7 @@
 
 
   var app = moby.module('app')
-  app.service('userID', 'det er det der tæller')
+  app.factory('userID', 'det er det der tæller')
 
   /*app.create({el:document.getElementById('app')}).then(function (app) {
     console.log('app',app)
