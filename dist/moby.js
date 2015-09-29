@@ -8075,12 +8075,20 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            var _getDependencies = (0, _internal.getDependencies)(_service);
 
-	            var _getDependencies2 = _slicedToArray(_getDependencies, 1);
+	            var _getDependencies2 = _slicedToArray(_getDependencies, 2);
 
 	            var fn = _getDependencies2[0];
+	            var deps = _getDependencies2[1];
 
 	            if (typeof fn == 'function') {
-	                // (<any>fn).inject = deps;
+	                for (var i = 0, ii = deps.length; i < ii; i++) {
+	                    if (!this._container.hasHandler(deps[i])) {
+	                        var item = _repository.Repository.any(deps[i]);
+	                        if (item) {
+	                            this.__addFromClassType(item.type, item.name, item.handler);
+	                        }
+	                    }
+	                }
 	                (0, _internal.setActivator)(fn, this._serviceActivator);
 	                (0, _internal.setDependencyResolver)(fn, this._serviceActivator);
 	                (0, _internal.classtype)(_internal.ClassType.Service)(fn);
@@ -8092,15 +8100,34 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return this;
 	        }
 	    }, {
+	        key: '__addFromClassType',
+	        value: function __addFromClassType(classType, name, target) {
+	            switch (classType) {
+	                case _internal.ClassType.Service:
+	                    return this.service(name, target);
+	                case _internal.ClassType.Factory:
+	                    return this.factory(name, target);
+	            }
+	        }
+	    }, {
 	        key: 'factory',
 	        value: function factory(name, _factory) {
 	            var _getDependencies3 = (0, _internal.getDependencies)(_factory);
 
-	            var _getDependencies32 = _slicedToArray(_getDependencies3, 1);
+	            var _getDependencies32 = _slicedToArray(_getDependencies3, 2);
 
 	            var fn = _getDependencies32[0];
+	            var deps = _getDependencies32[1];
 
 	            if (typeof fn == 'function') {
+	                for (var i = 0, ii = deps.length; i < ii; i++) {
+	                    if (!this._container.hasHandler(deps[i])) {
+	                        var item = _repository.Repository.any(deps[i]);
+	                        if (item) {
+	                            this.__addFromClassType(item.type, item.name, item.handler);
+	                        }
+	                    }
+	                }
 	                (0, _internal.setActivator)(fn, _di.FactoryActivator.instance);
 	                (0, _internal.setDependencyResolver)(fn, this._serviceActivator);
 	                this._container.registerSingleton(name, fn);

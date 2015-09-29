@@ -3,6 +3,7 @@ import { Module } from './module';
 import { BaseObject } from './object';
 import { DIContainer } from 'di';
 import { IPromise } from 'utilities';
+import { ClassType } from './internal';
 export declare class ModuleFactory extends BaseObject {
     private _name;
     private _module;
@@ -14,6 +15,7 @@ export declare class ModuleFactory extends BaseObject {
     constructor(name: string, ctor: ModuleConstructor, container: DIContainer);
     controller(name: string, controller: ControllerConstructor | Object): ModuleFactory;
     service(name: string, service: any): ModuleFactory;
+    __addFromClassType(classType: ClassType, name: string, target: any): ModuleFactory;
     factory(name: string, factory: Function | Function[]): ModuleFactory;
     initialize(fn: Function | Array<any>): ModuleFactory;
     __resolveDependencies(module: Function): any;

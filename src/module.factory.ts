@@ -149,10 +149,17 @@ export class ModuleFactory extends BaseObject {
       throw new Error('on service');
     }
 
-    let [fn] = getDependencies(service)
+    let [fn, deps] = getDependencies(service)
 
     if (typeof fn == 'function') {
-      // (<any>fn).inject = deps;
+      for (let i=0,ii = deps.length; i<ii;i++) {
+        if (!this._container.hasHandler(deps[i])) {
+          let item = Repository.any(deps[i]);
+          if (item) {
+            this.__addFromClassType(item.type,item.name,item.handler)
+          }
+        }
+      }
       setActivator(fn, this._serviceActivator);
       setDependencyResolver(fn, this._serviceActivator);
       classtype(ClassType.Service)(fn);
@@ -165,12 +172,30 @@ export class ModuleFactory extends BaseObject {
     return this
 
   }
+  __addFromClassType (classType:ClassType, name: string, target:any) {
+    switch (classType) {
+      case ClassType.Service:
+        return this.service(name , target);
+      case ClassType.Factory:
+        return this.factory(name, target)
+    }
+  }
 
   factory(name: string, factory: Function | Function[]): ModuleFactory {
 
-    let [fn] = getDependencies(factory);
+    let [fn, deps] = getDependencies(factory);
 
     if (typeof fn == 'function') {
+      
+      for (let i=0,ii = deps.length; i<ii;i++) {
+        if (!this._container.hasHandler(deps[i])) {
+          let item = Repository.any(deps[i]);
+          if (item) {
+            this.__addFromClassType(item.type,item.name,item.handler)
+          }
+        }
+      }
+      
       
       setActivator(fn, FactoryActivator.instance);
       setDependencyResolver(fn, this._serviceActivator);
