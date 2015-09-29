@@ -51,10 +51,9 @@ export class Module extends BaseObject {
 		this._name = options.name
 		this._el = options.el
 		this._container = container
-		//this._ctx = createProxy(new NestedModel())
+		
 		let ctx = container.get('context');
-		//this._container.registerInstance('context', this._ctx);
-		console.log(ctx)
+		
 		if (this.el) {
 			
 			let template = templ.compile(this.el.outerHTML, {

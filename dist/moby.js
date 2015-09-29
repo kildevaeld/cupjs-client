@@ -7610,10 +7610,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._name = options.name;
 	        this._el = options.el;
 	        this._container = container;
-	        //this._ctx = createProxy(new NestedModel())
 	        var ctx = container.get('context');
-	        //this._container.registerInstance('context', this._ctx);
-	        console.log(ctx);
 	        if (this.el) {
 	            var template = templ.compile(this.el.outerHTML, {
 	                viewClass: _templateTemplateView.TemplateView
