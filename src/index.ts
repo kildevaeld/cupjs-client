@@ -1,8 +1,8 @@
 import './template/index';
 
-import {Application} from './application'
+
 import * as utils from 'utilities'
-import {DIContainer} from 'di'
+import {DIContainer, getFunctionParameters} from 'di'
 import {Collection, NestedModel, ICollection, IModel} from 'collection'
 import {BaseObject} from './object'
 import {Module} from './module'
@@ -59,10 +59,61 @@ export const moby: Moby = {
 	module (name:string, definition?:any): ModuleFactory {
 		
 		if (definition == null) {
-			return Repository.get<ModuleFactory>(ClassType.ModuleFactory, name)
+			let handler = Repository.get(ClassType.ModuleFactory, name)
+			return handler ? handler.handler : null;
 		}
 		
-		let [fn, _] = getDependencies(definition);
+		let def = definition,
+			deps = null,
+			mod = null
+		
+		if (Array.isArray(definition)) {
+			def = definition.pop()
+			deps = definition
+		}
+		
+		if (utils.isObject(def) && typeof def !== 'function') {
+			if (def.constructor != null) {
+				(<any>def).initialize = def.constructor
+				delete def.constructor
+			}
+			mod = Module.extend<ModuleConstructor>(def) 
+		} else if (typeof def === 'function') {
+			mod = def;
+		} else {
+			throw new Error('module type');
+		}
+		
+		if (deps) {
+			mod.inject = deps;
+		}
+		
+		let factory = new ModuleFactory(name, mod, container.createChild());
+		
+		if (!mod.inject) {
+			if (typeof mod.prototype.initialize === 'function') {
+				mod.inject = getFunctionParameters(mod.prototype.initialize);	
+			} else {
+				mod.inject = [];
+			}
+		}
+		
+		/*for (let d of mod.inject) {
+			if (typeof d === 'function') {
+				factory.service(d.name,d)
+			} else {
+				let item = Repository.any(d)
+				if (item) {
+					switch ()
+				}	
+			}
+			
+		}*/
+		
+		Repository.add(ClassType.ModuleFactory, name, factory)
+		
+		return factory
+		/*let [fn, _] = getDependencies(definition);
 		
 		if (fn == null) {
 			throw new Error('module');
@@ -86,7 +137,7 @@ export const moby: Moby = {
 		
 		Repository.add(ClassType.ModuleFactory, name, factory);
 		
-		return factory;
+		return factory;*/
 	
   },
 

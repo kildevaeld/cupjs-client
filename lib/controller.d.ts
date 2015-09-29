@@ -5,6 +5,5 @@ export declare class Controller extends BaseObject {
     private _template;
     ctx: IProxy;
     template: View;
-    constructor();
     initialize(): void;
 }

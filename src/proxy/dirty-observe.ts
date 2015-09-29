@@ -17,6 +17,7 @@ export class DirtyObjectObserver extends AbstractProxy implements IProxy {
     this.__timer = setInterval(() => {
       this._check(this.model);
     }, 300);
+    super.observe();
 	}
 	
 	unobserve () {
@@ -24,6 +25,7 @@ export class DirtyObjectObserver extends AbstractProxy implements IProxy {
       clearTimeout(this.__timer)
       this.__timer = null
     }
+    super.unobserve();
 	}
   
   _check (model:IModel) {

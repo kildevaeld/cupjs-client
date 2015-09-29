@@ -9,7 +9,7 @@
   utils.Debug.enable(true);
   moby.module("app",{
     constructor: function (ctx, router, userID) {
-      console.log('raprparp')
+      console.log('raprparp', ctx)
       ctx.title = "Hello, world!"
 
       ctx.description = utils.delay(1000).then(function () {
@@ -39,9 +39,9 @@
     }
   })
 
-  moby.service('router', function (config) {
-    console.log('this is a coool router', config)
-    this.config = config
+  moby.service('router', function () {
+    console.log('this is a coool router')
+    //this.config = config
   }, {config: 'yessir'})
 
 

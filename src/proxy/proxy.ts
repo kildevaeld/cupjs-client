@@ -8,7 +8,7 @@ export abstract class AbstractProxy extends BaseObject implements IProxy {
 	__queue:number
 	[x: string]: any
 	parent: IProxy
-	
+	__observing
 	get root (): IProxy {
 		if (!this.parent) return <any>this
 		let root = this.parent
@@ -26,6 +26,8 @@ export abstract class AbstractProxy extends BaseObject implements IProxy {
 		this.parent = parent
 		if (parent) {
 			this.listenTo(parent, 'destroy', this.destroy);
+			this.listenTo(parent, 'proxy$observe', this.observe);
+			this.listenTo(parent, 'proxy$unobserve', this.unobserve);
 		}
 		this.__queue = 0
 		this._onchange = bind(this._onchange, this);
@@ -63,7 +65,7 @@ export abstract class AbstractProxy extends BaseObject implements IProxy {
 	
 	private __onModelChange () {
 		
-		console.log(this.model)
+		
 		
 		/*let changed = this.model.changed;
 		this.observe();
@@ -82,7 +84,7 @@ export abstract class AbstractProxy extends BaseObject implements IProxy {
 			let e = events[i]
 			let names = e.name.split('.');
 			
-			if (e.name === '__queue' || names[0] == '_listeners') continue;
+			if (e.name === '__observing' || e.name === '__queue' || names[0] == '_listeners') continue;
 			
 			if (e.type === 'delete') {
 				this.model.set(e.name, {unset:true});
@@ -140,11 +142,36 @@ export abstract class AbstractProxy extends BaseObject implements IProxy {
 		return attr
 	}
 	
-	observe () {}
+	observe () {
+		if (this.__observing) return;
+		if (this.parent) {
+			this.parent.observe()
+		}
+		this.__observing = true;
+		this.trigger('proxy$observe')
+	}
 	
-	unobserve () {}
+	unobserve () {
+		if (!this.__observing) return
+		if (this.parent) {
+			this.parent.unobserve();
+		}
+		this.__observing = false;
+		this.trigger('proxy$unobserve')
+	}
+	
+	$on (): IProxy {
+		
+		if (this == this.root) {
+			//this.on()
+		}
+		
+		return this
+	}
+	
 	
 	destroy () {
+		this.unobserve();
 		this.trigger('before:destroy');
 		(<any>this.model).destroy()
 		super.destroy();

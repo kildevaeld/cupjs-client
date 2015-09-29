@@ -6,6 +6,7 @@ export declare abstract class AbstractProxy extends BaseObject implements IProxy
     __queue: number;
     [x: string]: any;
     parent: IProxy;
+    __observing: any;
     root: IProxy;
     constructor(model?: IModel, parent?: IProxy);
     $run(fn: Function, ctx: any, args: any[]): any;
@@ -15,6 +16,7 @@ export declare abstract class AbstractProxy extends BaseObject implements IProxy
     private __normalizeAttr(attr);
     observe(): void;
     unobserve(): void;
+    $on(): IProxy;
     destroy(): void;
     createChild(): IProxy;
 }

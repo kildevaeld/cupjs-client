@@ -24,7 +24,7 @@ export class Module extends BaseObject {
 	}
 	
 	get ctx (): IProxy {
-		return this._ctx
+		return this._container.get('context');
 	}
 	
 	get container (): DIContainer {
@@ -51,18 +51,18 @@ export class Module extends BaseObject {
 		this._name = options.name
 		this._el = options.el
 		this._container = container
-		this._ctx = createProxy(new NestedModel())
-		
-		this._container.registerInstance('context', this._ctx);
-		
+		//this._ctx = createProxy(new NestedModel())
+		let ctx = container.get('context');
+		//this._container.registerInstance('context', this._ctx);
+		console.log(ctx)
 		if (this.el) {
 			
 			let template = templ.compile(this.el.outerHTML, {
 				viewClass: <any>TemplateView
 			})
-			this._templ = <any>template.view(this._ctx.model, {
+			this._templ = <any>template.view(ctx.model, {
 				container: this._container,
-				delegator: new EventDelegator(this, this.ctx, this._container)
+				delegator: new EventDelegator(this, ctx, this._container)
 			});
 			
 			let el = this._templ.render()

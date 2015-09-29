@@ -12,24 +12,33 @@ export class ServiceActivator {
       
       let args = new Array(params.length), p;
       
-      
-      
-      for (let i=0,ii=args.length; i < ii; i++) {
-         p = params[i];
-         
-         if (p === 'config') {
-           //args[i] = this.container.get(fn)
-         } else {
-           args[i] = this.container.get(p)
-         }
+      let i, ii;
+      try {
+        for (i=0,ii=args.length; i < ii; i++) {
+          p = params[i];
+          if (p == 'ctx') p = 'context';
+          args[i] = this.container.get(p)
+        }  
+      } catch (e) {
+        var message = "Error"
+     
+        if (i < ii) {
+          message += ` The argument at index ${i} (key:${params[i]}) could not be satisfied for service ${fn.name}.`;
+        }
+        throw new Error(message + e.message)
       }
+      
       return args
       
     }
 
     invoke(fn: any, deps: any[], keys?: any[]): any {
-      
-      var instance = Reflect.construct(fn, deps)
+      let instance
+      if (typeof Reflect.construct === 'function') {
+        instance = Reflect.construct(fn, deps);
+      } else {
+        instance = new fn(...deps);
+      }
 
       if (instance.$instance) {
         instance = instance.$instance

@@ -7,13 +7,15 @@ import {AbstractProxy} from './proxy'
 export class ObjectObserveProxy extends AbstractProxy implements IProxy {
 	
 	observe () {
+		if (this.__observing) return
 		(<any>Object).observe(this, this._onchange);
-		if (this.parent) this.parent.observe();
+		super.observe();
 	}
 	
 	unobserve () {
+		if (!this.__observing) return
 		(<any>Object).unobserve(this, this._onchange);
-		if (this.parent) this.parent.unobserve();
+		super.unobserve();
 		
 	}
 	

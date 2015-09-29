@@ -6,6 +6,7 @@ import {isPromise, IPromise, Promise} from 'utilities/lib/index'
 import {TemplateResolver} from '../../services/template.resolver'
 import {TemplateView} from '../template-view'
 import {EventDelegator} from '../event.delegator'
+import {IProxy} from '../proxy/index'
 export class ControllerComponent extends components.BaseComponent {
 	container: DIContainer
 	name: string
@@ -38,6 +39,11 @@ export class ControllerComponent extends components.BaseComponent {
 	
 	__initView (controller) {
 		
+		/*let prox = this.container.createChild();
+		let ctx = <IProxy>this.container.get('context')
+
+		
+		controller.ctx = this.container.get('context');*/
 		this.__resolveTemplate(this.attributes['template'])
 		.then( template => {
 			if (this.subview) {

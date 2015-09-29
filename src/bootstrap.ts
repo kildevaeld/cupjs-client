@@ -1,7 +1,7 @@
 /// <reference path="typings" />
 
 import {domReady, deferred, Deferred, IPromise, Promise, find} from 'utilities'
-import {Application} from './application'
+
 import {Module} from './module'
 import {ModuleFactory} from './module.factory'
 import {isClassType, ClassType, metadata, getClassType} from './internal'
@@ -40,12 +40,10 @@ function resolveModule(app:Moby, moduleName: string): ModuleFactory {
 		}
 		
 	}
-	
-	
-	
-	
+		
 	if (!factory) {
-		factory = <ModuleFactory>Repository.get(ClassType.ModuleFactory, moduleName);
+		factory = <any>Repository.get(ClassType.ModuleFactory, moduleName);
+		if (factory) factory = (<any>factory).handler
 	}
 	
 	if (factory) {

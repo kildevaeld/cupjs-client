@@ -4,40 +4,24 @@ import {find} from 'utilities';
 export interface ItemMap {
 	name: string
 	handler: any
+	type: ClassType
 } 
 
 export module Repository {
-	export var factories: ItemMap[] = [];
-	export var services: ItemMap[] = [];
-	export var modules: ItemMap[] = [];
+	const items = [];
 	
 	export function add (type:ClassType, name:string, target:any) {
 		
-		let array: ItemMap[]
-		switch (type) {
-			case	ClassType.Service:
-				array = services;
-				break;
-			case ClassType.Factory:
-				array = factories;
-				break;
-			case ClassType.ModuleFactory:
-				array = modules;
-				break;
-			default:
-			throw new Error('service, factory')
+		let item;
+		if ((item = find(items, (i) => i.name == name))) {
+			throw new Error(`${type} named ${name} already imported as ${item.type}`);
 		}
 		
-		let found = find(array, (i) => i.name == name)
-		
-		if (found) {
-			throw new Error(`${type} named ${name} already imported`);
-		}
-		
-		array.push({
+		items.push({
 			name: name,
-			handler: target
-		})
+			handler: target,
+			type: type
+		});
 		
 	}
 	
@@ -45,23 +29,11 @@ export module Repository {
 		return !!get(type,name);
 	}
 	
-	export function get<T>(type: ClassType, name: string): T {
-		let array: ItemMap[]
-		switch (type) {
-			case	ClassType.Service:
-				array = services;
-				break;
-			case ClassType.Factory:
-				array = factories;
-				break;
-			case ClassType.ModuleFactory:
-				array = modules;
-				break;
-			default:
-			throw new Error('service, factory')
-		}
-		
-		let found = find(array, (i) => i.name == name)
-		return found ? found.handler : null;
+	export function get(type: ClassType, name: string): ItemMap {
+		return find(items, (i) => i.name == name && i.type == type)
+	}
+	
+	export function any(name: string): ItemMap {
+		return find(items, (i) => i.name == name);
 	}
 } 

@@ -20,11 +20,6 @@ export class Controller extends BaseObject {
   get template (): View {
     return this._template
   }
-  
-  constructor () {
-    super();
-  }
-  
 
   initialize () {
 
