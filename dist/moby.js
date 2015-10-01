@@ -8665,8 +8665,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _createClass(ServiceActivator, [{
 	        key: 'resolveDependencies',
 	        value: function resolveDependencies(fn) {
-	            console.log('name of server', fn.name);
-
 	            var _getDependencies = (0, _internal.getDependencies)(fn);
 
 	            var _getDependencies2 = _slicedToArray(_getDependencies, 2);

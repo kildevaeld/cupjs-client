@@ -7,7 +7,7 @@ export class ServiceActivator {
     }
 
     resolveDependencies(fn: Function): any[] {
-      console.log('name of server', fn.name)
+      
       let [_, params] = getDependencies(fn);
       
       let args = new Array(params.length), p;
