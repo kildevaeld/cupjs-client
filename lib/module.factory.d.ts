@@ -17,7 +17,8 @@ export declare class ModuleFactory extends BaseObject {
     service(name: string, service: any): ModuleFactory;
     __addFromClassType(classType: ClassType, name: string, target: any): ModuleFactory;
     factory(name: string, factory: Function | Function[]): ModuleFactory;
+    _resolveDependencies(deps: string[]): any;
     initialize(fn: Function | Array<any>): ModuleFactory;
-    __resolveDependencies(module: Function): any;
+    __resolveModuleDependencies(module: Function): any;
     create(options?: ModuleOptions): IPromise<Module>;
 }

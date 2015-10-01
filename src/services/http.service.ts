@@ -1,6 +1,6 @@
 /// <reference path="../typings" />
 
-import {request, Request} from 'utilities/lib/index'
+import {request, Request} from 'utilities'
 import {classtype, ClassType} from '../internal'
 
 @classtype(ClassType.Service)

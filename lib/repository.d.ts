@@ -3,6 +3,7 @@ export interface ItemMap {
     name: string;
     handler: any;
     type: ClassType;
+    config?: any;
 }
 export declare module Repository {
     function add(type: ClassType, name: string, target: any): void;

@@ -7,7 +7,7 @@ import {Collection, NestedModel, ICollection, IModel} from 'collection'
 import {BaseObject} from './object'
 import {Module} from './module'
 import {ModuleConstructor, Moby, ITemplateDeclaration} from './typings'
-import {TemplateResolver, HttpService} from './services/index'
+import {TemplateResolver, HttpService, RouterService} from './services/index'
 import {DINamespace, getDependencies, ClassType} from './internal'
 import {ModuleFactory} from './module.factory'
 import {bootstrap} from './bootstrap'
@@ -15,9 +15,6 @@ import {bootstrap} from './bootstrap'
 import {Repository} from './repository'
 
 import * as annotations from './annotations'
-
-
-
 
 const container = new DIContainer();
 
@@ -98,46 +95,9 @@ export const moby: Moby = {
 			}
 		}
 		
-		/*for (let d of mod.inject) {
-			if (typeof d === 'function') {
-				factory.service(d.name,d)
-			} else {
-				let item = Repository.any(d)
-				if (item) {
-					switch ()
-				}	
-			}
-			
-		}*/
-		
 		Repository.add(ClassType.ModuleFactory, name, factory)
 		
 		return factory
-		/*let [fn, _] = getDependencies(definition);
-		
-		if (fn == null) {
-			throw new Error('module');
-		}	
-		let mod
-		if (utils.isObject(fn) && typeof fn !== 'function') {
-			if (fn.constructor != null) {
-        (<any>fn).initialize = fn.constructor
-        delete definition.constructor
-      }
-			
-			
-      mod = Module.extend<ModuleConstructor>(definition)
-		} else if (typeof fn == 'function') {
-			mod = fn
-		} else {
-			throw new Error('module type');
-		}
-		
-		let factory = new ModuleFactory(name, mod, container.createChild());
-		
-		Repository.add(ClassType.ModuleFactory, name, factory);
-		
-		return factory;*/
 	
   },
 
@@ -174,6 +134,6 @@ export const moby: Moby = {
 
 // Add default services
 moby.service('http', HttpService);
-
+moby.service('router', RouterService)
 // bootstrap
 bootstrap(moby);

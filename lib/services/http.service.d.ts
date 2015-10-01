@@ -1,4 +1,4 @@
-import { Request } from 'utilities/lib/index';
+import { Request } from 'utilities';
 export declare class HttpService {
     get(url: any): Request;
     post(url: any): Request;

@@ -6,6 +6,7 @@ export declare enum ClassType {
     Factory = 4,
 }
 export declare const DINamespace: string;
+export declare const DIServiceConfig: string;
 export interface MetaMap {
     name: string;
     handler: any;

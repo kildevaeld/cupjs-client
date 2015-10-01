@@ -10,8 +10,8 @@ export enum ClassType {
   Factory
 }
 
-export const DINamespace = "cupsjs"
-
+export const DINamespace = "mobyjs"
+export const DIServiceConfig = "mobyjs:service:config"
 export interface MetaMap {
   name: string
   handler: any

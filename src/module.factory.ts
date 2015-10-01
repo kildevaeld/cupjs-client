@@ -6,7 +6,7 @@ import {BaseObject} from './object'
 
 import {DIContainer, Metadata, getFunctionParameters, instanceActivator, FactoryActivator} from 'di'
 import {callFunc, nextTick, isObject, extend, IPromise, Promise, toPromise, isPromise, mapAsync, Debug} from 'utilities'
-import {DINamespace, setActivator, setDependencyResolver, classtype, ClassType, getDependencies} from './internal'
+import {DINamespace, setActivator, setDependencyResolver, classtype, ClassType, getDependencies, DIServiceConfig} from './internal'
 import {ServiceActivator} from './service.activator'
 import {IProxy, getProxy} from './proxy/index'
 import {Repository} from './repository'
@@ -104,12 +104,8 @@ export class ModuleFactory extends BaseObject {
     this._container = container
     this._activator = new ControllerActivator(this._container);
     this._serviceActivator = new ServiceActivator(this._container)
-    //this._moduleActivator = new ModuleActivator(this._container, this);
-
+   
     this._initializers = [];
-
-    //setDependencyResolver(ctor, this._moduleActivator);
-    //setActivator(ctor, this._moduleActivator);
 
     container.registerSingleton('context', getProxy());
   }
@@ -152,18 +148,14 @@ export class ModuleFactory extends BaseObject {
     let [fn, deps] = getDependencies(service)
 
     if (typeof fn == 'function') {
-      for (let i=0,ii = deps.length; i<ii;i++) {
-        if (!this._container.hasHandler(deps[i])) {
-          let item = Repository.any(deps[i]);
-          if (item) {
-            this.__addFromClassType(item.type,item.name,item.handler)
-          }
-        }
-      }
+     
+      this._resolveDependencies(deps)
       setActivator(fn, this._serviceActivator);
       setDependencyResolver(fn, this._serviceActivator);
       classtype(ClassType.Service)(fn);
+    
       this._container.registerSingleton(name, fn);
+     
     } else {
       throw new Error('service not a function')
 
@@ -187,14 +179,7 @@ export class ModuleFactory extends BaseObject {
 
     if (typeof fn == 'function') {
       
-      for (let i=0,ii = deps.length; i<ii;i++) {
-        if (!this._container.hasHandler(deps[i])) {
-          let item = Repository.any(deps[i]);
-          if (item) {
-            this.__addFromClassType(item.type,item.name,item.handler)
-          }
-        }
-      }
+      this._resolveDependencies(deps)
       
       
       setActivator(fn, FactoryActivator.instance);
@@ -206,6 +191,17 @@ export class ModuleFactory extends BaseObject {
     debug('defining factory "%s" in "%s"', name, this.name)
     return this;
   }
+  
+  _resolveDependencies (deps:string[]): any {
+    for (let i=0,ii = deps.length; i<ii;i++) {
+       if (!this._container.hasHandler(deps[i])) {
+        let item = Repository.any(deps[i]);
+        if (item) {
+          this.__addFromClassType(item.type,item.name,item.handler)
+        }
+      }
+    }
+  }
 
 
   initialize(fn: Function | Array<any>): ModuleFactory {
@@ -215,7 +211,7 @@ export class ModuleFactory extends BaseObject {
   }
 
 
-  __resolveDependencies(module: Function) {
+  __resolveModuleDependencies(module: Function) {
     let params = getFunctionParameters(module), p;
     let i, ii
     try {
@@ -261,7 +257,7 @@ export class ModuleFactory extends BaseObject {
 
       if (typeof mod.initialize === 'function') {
         
-        let args = this.__resolveDependencies(mod.initialize)
+        let args = this.__resolveModuleDependencies(mod.initialize)
         //let args = Promise.resolve()
         mapAsync(this._initializers, init => {
           let [deps, ctx] = this._activator.resolveDependencies(init[0], init[1]);

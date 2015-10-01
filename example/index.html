@@ -8,14 +8,17 @@
   console.log(moby)
   utils.Debug.enable(true);
   moby.module("app",{
-    constructor: function (ctx, router, userID) {
+    constructor: function (ctx, router) {
       console.log('raprparp', ctx)
       ctx.title = "Hello, world!"
 
       ctx.description = utils.delay(1000).then(function () {
-        return "User ID " + userID
+        return "User ID "
       })
-
+      console.log(router)
+      router.route('hello', function () {
+        alert('yo yo mother fucker');
+      });
       
     },
     onClick: function (e, ctx) {
@@ -39,14 +42,14 @@
     }
   })
 
-  moby.service('router', function () {
+  /*moby.service('router', function () {
     console.log('this is a coool router')
     //this.config = config
-  }, {config: 'yessir'})
+  }, {config: 'yessir'})*/
 
 
-  var app = moby.module('app')
-  app.factory('userID', 'det er det der tæller')
+  //var app = moby.module('app')
+  //app.factory('userID', 'det er det der tæller')
 
   /*app.create({el:document.getElementById('app')}).then(function (app) {
     console.log('app',app)
@@ -58,6 +61,7 @@
   <div moby-app="app">
     {{title}}
     {{description}}
+    <a href="#hello">Hello</a>
     <button click="onClick">Click</button>
     <controller name="main" template="main" model="">
       <h1>{{name}}</h1>

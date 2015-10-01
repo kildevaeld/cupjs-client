@@ -1,7 +1,7 @@
 
-import {metadata, MetaMap, ClassType, classtype} from './internal'
+import {metadata, MetaMap, ClassType, classtype, DIServiceConfig} from './internal'
 import {camelcase, find} from 'utilities'
-
+import {Metadata} from 'di'
 
 
 export function controller (moduleName:string, controllerName?:string): ClassDecorator {
@@ -90,5 +90,11 @@ export function service (serviceName?:string, moduleName?:string): ClassDecorato
 		
 		types.push(map)
 			
+	}
+}
+
+export function config (config:any): ClassDecorator {
+	return function (target:Function) {
+		Metadata.define(DIServiceConfig, config, target, undefined)
 	}
 }

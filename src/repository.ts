@@ -1,10 +1,11 @@
-import {ClassType, getDependencies} from './internal'
+import {ClassType, getDependencies, DIServiceConfig} from './internal'
 import {find} from 'utilities';
-
+import {Metadata} from 'di'
 export interface ItemMap {
 	name: string
 	handler: any
 	type: ClassType
+	config?:any
 } 
 
 export module Repository {
@@ -17,10 +18,13 @@ export module Repository {
 			throw new Error(`${type} named ${name} already imported as ${item.type}`);
 		}
 		
+		let config = Metadata.get(DIServiceConfig, target)
+		
 		items.push({
 			name: name,
 			handler: target,
-			type: type
+			type: type,
+			config: config
 		});
 		
 	}
