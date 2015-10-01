@@ -1,5 +1,6 @@
 import {Metadata, DIContainer, getFunctionParameters} from 'di'
 import {getDependencies} from './internal'
+
 export class ServiceActivator {
     container: DIContainer
     constructor(container: DIContainer) {
@@ -13,6 +14,7 @@ export class ServiceActivator {
       let args = new Array(params.length), p;
       
       let i, ii;
+      
       try {
         for (i=0,ii=args.length; i < ii; i++) {
           p = params[i];

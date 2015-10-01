@@ -23,6 +23,7 @@
   "files": [
     "src/annotations.ts",
     "src/bootstrap.ts",
+    "src/controller.activator.ts",
     "src/controller.ts",
     "src/index.ts",
     "src/internal.ts",

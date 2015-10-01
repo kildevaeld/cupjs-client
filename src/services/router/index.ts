@@ -37,7 +37,12 @@ export class RouterService {
 	}
 	
 	private __handleController(options:RouteOptions): RouteHandler {
+		
+		let ctrl = 
+		
 		return (...args:any[]) => {
+			
+			
 			
 		}
 	}
