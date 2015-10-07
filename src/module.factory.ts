@@ -44,8 +44,9 @@ export class ModuleFactory extends BaseObject {
     this._serviceActivator = new ServiceActivator(this._container)
    
     this._initializers = [];
-
-    container.registerSingleton('context', getProxy());
+    let Context = getProxy();
+    
+    container.registerSingleton('context', Context);
   }
 
   controller(name: string, controller: ControllerConstructor | Object): ModuleFactory {

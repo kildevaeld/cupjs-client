@@ -8,8 +8,15 @@ export class ServiceActivator {
     }
 
     resolveDependencies(fn: Function): any[] {
+     
       
+       if ((<any>fn).__metadata__.undefined['design:paramtypes']) {
+          delete (<any>fn).__metadata__.undefined['design:paramtypes']
+       }
+        
       let [_, params] = getDependencies(fn);
+      
+      
       
       let args = new Array(params.length), p;
       
@@ -19,7 +26,9 @@ export class ServiceActivator {
         for (i=0,ii=args.length; i < ii; i++) {
           p = params[i];
           if (p == 'ctx') p = 'context';
+          
           args[i] = this.container.get(p)
+          
         }  
       } catch (e) {
         var message = "Error"

@@ -134,6 +134,6 @@ export const moby: Moby = {
 
 // Add default services
 moby.service('http', HttpService);
-moby.service('router', RouterService)
+moby.service('router', ['context', RouterService])
 // bootstrap
 bootstrap(moby);

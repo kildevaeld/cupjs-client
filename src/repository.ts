@@ -9,7 +9,7 @@ export interface ItemMap {
 } 
 
 export module Repository {
-	const items = [];
+	export const items = [];
 	
 	export function add (type:ClassType, name:string, target:any) {
 		

@@ -13,7 +13,7 @@ export interface RouteOptions {
 export class RouterService {
 	router: Router
 	context: IProxy
-	constructor (context) {
+	constructor (context:IProxy) {
 		this.router = new Router({
 			execute: utils.bind(this.__execute, this)
 		})
@@ -33,12 +33,12 @@ export class RouterService {
 	}
 	
 	private __execute (callback:RouteHandler, args:any[]) {
+		console.log(this)
 		this.context.$run(callback,this.context,args)
 	}
 	
 	private __handleController(options:RouteOptions): RouteHandler {
 		
-		let ctrl = 
 		
 		return (...args:any[]) => {
 			

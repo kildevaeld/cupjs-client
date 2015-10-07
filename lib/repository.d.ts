@@ -6,6 +6,7 @@ export interface ItemMap {
     config?: any;
 }
 export declare module Repository {
+    const items: any[];
     function add(type: ClassType, name: string, target: any): void;
     function has(type: ClassType, name: string): boolean;
     function get(type: ClassType, name: string): ItemMap;

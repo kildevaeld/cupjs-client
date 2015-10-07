@@ -8,7 +8,7 @@ export interface RouteOptions {
 export declare class RouterService {
     router: Router;
     context: IProxy;
-    constructor(context: any);
+    constructor(context: IProxy);
     route(route: string | RegExp, handler: RouteHandler | RouteOptions): RouterService;
     private __execute(callback, args);
     private __handleController(options);
