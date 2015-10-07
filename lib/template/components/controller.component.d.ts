@@ -4,6 +4,7 @@ import { DIContainer } from 'di';
 import { IPromise } from 'utilities/lib/index';
 export declare class ControllerComponent extends components.BaseComponent {
     container: DIContainer;
+    as: string;
     name: string;
     controller: Controller;
     subview: View;

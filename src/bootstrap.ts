@@ -93,7 +93,7 @@ export function bootstrap (app:Moby): IPromise<Module[]>  {
 			}));
 			
 		}
-		console.log(Repository)
+		
 		Promise.all(queue).then(defer.resolve, defer.reject)
 		
 	});

@@ -47,6 +47,7 @@ export class ModuleFactory extends BaseObject {
     let Context = getProxy();
     
     container.registerSingleton('context', Context);
+    container.registerInstance('container', container);
   }
 
   controller(name: string, controller: ControllerConstructor | Object): ModuleFactory {

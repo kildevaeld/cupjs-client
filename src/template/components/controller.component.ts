@@ -9,6 +9,7 @@ import {EventDelegator} from '../event.delegator'
 import {IProxy} from '../proxy/index'
 export class ControllerComponent extends components.BaseComponent {
 	container: DIContainer
+	as: string
 	name: string
 	controller: Controller
 	subview: View 
@@ -16,6 +17,7 @@ export class ControllerComponent extends components.BaseComponent {
 		this.container = (<any>this.view)._container
 		if (this.attributes['name']) {
 			this.name = this.attributes['name']
+			this.as = this.attributes['as'] || this.name
 		}
 		
 		this.__initController(this.name)

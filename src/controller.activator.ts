@@ -61,7 +61,9 @@ export class ControllerActivator {
     }
 
     instance.ctx = args[1]
-
+    ctx.unobserve();
+    
+    
     return instance;
   }
 }

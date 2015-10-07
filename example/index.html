@@ -15,9 +15,16 @@
       ctx.description = utils.delay(1000).then(function () {
         return "User ID "
       })
-      console.log(router)
+      /*console.log(router)
       router.route('hello', function () {
         alert('yo yo mother fucker');
+        ctx.title = "This is clicked"
+      });*/
+      
+      router.route('hello', {
+        controller: 'main',
+        target: '.router-target',
+        template: 'main'
       });
       
     },
@@ -36,9 +43,10 @@
         alert('Hello')
         console.log(ctx)
       }
+      console.log(ctx)
     },
     onClick: function () {
-      
+      console.log('you clicked')
     }
   })
 
@@ -63,13 +71,15 @@
     {{description}}
     <a href="#hello">Hello</a>
     <button click="onClick">Click</button>
-    <controller name="main" template="main" model="">
+    <!--<controller name="main" template="main" model="">
       <h1>{{name}}</h1>
-    </controller>
+    </controller>-->
+    <div class="router-target"></div>
     <!--view template="main"></view-->
   </div>
 <script type="html/template" id="main">
-  <p click.action="{{ root.title = 2000 }}">{{name}}</p>
+  <!--<p click="{{main.onClick}}">Click then</p>-->
+  <!--<p click.action="{{ root.title = 2000 }}">{{name}}</p>-->
   <p click="{{hello}}">Every little thing she does is magic</p>
   <!--<ul click.delegate="li" click.action="{{hello}}">
     <li repeat.each="{{names}}">{{this.name}}</li>

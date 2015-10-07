@@ -231,6 +231,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	_defaults(exports, _interopExportWildcard(_templateView, _defaults));
 
+	var _eventDelegator = __webpack_require__(26);
+
+	_defaults(exports, _interopExportWildcard(_eventDelegator, _defaults));
+
 /***/ },
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
@@ -3046,6 +3050,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.container = this.view._container;
 	            if (this.attributes['name']) {
 	                this.name = this.attributes['name'];
+	                this.as = this.attributes['as'] || this.name;
 	            }
 	            this.__initController(this.name);
 	        }
@@ -3070,6 +3075,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function __initView(controller) {
 	            var _this2 = this;
 
+	            controller.ctx.context.set(this.as, controller);
 	            this.__resolveTemplate(this.attributes['template']).then(function (template) {
 	                if (_this2.subview) {
 	                    _this2.subview.remove();
@@ -7917,6 +7923,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var utils = _interopRequireWildcard(_utilities);
 
+	var _di = __webpack_require__(27);
+
+	var _templateIndex = __webpack_require__(1);
+
+	var _templ = __webpack_require__(2);
+
+	var templ = _interopRequireWildcard(_templ);
+
 	var __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
 	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
 	    switch (arguments.length) {
@@ -7938,13 +7952,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var RouterService = (function () {
-	    function RouterService(context) {
+	    function RouterService(context, container) {
 	        _classCallCheck(this, RouterService);
 
 	        this.router = new _router.Router({
 	            execute: utils.bind(this.__execute, this)
 	        });
 	        this.context = context;
+	        this.container = container;
 	        this.router.history.start();
 	    }
 
@@ -7961,20 +7976,48 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: "__execute",
 	        value: function __execute(callback, args) {
-	            console.log(this);
 	            this.context.$run(callback, this.context, args);
 	        }
 	    }, {
 	        key: "__handleController",
 	        value: function __handleController(options) {
-	            return function () {};
+	            var _this = this;
+
+	            if (!this.container.hasHandler(options.controller)) {
+	                throw new Error('[router] controller');
+	            }
+	            return function () {
+	                var target = undefined;
+	                if (typeof options.target === 'string') {
+	                    target = document.querySelector(options.target);
+	                } else {
+	                    target = options.target;
+	                }
+	                var templateResolver = _this.container.get('templateResolver');
+	                var controller = _this.container.get(options.controller);
+	                templateResolver.resolve(options.template).then(function (str) {
+	                    if (!str) {
+	                        throw new Error('template');
+	                    }
+	                    var ctx = controller.ctx;
+	                    var template = templ.compile(str, {
+	                        viewClass: _templateIndex.TemplateView
+	                    });
+	                    var view = template.view(ctx.model, {
+	                        container: _this.container,
+	                        delegator: new _templateIndex.EventDelegator(controller, ctx, _this.container)
+	                    });
+	                    controller.template = view;
+	                    target.appendChild(view.render());
+	                });
+	            };
 	        }
 	    }]);
 
 	    return RouterService;
 	})();
 	exports.RouterService = RouterService;
-	exports.RouterService = RouterService = __decorate([(0, _internal.classtype)(_internal.ClassType.Service), __metadata('design:paramtypes', [Object])], RouterService);
+	exports.RouterService = RouterService = __decorate([(0, _internal.classtype)(_internal.ClassType.Service), __metadata('design:paramtypes', [Object, _di.DIContainer])], RouterService);
 
 /***/ },
 /* 51 */
@@ -8389,6 +8432,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._initializers = [];
 	        var Context = (0, _proxyIndex.getProxy)();
 	        container.registerSingleton('context', Context);
+	        container.registerInstance('container', container);
 	    }
 
 	    _createClass(ModuleFactory, [{
@@ -9233,6 +9277,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                });
 	            }
 	            instance.ctx = args[1];
+	            ctx.unobserve();
 	            return instance;
 	        }
 	    }]);
@@ -9334,7 +9379,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	                name: name
 	            }));
 	        }
-	        console.log(_repository.Repository);
 	        _utilities.Promise.all(queue).then(defer.resolve, defer.reject);
 	    });
 	    return defer.promise;
